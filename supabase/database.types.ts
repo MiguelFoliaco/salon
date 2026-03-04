@@ -10,29 +10,420 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "13.0.5"
+    PostgrestVersion: "14.1"
   }
   public: {
     Tables: {
-      users: {
+      audit_logs: {
         Row: {
+          action: string | null
+          created_at: string | null
+          id: string
+          new_data: Json | null
+          old_data: Json | null
+          record_id: string | null
+          table_name: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action?: string | null
+          created_at?: string | null
+          id?: string
+          new_data?: Json | null
+          old_data?: Json | null
+          record_id?: string | null
+          table_name?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string | null
+          created_at?: string | null
+          id?: string
+          new_data?: Json | null
+          old_data?: Json | null
+          record_id?: string | null
+          table_name?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      branches: {
+        Row: {
+          address: string
+          city: string | null
+          configuration_id: string
           created_at: string | null
           email: string | null
           id: string
+          name: string
+          phone: string | null
+        }
+        Insert: {
+          address: string
+          city?: string | null
+          configuration_id: string
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+        }
+        Update: {
+          address?: string
+          city?: string | null
+          configuration_id?: string
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "branches_configuration_id_fkey"
+            columns: ["configuration_id"]
+            isOneToOne: false
+            referencedRelation: "configurations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clients: {
+        Row: {
+          address: string | null
+          auth_id: string
+          client_type: Database["public"]["Enums"]["client_type_enum"]
+          code_phone: string | null
+          code_verification: string | null
+          created_at: string | null
+          email: string | null
+          id: string
+          identity_type: Database["public"]["Enums"]["identity_type_enum"]
+          identity_value: string
+          lastname: string
+          lastname_2: string | null
+          name: string
+          phone: string
           updated_at: string | null
         }
         Insert: {
+          address?: string | null
+          auth_id: string
+          client_type?: Database["public"]["Enums"]["client_type_enum"]
+          code_phone?: string | null
+          code_verification?: string | null
           created_at?: string | null
           email?: string | null
           id?: string
+          identity_type: Database["public"]["Enums"]["identity_type_enum"]
+          identity_value: string
+          lastname: string
+          lastname_2?: string | null
+          name: string
+          phone: string
           updated_at?: string | null
         }
         Update: {
+          address?: string | null
+          auth_id?: string
+          client_type?: Database["public"]["Enums"]["client_type_enum"]
+          code_phone?: string | null
+          code_verification?: string | null
           created_at?: string | null
           email?: string | null
           id?: string
+          identity_type?: Database["public"]["Enums"]["identity_type_enum"]
+          identity_value?: string
+          lastname?: string
+          lastname_2?: string | null
+          name?: string
+          phone?: string
           updated_at?: string | null
         }
+        Relationships: []
+      }
+      configurations: {
+        Row: {
+          address: string | null
+          city: string | null
+          code_verification_nit: string
+          company_name: string
+          country: string | null
+          created_at: string | null
+          department: string | null
+          dian_resolution_date: string | null
+          dian_resolution_number: string | null
+          email: string | null
+          id: string
+          invoice_from: number | null
+          invoice_prefix: string | null
+          invoice_to: number | null
+          nit: string
+          phone: string | null
+          trade_name: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          code_verification_nit: string
+          company_name: string
+          country?: string | null
+          created_at?: string | null
+          department?: string | null
+          dian_resolution_date?: string | null
+          dian_resolution_number?: string | null
+          email?: string | null
+          id?: string
+          invoice_from?: number | null
+          invoice_prefix?: string | null
+          invoice_to?: number | null
+          nit: string
+          phone?: string | null
+          trade_name?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          code_verification_nit?: string
+          company_name?: string
+          country?: string | null
+          created_at?: string | null
+          department?: string | null
+          dian_resolution_date?: string | null
+          dian_resolution_number?: string | null
+          email?: string | null
+          id?: string
+          invoice_from?: number | null
+          invoice_prefix?: string | null
+          invoice_to?: number | null
+          nit?: string
+          phone?: string | null
+          trade_name?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      product_types: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          code: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          image: string | null
+          is_active: boolean | null
+          name: string
+          product_type_id: string
+          stock: number | null
+          tax_id: string | null
+          updated_at: string | null
+          value: number
+        }
+        Insert: {
+          code?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image?: string | null
+          is_active?: boolean | null
+          name: string
+          product_type_id: string
+          stock?: number | null
+          tax_id?: string | null
+          updated_at?: string | null
+          value: number
+        }
+        Update: {
+          code?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image?: string | null
+          is_active?: boolean | null
+          name?: string
+          product_type_id?: string
+          stock?: number | null
+          tax_id?: string | null
+          updated_at?: string | null
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_product_type_id_fkey"
+            columns: ["product_type_id"]
+            isOneToOne: false
+            referencedRelation: "product_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_tax_id_fkey"
+            columns: ["tax_id"]
+            isOneToOne: false
+            referencedRelation: "taxes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      schedules: {
+        Row: {
+          branch_id: string
+          client_id: string
+          created_at: string | null
+          end_time: string
+          id: string
+          notes: string | null
+          product_id: string
+          start_time: string
+          status: Database["public"]["Enums"]["schedule_status_enum"] | null
+          updated_at: string | null
+        }
+        Insert: {
+          branch_id: string
+          client_id: string
+          created_at?: string | null
+          end_time: string
+          id?: string
+          notes?: string | null
+          product_id: string
+          start_time: string
+          status?: Database["public"]["Enums"]["schedule_status_enum"] | null
+          updated_at?: string | null
+        }
+        Update: {
+          branch_id?: string
+          client_id?: string
+          created_at?: string | null
+          end_time?: string
+          id?: string
+          notes?: string | null
+          product_id?: string
+          start_time?: string
+          status?: Database["public"]["Enums"]["schedule_status_enum"] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "schedules_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "schedules_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "schedules_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      taxes: {
+        Row: {
+          code: string
+          created_at: string | null
+          id: string
+          name: string
+          percentage: number
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          id?: string
+          name: string
+          percentage: number
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          id?: string
+          name?: string
+          percentage?: number
+        }
+        Relationships: []
+      }
+      transactions: {
+        Row: {
+          amount: number
+          client_id: string | null
+          created_at: string | null
+          id: string
+          payment_method: Database["public"]["Enums"]["payment_method_enum"]
+          reference_code: string | null
+          schedule_id: string | null
+          tax_amount: number | null
+          total_amount: number
+          transaction_type: Database["public"]["Enums"]["transaction_type_enum"]
+        }
+        Insert: {
+          amount: number
+          client_id?: string | null
+          created_at?: string | null
+          id?: string
+          payment_method: Database["public"]["Enums"]["payment_method_enum"]
+          reference_code?: string | null
+          schedule_id?: string | null
+          tax_amount?: number | null
+          total_amount: number
+          transaction_type: Database["public"]["Enums"]["transaction_type_enum"]
+        }
+        Update: {
+          amount?: number
+          client_id?: string | null
+          created_at?: string | null
+          id?: string
+          payment_method?: Database["public"]["Enums"]["payment_method_enum"]
+          reference_code?: string | null
+          schedule_id?: string | null
+          tax_amount?: number | null
+          total_amount?: number
+          transaction_type?: Database["public"]["Enums"]["transaction_type_enum"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_schedule_id_fkey"
+            columns: ["schedule_id"]
+            isOneToOne: false
+            referencedRelation: "schedules"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -42,7 +433,18 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      types_plan: "FREE" | "BASIC" | "PRO"
+      client_type_enum: "natural" | "juridico"
+      identity_type_enum: "DNI" | "PASSPORT" | "ID"
+      payment_method_enum:
+        | "cash"
+        | "card"
+        | "transfer"
+        | "nequi"
+        | "daviplata"
+        | "other"
+      product_type_enum: "service" | "product"
+      schedule_status_enum: "pending" | "confirmed" | "cancelled" | "completed"
+      transaction_type_enum: "income" | "expense"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -56,121 +458,133 @@ type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
-  | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-  | { schema: keyof DatabaseWithoutInternals },
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-  ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-    DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-  : never = never,
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-    DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
-  ? R
-  : never
+    ? R
+    : never
   : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
-    DefaultSchema["Views"])
-  ? (DefaultSchema["Tables"] &
-    DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-      Row: infer R
-    }
-  ? R
-  : never
-  : never
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-  | keyof DefaultSchema["Tables"]
-  | { schema: keyof DatabaseWithoutInternals },
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-  ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-  : never = never,
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-    Insert: infer I
-  }
-  ? I
-  : never
+      Insert: infer I
+    }
+    ? I
+    : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-  ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-    Insert: infer I
-  }
-  ? I
-  : never
-  : never
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-  | keyof DefaultSchema["Tables"]
-  | { schema: keyof DatabaseWithoutInternals },
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-  ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-  : never = never,
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-    Update: infer U
-  }
-  ? U
-  : never
+      Update: infer U
+    }
+    ? U
+    : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
-  ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
-    Update: infer U
-  }
-  ? U
-  : never
-  : never
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-  | keyof DefaultSchema["Enums"]
-  | { schema: keyof DatabaseWithoutInternals },
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-  ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-  : never = never,
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
-  ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
-  : never
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-  | keyof DefaultSchema["CompositeTypes"]
-  | { schema: keyof DatabaseWithoutInternals },
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-  ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-  : never = never,
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
-  ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-  : never
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
 
 export const Constants = {
   public: {
     Enums: {
-      types_plan: ["FREE", "BASIC", "PRO"],
+      client_type_enum: ["natural", "juridico"],
+      identity_type_enum: ["DNI", "PASSPORT", "ID"],
+      payment_method_enum: [
+        "cash",
+        "card",
+        "transfer",
+        "nequi",
+        "daviplata",
+        "other",
+      ],
+      product_type_enum: ["service", "product"],
+      schedule_status_enum: ["pending", "confirmed", "cancelled", "completed"],
+      transaction_type_enum: ["income", "expense"],
     },
   },
 } as const

@@ -5,6 +5,7 @@ import "./globals.css";
 import { Toast } from "@/module/common/components/toast";
 import { LayoutClient } from "./layoutClient";
 import { createClient } from "@/supabase/server";
+import '@radix-ui/themes/styles.css';
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -25,14 +26,14 @@ export default async function RootLayout({
     <html lang="en">
       <body
         className="bg-base-100"
-        data-theme="lofi"
+        data-theme="cupcake"
       >
-        <LayoutClient
-          user={user.data.user}
-        >
-          <Toast />
-          {children}
-        </LayoutClient>
+          <LayoutClient
+            user={user.data.user}
+          >
+            <Toast />
+            {children}
+          </LayoutClient>
       </body>
     </html>
   );

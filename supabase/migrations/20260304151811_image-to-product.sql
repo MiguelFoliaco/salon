@@ -1,0 +1,1 @@
+alter table public.products add column image text default 'https://placehold.co/600x400/000000/FFFFFF/png?text=Product+Image';

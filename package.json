@@ -7,18 +7,22 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "create-migration": "supabase migration new ",
+    "migrate": "supabase db push",
     "types-db": "genTypes.bat"
   },
   "dependencies": {
     "@fontsource-variable/montserrat": "^5.2.8",
+    "@radix-ui/themes": "^3.3.0",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.86.0",
     "clsx": "^2.1.1",
     "daisyui": "^5.5.5",
-    "next": "16.0.5",
+    "next": "^16.1.6",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-icons": "^5.5.0",
+    "tailwind-merge": "^3.5.0",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
@@ -26,6 +30,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "baseline-browser-mapping": "^2.10.0",
     "eslint": "^9",
     "eslint-config-next": "16.0.5",
     "supabase": "^2.63.1",
