@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { cn } from "@/utils/cn"
 import { BiPackage } from "react-icons/bi"
-import { CgShoppingCart } from "react-icons/cg"
+import { CgCalendar, CgShoppingCart } from "react-icons/cg"
 import { Product } from "../../actions/get-products"
 
 
@@ -79,10 +79,18 @@ export function ProductCard({ product, onAction }: ProductCardProps) {
             onClick={() => onAction?.(product)}
             className={"btn btn-sm btn-primary gap-2 "}
           >
-              <>
-                <CgShoppingCart className="size-4" />
-                Agregar
-              </>
+            {
+              product.is_service ?
+                <>
+                  <CgCalendar className="size-4" />
+                  Programar
+                </>
+                :
+                <>
+                  <CgShoppingCart className="size-4" />
+                  Agregar
+                </>
+            }
           </button>
         </div>
       </div>

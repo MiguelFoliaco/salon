@@ -1,0 +1,1 @@
+alter table products add column estimate_time_in_minutes int default 0 ;

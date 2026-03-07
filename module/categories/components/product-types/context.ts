@@ -14,6 +14,7 @@ export const useProductTypesContext = create<IProductTypesContext>((set) => ({
     selected: (productType: ProductType) => set({ typeSelected: productType }),
     load: async () => {
         const data = await getProductTypes();
+        console.log(data)
         if (data.data) {
 
             set({ productTypes: data.data })

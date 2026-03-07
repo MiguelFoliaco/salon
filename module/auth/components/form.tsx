@@ -8,6 +8,7 @@ import { useToast } from "@/module/common/hook/useToast";
 import clsx from "clsx";
 import { useUser } from "../context/useUser";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 
 type FormLoginProps = {
@@ -124,6 +125,12 @@ export const FormLogin = ({ redirectTo }: FormLoginProps) => {
                             "Login"
                     }
                 </button>
+
+                <div className="mt-5 border-t border-neutral/20 pt-5">
+                    <p className="text-center">
+                        Don't have an account? <Link href="/auth/signup" className="link link-primary">Register</Link>
+                    </p>
+                </div>
             </div>
         </div>
     )
@@ -288,6 +295,13 @@ export const FormRegister = () => {
                             "Sign Up"
                     }
                 </button>
+
+                <div className="mt-5 border-t border-neutral/20 pt-5">
+                    <p className="text-center">
+                        Already have an account? <Link href="/auth/login" className="link link-primary">Login</Link>
+                    </p>
+                </div>
+
                 {
                     user.sendEmailConfirmation &&
                     <div>
@@ -296,6 +310,7 @@ export const FormRegister = () => {
                         <p className="label-text-alt text-sm mt-2 ">Please check your email to confirm your account</p>
                     </div>
                 }
+
             </div>
         </div>
     )

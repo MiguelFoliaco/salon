@@ -2,18 +2,17 @@
 import { useUser } from '@/module/auth/context/useUser';
 import { SearchInput } from '@/module/search/components/input-search';
 import Link from 'next/link'
-import { BiSearch } from 'react-icons/bi';
+import { useRouter } from 'next/navigation';
 import { BsScissors } from 'react-icons/bs';
-import { GiSofa } from 'react-icons/gi';
 
 export const Header = () => {
 
     const user = useUser(state => state.user)
-
+    const router = useRouter()
     return (
         <div className="flex justify-between p-3  shadow top-0 sticky z-30 bg-base-100">
             <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity" onClick={() => router.push('/')}>
                     <div className="flex items-center justify-center rounded-lg bg-primary p-2">
                         <BsScissors className="size-5 text-primary-foreground" />
                     </div>

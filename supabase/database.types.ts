@@ -205,6 +205,60 @@ export type Database = {
         }
         Relationships: []
       }
+      employes: {
+        Row: {
+          address: string | null
+          auth_id: string
+          created_at: string | null
+          gender: Database["public"]["Enums"]["employe_gender_enum"] | null
+          hours_available: Json | null
+          id: string
+          is_active: boolean | null
+          is_fashionist: boolean | null
+          last_name: string
+          name: string
+          phone: string | null
+          photo: string | null
+          rol: Database["public"]["Enums"]["employe_rol_enum"] | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          auth_id: string
+          created_at?: string | null
+          gender?: Database["public"]["Enums"]["employe_gender_enum"] | null
+          hours_available?: Json | null
+          id?: string
+          is_active?: boolean | null
+          is_fashionist?: boolean | null
+          last_name: string
+          name: string
+          phone?: string | null
+          photo?: string | null
+          rol?: Database["public"]["Enums"]["employe_rol_enum"] | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          auth_id?: string
+          created_at?: string | null
+          gender?: Database["public"]["Enums"]["employe_gender_enum"] | null
+          hours_available?: Json | null
+          id?: string
+          is_active?: boolean | null
+          is_fashionist?: boolean | null
+          last_name?: string
+          name?: string
+          phone?: string | null
+          photo?: string | null
+          rol?: Database["public"]["Enums"]["employe_rol_enum"] | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       product_types: {
         Row: {
           created_at: string | null
@@ -231,9 +285,11 @@ export type Database = {
           code: string | null
           created_at: string | null
           description: string | null
+          estimate_time_in_minutes: number | null
           id: string
           image: string | null
           is_active: boolean | null
+          is_service: boolean | null
           name: string
           product_type_id: string
           stock: number | null
@@ -245,9 +301,11 @@ export type Database = {
           code?: string | null
           created_at?: string | null
           description?: string | null
+          estimate_time_in_minutes?: number | null
           id?: string
           image?: string | null
           is_active?: boolean | null
+          is_service?: boolean | null
           name: string
           product_type_id: string
           stock?: number | null
@@ -259,9 +317,11 @@ export type Database = {
           code?: string | null
           created_at?: string | null
           description?: string | null
+          estimate_time_in_minutes?: number | null
           id?: string
           image?: string | null
           is_active?: boolean | null
+          is_service?: boolean | null
           name?: string
           product_type_id?: string
           stock?: number | null
@@ -291,6 +351,7 @@ export type Database = {
           branch_id: string
           client_id: string
           created_at: string | null
+          employee_id: string | null
           end_time: string
           id: string
           notes: string | null
@@ -303,6 +364,7 @@ export type Database = {
           branch_id: string
           client_id: string
           created_at?: string | null
+          employee_id?: string | null
           end_time: string
           id?: string
           notes?: string | null
@@ -315,6 +377,7 @@ export type Database = {
           branch_id?: string
           client_id?: string
           created_at?: string | null
+          employee_id?: string | null
           end_time?: string
           id?: string
           notes?: string | null
@@ -324,6 +387,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "schedule_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employes"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "schedules_branch_id_fkey"
             columns: ["branch_id"]
@@ -341,6 +411,39 @@ export type Database = {
           {
             foreignKeyName: "schedules_product_id_fkey"
             columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      services_x_employee: {
+        Row: {
+          employee_id: string | null
+          id: string
+          service_id: string | null
+        }
+        Insert: {
+          employee_id?: string | null
+          id?: string
+          service_id?: string | null
+        }
+        Update: {
+          employee_id?: string | null
+          id?: string
+          service_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "services_x_employee_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "services_x_employee_service_id_fkey"
+            columns: ["service_id"]
             isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
@@ -434,6 +537,8 @@ export type Database = {
     }
     Enums: {
       client_type_enum: "natural" | "juridico"
+      employe_gender_enum: "male" | "female" | "other"
+      employe_rol_enum: "admin" | "cashier" | "stylist"
       identity_type_enum: "DNI" | "PASSPORT" | "ID"
       payment_method_enum:
         | "cash"
@@ -573,6 +678,8 @@ export const Constants = {
   public: {
     Enums: {
       client_type_enum: ["natural", "juridico"],
+      employe_gender_enum: ["male", "female", "other"],
+      employe_rol_enum: ["admin", "cashier", "stylist"],
       identity_type_enum: ["DNI", "PASSPORT", "ID"],
       payment_method_enum: [
         "cash",

@@ -23,7 +23,9 @@ const select = `
         code
     ),
     updated_at,
-    value
+    value,
+    is_service,
+    estimate_time_in_minutes
 `;
 
 type args = {
@@ -73,7 +75,7 @@ export const getProducts = cache(async (q: args) => {
     }
 
     const products = await request;
-
+    console.log(products)
     return products;
 });
 
@@ -81,3 +83,10 @@ export type Products = NonNullable<
     Awaited<ReturnType<typeof getProducts>>['data']
 >;
 export type Product = Products[number];
+
+
+export const getProductById = async (id: string) => {
+    const client = await createClient();
+    const { data } = await client.from('products').select(select).eq('id', id).single();
+    return data;
+}

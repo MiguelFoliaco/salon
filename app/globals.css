@@ -45,3 +45,8 @@ input,
 textarea {
   outline: none;
 }
+
+
+.calendar .rdp-chevron {
+  fill: var(--color-primary)
+}
