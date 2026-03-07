@@ -136,21 +136,17 @@ export const TimeSlots = ({ selectedDate, durationInMinutes, onSlotSelect }: Tim
     });
 
     return (
-        <div className="flex flex-col h-full">
-            <h3 className="text-lg font-semibold mb-4 text-center">
-                {format(selectedDate, "EEEE, d 'de' MMMM", { locale: es })}
-            </h3>
-
+        <div className="flex flex-col h-full w-full">
             {loading ? (
                 <div className="flex justify-center grow p-4">
-                    <span className="loading loading-spinner text-primary loading-md"></span>
+                    <span className="loading loading-spinner text-[#f76d91] loading-md"></span>
                 </div>
             ) : availableSlots.length === 0 ? (
-                <div className="flex items-center justify-center p-8 border-2 border-gray-200 border-dashed rounded-md text-gray-400">
+                <div className="flex items-center justify-center p-8 border border-slate-100 rounded-4xl text-slate-400 font-medium bg-slate-50">
                     No hay horas disponibles para este día
                 </div>
             ) : (
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 overflow-y-auto max-h-[300px] pr-2">
+                <div className="grid grid-cols-2 gap-4 overflow-y-auto max-h-[400px] pr-2 pb-4 scrollbar-hide">
                     {availableSlots.map((slot, i) => {
                         const isSelected = selectedSlot?.getTime() === slot.getTime();
                         return (
@@ -161,14 +157,19 @@ export const TimeSlots = ({ selectedDate, durationInMinutes, onSlotSelect }: Tim
                                     onSlotSelect?.(slot)
                                 }}
                                 className={`
-                                    py-2 px-4 rounded-md border-2 transition-all font-medium text-sm
+                                    flex flex-col items-center justify-center py-3 px-2 rounded-4xl border transition-all shadow-sm
                                     ${isSelected
-                                        ? 'bg-primary border-primary text-primary-content'
-                                        : 'border-gray-200 hover:border-primary text-base-content'
+                                        ? 'border-[#f76d91] bg-pink-50/50'
+                                        : 'border-slate-100 bg-white hover:border-[#f76d91]/50 hover:shadow-md'
                                     }
                                 `}
                             >
-                                {format(slot, "hh:mm a")}
+                                <span className={`font-bold text-base ${isSelected ? 'text-[#f76d91]' : 'text-slate-900'}`}>
+                                    {format(slot, "hh:mm a")}
+                                </span>
+                                <span className={`text-xs mt-0.5 font-medium ${isSelected ? 'text-[#f76d91]' : 'text-slate-400'}`}>
+                                    {isSelected ? 'Selected' : 'Available'}
+                                </span>
                             </button>
                         );
                     })}

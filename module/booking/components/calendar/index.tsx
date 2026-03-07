@@ -1,9 +1,9 @@
 import { useMemo, useState } from "react";
 import { DayPicker } from "react-day-picker";
 
-import "react-day-picker/style.css";
 import { useEmploye } from "../../context/use-employe";
 import { useToast } from "@/module/common/hook/useToast";
+import "react-day-picker/style.css";
 
 
 
@@ -48,7 +48,7 @@ export const BookingCalendar = ({ selected, onSelectDate, disabled }: BookingCal
 
     return (
         <DayPicker
-            className="rounded-md border-2 border-gray-200 p-4 shadow w-fit calendar"
+            className="w-full max-w-[400px]"
             animate
             mode="single"
             selected={selected}

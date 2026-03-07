@@ -11,10 +11,10 @@ import { EmployesByService } from './components/employes-by-service'
 import { BookingCalendar } from './components/calendar'
 import { TimeSlots } from './components/time-slots'
 import { useEmploye } from './context/use-employe'
-import Image from 'next/image'
 import { calculatePrice } from '../utils/calculate-priece'
-import clsx from 'clsx'
 import { TablesInsert } from '@/supabase/database.types'
+import { BiCalendar, BiRightArrow } from 'react-icons/bi'
+import { BsClock } from 'react-icons/bs'
 
 export const BookingPage = () => {
     const [selectedDate, setSelectedDate] = useState<Date>();
@@ -77,74 +77,99 @@ export const BookingPage = () => {
             notes: ''
 
         }
-
+        console.log(shedule)
     }
 
     const disable = !selectedDate || !selectedEmployee
 
 
     return (
-        <div className='w-full h-screen grid grid-cols-4 grid-rows-4' >
-            <div className='col-span-4'>
-                <Header />
-            </div>
+        <div className='w-full min-h-screen bg-slate-50 pb-40 font-sans'>
+            <Header />
 
             {
-                (productSelected) && (
-                    <>
+                productSelected && (
+                    <main className='max-w-5xl mx-auto px-4 py-8 md:py-12'>
+                        {/* Header Details */}
+                        <div className='mb-10'>
+                            <h1 className='text-4xl md:text-5xl font-bold text-slate-900 mb-2 tracking-tight'>Book Your Glow</h1>
+                            <p className='text-lg text-primary font-medium'>Pick a date and time for your sweet transformation</p>
+                        </div>
 
-                        <p className='col-span-2 col-start-1 text-center text-2xl font-bold mt-10'>{productSelected?.name}</p>
-                        <div className='col-span-3 col-start-1 gap-4 px-20 w-full'>
-                            {productSelected && (
+                        <div className='space-y-12'>
+                            {/* Select Stylist */}
+                            <section>
                                 <EmployesByService serviceId={productSelected.id} />
-                            )}
-                        </div>
+                            </section>
 
-                        <div className={
-                            clsx(
-                                'col-start-1 col-span-2 w-full lg:w-10/12 px-4 md:px-0 mx-auto mt-10 flex flex-col md:flex-row gap-6 items-start mb-20',
-                            )
-                        }>
-                            <div className='flex-1 w-full max-w-md bg-base-100 flex justify-center items-center rounded-md border-2 border-gray-200 p-4 shadow'>
-                                <BookingCalendar disabled={!selectedEmployee} selected={selectedDate} onSelectDate={setSelectedDate} />
-                            </div>
-                            <div className="flex-1 w-full max-w-md bg-base-100 rounded-md border-2 border-gray-200 p-4 shadow">
-                                {selectedDate ? (
-                                    <TimeSlots onSlotSelect={setSelectedSlot} selectedDate={selectedDate} durationInMinutes={productSelected?.estimate_time_in_minutes || 30} />
-                                ) :
-                                    <div className='w-full h-[290px] flex items-center justify-center'>
-                                        <p className='text-center text-xl text-base-content/50'>Primero selecciona una fecha</p>
+                            {/* Calendar & Time Slots */}
+                            <div className='flex flex-col lg:flex-row gap-8 lg:gap-12'>
+                                <section className='flex-[0.45] w-full'>
+                                    <h2 className='text-xl md:text-2xl font-bold flex items-center gap-2 mb-6 text-slate-900'>
+                                        <span className='text-primary text-2xl'><BiCalendar /></span> Choose Date
+                                    </h2>
+                                    <div className='w-full flex justify-center bg-white rounded-4xl p-6 shadow-sm border border-slate-100'>
+                                        <BookingCalendar disabled={!selectedEmployee} selected={selectedDate} onSelectDate={setSelectedDate} />
                                     </div>
-                                }
-                            </div>
-                        </div>
+                                </section>
 
-                        <div className='col-span-2 col-start-3 row-start-2 row-end-5 w-10/12 mx-auto flex flex-col items-center p-10'>
-                            <div className='w-full'>
-                                <Image className='w-full h-[300px] object-cover' src={productSelected?.image || ''} alt={productSelected?.name || ''} width={500} height={500} />
-                                <p className='mt-3 text-xl font-bold'>{productSelected?.name}</p>
-                                <p className='mt-2 text-lg'>{productSelected?.description}</p>
+                                <section className='flex-[0.55] w-full'>
+                                    <h2 className='text-xl md:text-2xl font-bold flex items-center gap-2 mb-6 text-slate-900'>
+                                        <span className='text-primary text-2xl'><BsClock /></span> Select Time
+                                    </h2>
+                                    <div className='w-full max-h-[500px] overflow-auto'>
+                                        {selectedDate ? (
+                                            <TimeSlots onSlotSelect={setSelectedSlot} selectedDate={selectedDate} durationInMinutes={productSelected?.estimate_time_in_minutes || 30} />
+                                        ) : (
+                                            <div className='w-full h-full flex items-center justify-center min-h-[300px] bg-white rounded-4xl border border-slate-100'>
+                                                <p className='text-center text-lg text-slate-400 font-medium'>Primero selecciona una fecha</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </section>
                             </div>
-                            <div className='w-full mt-5  border-t-2 border-gray-200'>
-                                <p className='text-xl font-bold'>Tiempo estimado</p>
-                                <p className='mt-2 text-lg'>{productSelected?.estimate_time_in_minutes} minutos</p>
-                                <p className='mt-2 text-lg'>Valor: ${Intl.NumberFormat('es-AR').format(calculatePrice(productSelected))}</p>
-                                <p className='mt-2 text-lg'>Fecha: {selectedDate?.toLocaleDateString()}</p>
-                                <p className='mt-2 text-lg'>Hora: {selectedSlot?.toLocaleTimeString()}</p>
-                                <p className='mt-2 text-lg'>Empleado: {selectedEmployee?.employee.name} {selectedEmployee?.employee.last_name}</p>
-                            </div>
-                            <button
-                                disabled={disable}
-                                onClick={handleNextCheckout}
-                                className='btn btn-primary w-full mt-10'
-                            >
-                                Continuar
-                            </button>
                         </div>
-                    </>
+                    </main>
                 )
             }
 
+            {/* Bottom Floating Summary Bar */}
+            {
+                productSelected && (
+                    <div className='fixed bottom-4 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-[90%] md:max-w-5xl bg-white border border-slate-100 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] rounded-2xl py-5 px-6 md:px-8 z-50'>
+                        <div className='flex flex-col md:flex-row justify-between items-center gap-4'>
+                            <div className='flex-1 w-full'>
+                                <p className='text-xs font-bold text-slate-400 tracking-widest uppercase mb-1'>Booking Summary</p>
+                                <div className='flex items-baseline gap-2'>
+                                    <span className='text-lg font-bold text-primary'>
+                                        {selectedEmployee ? `${selectedEmployee.employee.name}` : 'Stylist'}
+                                    </span>
+                                    <span className='text-slate-700 font-bold'>for {productSelected.name}</span>
+                                </div>
+                                <div className='text-sm text-slate-500 font-medium mt-1 flex items-center gap-2'>
+                                    <BiCalendar />
+                                    {selectedDate ? selectedDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) : 'No date'}
+                                    {selectedSlot ? ` @ ${selectedSlot.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}` : ''}
+                                </div>
+                            </div>
+
+                            <div className='flex items-center justify-between w-full md:w-auto gap-8'>
+                                <p className='text-2xl md:text-3xl font-extrabold text-slate-900'>
+                                    ${Intl.NumberFormat('en-US').format(calculatePrice(productSelected))}
+                                </p>
+                                <button
+                                    disabled={disable}
+                                    onClick={handleNextCheckout}
+                                    className='bg-[#f76d91] hover:bg-[#e45b7f] text-white font-bold py-3 px-8 rounded-full shadow-lg shadow-[#f76d91]/30 transition-all transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none disabled:transform-none flex items-center gap-2 whitespace-nowrap'
+                                >
+                                    Continue to Checkout
+                                    <BiRightArrow className='text-xl' />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
         </div>
     )
 }
