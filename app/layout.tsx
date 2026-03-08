@@ -6,6 +6,7 @@ import { Toast } from "@/module/common/components/toast";
 import { LayoutClient } from "./layoutClient";
 import { createClient } from "@/supabase/server";
 import '@radix-ui/themes/styles.css';
+import { getConfiguration } from "@/module/configurations/actions/get-configurations";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,6 +22,22 @@ export default async function RootLayout({
   const client = await createClient()
 
   const user = await client.auth.getUser()
+  const configuration = await getConfiguration();
+  if (!configuration.data) {
+    return (
+      <html lang="en">
+        <body
+          className="bg-base-100"
+          data-theme="cupcake"
+        >
+          <div className="w-screen h-screen flex items-center justify-center flex-col gap-2">
+            <h2 className="text-2xl font-bold">No se encontro la configuracion</h2>
+            <p>Por favor, contacta al administrador para realizar las configuraciones necesarias</p>
+          </div>
+        </body>
+      </html>
+    );
+  }
 
   return (
     <html lang="en">
@@ -28,12 +45,13 @@ export default async function RootLayout({
         className="bg-base-100"
         data-theme="cupcake"
       >
-          <LayoutClient
-            user={user.data.user}
-          >
-            <Toast />
-            {children}
-          </LayoutClient>
+        <LayoutClient
+          user={user.data.user}
+          configuration={configuration.data}
+        >
+          <Toast />
+          {children}
+        </LayoutClient>
       </body>
     </html>
   );

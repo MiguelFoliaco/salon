@@ -1,8 +1,10 @@
 'use server';
 
+import { TablesInsert } from "@/supabase/database.types";
 import { createClient } from "@/supabase/server";
+import { cache } from "react";
 
-export const getSchedulesByEmployeeAndDate = async ({ employeeId, dateIsoStr }: { employeeId: string, dateIsoStr: string }) => {
+export const getSchedulesByEmployeeAndDate = cache(async ({ employeeId, dateIsoStr }: { employeeId: string, dateIsoStr: string }) => {
     const client = await createClient();
 
     // Parse the date to get beginning and end of the local day
@@ -32,4 +34,18 @@ export const getSchedulesByEmployeeAndDate = async ({ employeeId, dateIsoStr }: 
     }
 
     return data;
+}
+)
+
+
+type ArgsInsert = {
+    entry: TablesInsert<'schedules'>
+}
+export const saveSchedule = async ({ entry }: ArgsInsert) => {
+
+    const client = await createClient();
+
+    const insert = await client.from('schedules').insert(entry).select('id').maybeSingle();
+
+    return insert;
 }

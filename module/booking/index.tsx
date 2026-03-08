@@ -15,10 +15,16 @@ import { calculatePrice } from '../utils/calculate-priece'
 import { TablesInsert } from '@/supabase/database.types'
 import { BiCalendar, BiRightArrow } from 'react-icons/bi'
 import { BsClock } from 'react-icons/bs'
+import { useBranches } from '../branches/context/use-branches'
+import { useProfile } from '../profile/hook/use-profile'
+import { ModalConfirmBooking } from './components/moda-confirm'
 
 export const BookingPage = () => {
     const [selectedDate, setSelectedDate] = useState<Date>();
+    const [schedule, setSchedule] = useState<TablesInsert<'schedules'> | null>(null)
     const { selectedEmployee } = useEmploye()
+    const { selectedBranch } = useBranches()
+    const { client } = useProfile()
     const { productSelected, setProductSelected } = useProduct()
     const [selectedSlot, setSelectedSlot] = useState<Date>();
     const params = useParams()
@@ -45,6 +51,14 @@ export const BookingPage = () => {
 
 
     const handleNextCheckout = () => {
+        if (!client) {
+            openToast("Debes registrate como cliente para continuar", "error")
+            return
+        }
+        if (!selectedBranch) {
+            openToast("Debes seleccionar una sucursal", "error")
+            return
+        }
         if (!productSelected) {
             openToast("Debes seleccionar un producto", "error")
             return
@@ -65,19 +79,19 @@ export const BookingPage = () => {
         }
 
         const shedule: TablesInsert<'schedules'> = {
-            branch_id: 'd52c8bfe-1082-4856-aea5-60ace15af816',
+            branch_id: selectedBranch.id,
             employee_id: selectedEmployee.employee.id,
             start_time: selectedSlot?.toISOString(),
-            end_time: selectedSlot?.toISOString(),
+            end_time: addMinutes(selectedSlot, productSelected?.estimate_time_in_minutes || 30).toISOString(),
             status: 'pending',
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
-            client_id: '50e8b971-e7b5-47f3-9f69-c47fb83f779a',
+            client_id: client?.id,
             product_id: productSelected?.id,
             notes: ''
 
         }
-        console.log(shedule)
+        setSchedule(shedule)
     }
 
     const disable = !selectedDate || !selectedEmployee
@@ -85,6 +99,15 @@ export const BookingPage = () => {
 
     return (
         <div className='w-full min-h-screen bg-slate-50 pb-40 font-sans'>
+            {
+                (schedule && productSelected && selectedEmployee) && (
+                    <ModalConfirmBooking
+                        schedule={schedule}
+                        service={productSelected}
+                        employe={selectedEmployee.employee}
+                    />
+                )
+            }
             <Header />
 
             {
@@ -115,7 +138,7 @@ export const BookingPage = () => {
 
                                 <section className='flex-[0.55] w-full'>
                                     <h2 className='text-xl md:text-2xl font-bold flex items-center gap-2 mb-6 text-slate-900'>
-                                        <span className='text-primary text-2xl'><BsClock /></span> Select Time
+                                        <span className='text-primary text-2xl'><BsClock /></span> Seleccionar hora
                                     </h2>
                                     <div className='w-full max-h-[500px] overflow-auto'>
                                         {selectedDate ? (
@@ -172,4 +195,11 @@ export const BookingPage = () => {
             }
         </div>
     )
+}
+
+
+const addMinutes = (date: Date, minutes: number) => {
+    const newDate = new Date(date);
+    newDate.setMinutes(newDate.getMinutes() + minutes);
+    return newDate;
 }

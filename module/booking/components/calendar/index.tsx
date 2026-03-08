@@ -48,7 +48,7 @@ export const BookingCalendar = ({ selected, onSelectDate, disabled }: BookingCal
 
     return (
         <DayPicker
-            className="w-full max-w-[400px]"
+            className="w-full max-w-[400px] mx-auto calendar"
             animate
             mode="single"
             selected={selected}
