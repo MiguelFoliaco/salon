@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { format, addMinutes, isBefore, startOfToday } from "date-fns";
-import { es } from "date-fns/locale";
 import { useEmploye } from "../../context/use-employe";
 import { getSchedulesByEmployeeAndDate } from "../../actions/schedule-by-employe";
+import { TbClockCheck, TbClockExclamation } from "react-icons/tb";
+import clsx from "clsx";
 
 type TimeSlotsProps = {
     selectedDate?: Date;
@@ -25,7 +26,7 @@ export const TimeSlots = ({ selectedDate, durationInMinutes, onSlotSelect }: Tim
 
     // Default duration to 30 min if 0 or not set
     const duration = durationInMinutes || 30;
-
+    console.log("CLIENTE: ", new Date())
     useEffect(() => {
         if (!selectedDate || !selectedEmployee) {
             setSchedules([]);
@@ -46,6 +47,7 @@ export const TimeSlots = ({ selectedDate, durationInMinutes, onSlotSelect }: Tim
                     employeeId: selectedEmployee.employee.id,
                     dateIsoStr: `${year}-${month}-${day}T00:00:00`
                 });
+                console.log('Programados', data)
                 setSchedules(data as Schedule[]);
             } catch (error) {
                 console.error("Error fetching schedules:", error);
@@ -117,22 +119,29 @@ export const TimeSlots = ({ selectedDate, durationInMinutes, onSlotSelect }: Tim
 
     const now = new Date();
 
-    const availableSlots = slots.filter(slot => {
+    const processedSlots: { isDisabled: boolean, slot: Date, passTime: boolean }[] = slots.map(slot => {
         // Prevent booking in the past
-        if (isBefore(slot, now)) return false;
+        let isPast = isBefore(slot, now);
+        let passTime = false;
+        let isDisabled = isPast;
 
-        const slotEnd = addMinutes(slot, duration);
+        if (isPast) {
+            passTime = true;
+        }
 
-        // Check collision with existing schedules
-        const hasCollision = schedules.some(schedule => {
-            const schedStart = new Date(schedule.start_time);
-            const schedEnd = new Date(schedule.end_time);
+        if (!isPast) {
+            const slotEnd = addMinutes(slot, duration);
+            // Check collision with existing schedules
+            isDisabled = schedules.some(schedule => {
+                const schedStart = new Date(schedule.start_time);
+                const schedEnd = new Date(schedule.end_time);
 
-            // True if slot overlaps with schedule
-            return (slot < schedEnd && slotEnd > schedStart);
-        });
+                // True if slot overlaps with schedule
+                return (slot < schedEnd && slotEnd > schedStart);
+            });
+        }
 
-        return !hasCollision;
+        return { slot, isDisabled, passTime };
     });
 
     return (
@@ -141,34 +150,70 @@ export const TimeSlots = ({ selectedDate, durationInMinutes, onSlotSelect }: Tim
                 <div className="flex justify-center grow p-4">
                     <span className="loading loading-spinner text-[#f76d91] loading-md"></span>
                 </div>
-            ) : availableSlots.length === 0 ? (
+            ) : processedSlots.length === 0 ? (
                 <div className="flex items-center justify-center p-8 border border-slate-100 rounded-4xl text-slate-400 font-medium bg-slate-50">
                     No hay horas disponibles para este día
                 </div>
             ) : (
                 <div className="grid grid-cols-2 gap-4 overflow-y-auto max-h-[400px] pr-2 pb-4 scrollbar-hide">
-                    {availableSlots.map((slot, i) => {
+                    {processedSlots.map(({ slot, isDisabled, passTime }, i) => {
                         const isSelected = selectedSlot?.getTime() === slot.getTime();
                         return (
                             <button
                                 key={i}
                                 onClick={() => {
+                                    if (isDisabled) return;
                                     setSelectedSlot(slot)
                                     onSlotSelect?.(slot)
                                 }}
-                                className={`
-                                    flex flex-col items-center justify-center py-3 px-2 rounded-4xl border transition-all shadow-sm
-                                    ${isSelected
-                                        ? 'border-[#f76d91] bg-pink-50/50'
-                                        : 'border-slate-100 bg-white hover:border-[#f76d91]/50 hover:shadow-md'
-                                    }
-                                `}
+                                disabled={isDisabled}
+                                className={
+                                    clsx(
+                                        " flex flex-col items-center justify-center py-3 px-2 rounded-4xl border transition-all shadow-sm",
+                                        isDisabled ?
+                                            (passTime ? 'border-red-200 bg-red-50 cursor-not-allowed' : 'border-info bg-info/10 cursor-not-allowed')
+                                            : isSelected
+                                                ? 'border-[#f76d91] bg-pink-50/50'
+                                                : 'border-slate-100 bg-white hover:border-[#f76d91]/50 hover:shadow-md'
+                                    )
+                                }
                             >
-                                <span className={`font-bold text-base ${isSelected ? 'text-[#f76d91]' : 'text-slate-900'}`}>
+                                <span className={
+                                    clsx(
+                                        "font-bold text-base flex items-center gap-2 ",
+                                        (isDisabled && passTime) && 'text-error',
+                                        (isDisabled && !passTime) && 'text-info',
+                                        isSelected && 'text-[#f76d91]',
+                                    )}>
                                     {format(slot, "hh:mm a")}
+                                    {
+                                        passTime && <TbClockExclamation className="text-error" />
+                                    }
+                                    {
+                                        (isDisabled && !passTime) && <TbClockCheck className="text-info" />
+                                    }
                                 </span>
-                                <span className={`text-xs mt-0.5 font-medium ${isSelected ? 'text-[#f76d91]' : 'text-slate-400'}`}>
-                                    {isSelected ? 'Selected' : 'Available'}
+                                <span className={
+                                    clsx(
+                                        "text-xs mt-0.5 font-medium",
+                                        passTime && 'text-error',
+                                        !passTime && isDisabled && 'text-info',
+                                        !isDisabled && !passTime && 'text-slate-400',
+                                        isSelected && 'text-[#f76d91]'
+                                    )
+                                }>
+                                    {
+                                        passTime && 'Fuera de horario'
+                                    }
+                                    {
+                                        (!passTime && isDisabled && !isSelected) && 'Ocupado'
+                                    }
+                                    {
+                                        (!isDisabled && !passTime && !isSelected) && 'Disponible'
+                                    }
+                                    {
+                                        isSelected && 'Seleccionado'
+                                    }
                                 </span>
                             </button>
                         );

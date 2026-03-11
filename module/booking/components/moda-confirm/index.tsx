@@ -20,18 +20,14 @@ interface BookingData {
     price: number
 }
 
-interface BookingConfirmationModalProps {
-    isOpen: boolean
-    onClose: () => void
-    onConfirm: () => void
-    bookingData: BookingData
-}
 
 export function ModalConfirmBooking({
     schedule,
     service,
-    employe
-}: { schedule: TablesInsert<'schedules'>, service: Product, employe: EmployeeByService['employee'] }) {
+    employe,
+    onSuccess,
+    onClose
+}: { schedule: TablesInsert<'schedules'>, onSuccess: () => void, onClose: () => void, service: Product, employe: EmployeeByService['employee'] }) {
 
     const { openToast } = useToast()
 
@@ -39,9 +35,10 @@ export function ModalConfirmBooking({
         const response = await saveSchedule({ entry: schedule })
         if (response.data?.id) {
             openToast("Se agendo la cita con exito, debe confirmar la cita en el panel del perfil", "success");
+            onSuccess()
             return;
         }
-        console.log(response)
+        console.error(response)
         openToast("Ocurrio un error en agendar la cita, por favor intentelo mas tarde", "error")
     }
     return (
@@ -50,7 +47,7 @@ export function ModalConfirmBooking({
                 {/* Header */}
                 <div className="bg-linear-to-r from-pink-500 to-pink-400 p-6 text-white relative">
                     <button
-                        // onClick={onClose}
+                        onClick={onClose}
                         className="btn btn-ghost btn-circle btn-sm absolute top-4 right-4 text-white hover:bg-white/20"
                     >
                         <FiX className="w-5 h-5" />
@@ -125,7 +122,7 @@ export function ModalConfirmBooking({
                     {/* Actions */}
                     <div className="flex gap-3">
                         <button
-                            // onClick={onClose}
+                            onClick={onClose}
                             className="btn btn-outline flex-1 rounded-xl border-gray-300 text-gray-600 hover:bg-gray-100 hover:border-gray-300"
                         >
                             Cancelar
@@ -141,7 +138,7 @@ export function ModalConfirmBooking({
                 </div>
             </div>
             <form method="dialog" className="modal-backdrop bg-black/50"
-            //onClick={onClose}
+                onClick={onClose}
             >
                 <button>close</button>
             </form>

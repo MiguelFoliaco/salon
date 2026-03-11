@@ -22,7 +22,7 @@ import { ModalConfirmBooking } from './components/moda-confirm'
 export const BookingPage = () => {
     const [selectedDate, setSelectedDate] = useState<Date>();
     const [schedule, setSchedule] = useState<TablesInsert<'schedules'> | null>(null)
-    const { selectedEmployee } = useEmploye()
+    const { selectedEmployee, setSelectedEmployee } = useEmploye()
     const { selectedBranch } = useBranches()
     const { client } = useProfile()
     const { productSelected, setProductSelected } = useProduct()
@@ -94,6 +94,15 @@ export const BookingPage = () => {
         setSchedule(shedule)
     }
 
+    const onSuccess = () => {
+        setSchedule(null)
+        setSelectedDate(undefined)
+        setSelectedSlot(undefined)
+        setSelectedEmployee(null)
+        setProductSelected(null)
+        router.push('/')
+    }
+
     const disable = !selectedDate || !selectedEmployee
 
 
@@ -105,6 +114,8 @@ export const BookingPage = () => {
                         schedule={schedule}
                         service={productSelected}
                         employe={selectedEmployee.employee}
+                        onSuccess={onSuccess}
+                        onClose={() => setSchedule(null)}
                     />
                 )
             }
