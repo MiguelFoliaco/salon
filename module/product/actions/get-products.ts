@@ -75,7 +75,6 @@ export const getProducts = cache(async (q: args) => {
     }
 
     const products = await request;
-    console.log(products)
     return products;
 });
 

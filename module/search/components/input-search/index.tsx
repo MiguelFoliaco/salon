@@ -40,7 +40,6 @@ export const SearchInput = () => {
     }, [query, loading, openToast, searchParams])
 
     const validateQuery = useCallback(() => {
-        console.log(searchParams.get('q'))
         if (searchParams.get('q')) {
             setQuery(searchParams.get('q') || '')
             search(false)
@@ -70,7 +69,6 @@ export const SearchInput = () => {
                         }
                     }}
                     onBlur={(e) => {
-                        console.log(e)
                         e.stopPropagation();
                         if (e.relatedTarget?.id === "ver-todos") return
                         setOpen(false)

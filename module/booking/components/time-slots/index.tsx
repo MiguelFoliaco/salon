@@ -26,7 +26,6 @@ export const TimeSlots = ({ selectedDate, durationInMinutes, onSlotSelect }: Tim
 
     // Default duration to 30 min if 0 or not set
     const duration = durationInMinutes || 30;
-    console.log("CLIENTE: ", new Date())
     useEffect(() => {
         if (!selectedDate || !selectedEmployee) {
             setSchedules([]);
@@ -47,7 +46,6 @@ export const TimeSlots = ({ selectedDate, durationInMinutes, onSlotSelect }: Tim
                     employeeId: selectedEmployee.employee.id,
                     dateIsoStr: `${year}-${month}-${day}T00:00:00`
                 });
-                console.log('Programados', data)
                 setSchedules(data as Schedule[]);
             } catch (error) {
                 console.error("Error fetching schedules:", error);
