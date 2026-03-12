@@ -104,6 +104,7 @@ export type Database = {
           lastname_2: string | null
           name: string
           phone: string
+          photo: string | null
           updated_at: string | null
         }
         Insert: {
@@ -121,6 +122,7 @@ export type Database = {
           lastname_2?: string | null
           name: string
           phone: string
+          photo?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -138,6 +140,7 @@ export type Database = {
           lastname_2?: string | null
           name?: string
           phone?: string
+          photo?: string | null
           updated_at?: string | null
         }
         Relationships: []
