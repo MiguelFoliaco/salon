@@ -349,6 +349,33 @@ export type Database = {
           },
         ]
       }
+      push_token_device_x_user: {
+        Row: {
+          auth_id: string
+          created_at: string | null
+          device_id: string
+          id: string
+          push_token: string
+          updated_at: string | null
+        }
+        Insert: {
+          auth_id: string
+          created_at?: string | null
+          device_id: string
+          id?: string
+          push_token: string
+          updated_at?: string | null
+        }
+        Update: {
+          auth_id?: string
+          created_at?: string | null
+          device_id?: string
+          id?: string
+          push_token?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       schedules: {
         Row: {
           branch_id: string

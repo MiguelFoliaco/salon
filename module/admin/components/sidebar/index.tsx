@@ -2,12 +2,12 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-    BsCalendarCheck, 
-    BsBoxSeam, 
+import {
+    BsCalendarCheck,
+    BsBoxSeam,
     BsPersonBadge,
-    BsPeople, 
-    BsCashCoin, 
+    BsPeople,
+    BsCashCoin,
     BsGear,
     BsBoxArrowLeft
 } from 'react-icons/bs';
@@ -25,6 +25,7 @@ export const SidebarAdmin = () => {
         { name: 'Clientes', path: '/admin/clients', icon: <BsPeople size={20} /> },
         { name: 'Impuestos', path: '/admin/taxes', icon: <BsCashCoin size={20} /> },
         { name: 'Configuración', path: '/admin/settings', icon: <BsGear size={20} /> },
+        { name: 'Notificaciones', path: '/admin/notifications', icon: <BsGear size={20} /> },
     ];
 
     const handleLogout = async () => {
@@ -38,21 +39,20 @@ export const SidebarAdmin = () => {
             {/* Desktop Sidebar */}
             <aside className="hidden md:flex flex-col w-64 bg-white border-r border-slate-200 h-full p-4 relative z-20 shadow-sm">
                 <div className="mb-8 px-4 py-2">
-                    <h1 className="text-2xl font-black text-slate-800 tracking-tight">Admin<span className="text-[#f76d91]">Panel</span></h1>
+                    <h1 className="text-2xl font-black text-slate-800 tracking-tight">Admin<span className="text-primary">Panel</span></h1>
                 </div>
-                
+
                 <nav className="flex-1 space-y-2">
                     {menuItems.map((item) => {
                         const isActive = pathname === item.path;
                         return (
-                            <Link 
-                                key={item.path} 
+                            <Link
+                                key={item.path}
                                 href={item.path}
-                                className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
-                                    isActive 
-                                    ? 'bg-[#f76d91] text-white shadow-md shadow-pink-200' 
+                                className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${isActive
+                                    ? 'bg-primary text-white shadow-md shadow-pink-200'
                                     : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
-                                }`}
+                                    }`}
                             >
                                 {item.icon}
                                 {item.name}
@@ -62,7 +62,7 @@ export const SidebarAdmin = () => {
                 </nav>
 
                 <div className="mt-auto pt-4 border-t border-slate-100">
-                    <button 
+                    <button
                         onClick={handleLogout}
                         className="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-slate-500 hover:bg-red-50 hover:text-red-500 w-full transition-all"
                     >
@@ -77,14 +77,13 @@ export const SidebarAdmin = () => {
                 {menuItems.map((item) => {
                     const isActive = pathname === item.path;
                     return (
-                        <Link 
-                            key={item.path} 
+                        <Link
+                            key={item.path}
                             href={item.path}
-                            className={`flex flex-col items-center justify-center p-2 rounded-lg ${
-                                isActive 
-                                ? 'text-[#f76d91]' 
+                            className={`flex flex-col items-center justify-center p-2 rounded-lg ${isActive
+                                ? 'text-[#f76d91]'
                                 : 'text-slate-400'
-                            }`}
+                                }`}
                         >
                             <div className={`${isActive ? 'bg-pink-50 p-2 rounded-full mb-1' : 'mb-1'}`}>
                                 {item.icon}
