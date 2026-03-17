@@ -7,12 +7,12 @@ import { useSearchParams } from 'next/navigation';
 import React, { useCallback, useEffect, useState } from 'react'
 import { BiSearch } from 'react-icons/bi'
 
-type Item = {
-    id: string;
-    name: string;
+type Props = {
+    onClick?: (item: Products[number]) => void;
+    showMore?: boolean;
 };
 
-export const SearchInput = () => {
+export const SearchInput = ({ onClick, showMore = true }: Props) => {
     const [query, setQuery] = useState('');
     const [loading, setLoading] = useState(false)
     const [open, setOpen] = useState(false);
@@ -68,11 +68,11 @@ export const SearchInput = () => {
                             setOpen(false)
                         }
                     }}
-                    onBlur={(e) => {
-                        e.stopPropagation();
-                        if (e.relatedTarget?.id === "ver-todos") return
-                        setOpen(false)
-                    }}
+                    // onBlur={(e) => {
+                    //     e.stopPropagation();
+                    //     if (e.relatedTarget?.id === "ver-todos") return
+                    //     setOpen(false)
+                    // }}
                     onKeyDown={e => {
                         if (e.key === 'Enter') {
                             search()
@@ -96,16 +96,24 @@ export const SearchInput = () => {
             {open && result.length > 0 && (
                 <ul className="menu bg-base-100 border border-base-300 rounded-box mt-1 shadow absolute w-full z-50">
                     {result.map(item => (
-                        <li key={item.id} onClick={() => setOpen(false)} className='w-full flex gap-2 items-center'>
+                        <li role='button' key={item.id} onClick={() => {
+                            onClick?.(item)
+                            console.log('Item', item)
+                            setOpen(false)
+                        }} className='w-full flex gap-2 items-center'>
                             <button className="text-left w-full">
                                 <Image src={item.image || ""} alt={item.name} width={50} height={50} />
                                 {item.name}
                             </button>
                         </li>
                     ))}
-                    <li className='w-full' >
-                        <Link href={`/search?q=${query}`} id="ver-todos" className="text-left w-full text-primary underline">Ver todos</Link>
-                    </li>
+                    {
+                        showMore && (
+                            <li className='w-full' >
+                                <Link href={`/search?q=${query}`} id="ver-todos" className="text-left w-full text-primary underline">Ver todos</Link>
+                            </li>
+                        )
+                    }
                 </ul>
             )}
 

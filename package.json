@@ -16,6 +16,7 @@
     "@radix-ui/themes": "^3.3.0",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.86.0",
+    "cloudinary": "^2.9.0",
     "clsx": "^2.1.1",
     "daisyui": "^5.5.5",
     "firebase-admin": "^13.7.0",

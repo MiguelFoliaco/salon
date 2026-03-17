@@ -351,7 +351,7 @@ export type Database = {
       }
       push_token_device_x_user: {
         Row: {
-          auth_id: string
+          auth_id: string | null
           created_at: string | null
           device_id: string
           id: string
@@ -359,7 +359,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          auth_id: string
+          auth_id?: string | null
           created_at?: string | null
           device_id: string
           id?: string
@@ -367,7 +367,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          auth_id?: string
+          auth_id?: string | null
           created_at?: string | null
           device_id?: string
           id?: string
@@ -563,7 +563,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_unique_clients: {
+        Args: never
+        Returns: {
+          auth_id: string
+          id: string
+        }[]
+      }
     }
     Enums: {
       client_type_enum: "natural" | "juridico"
