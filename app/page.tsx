@@ -6,16 +6,19 @@ import { ListProduct } from "@/module/product/component/products/list";
 
 export default function Home() {
   return (
-    <div>
+    <div className="min-h-screen flex flex-col bg-base-100">
       <Header />
-      <div className="mt-10" />
+      
+      {/* Hero Banner */}
       <Banner />
-      <div className="mt-10 w-10/12 mx-auto" >
-        <ProductTypes />
-      </div>
-      <div className="mt-10 w-10/12 mx-auto pb-10">
-        <ListProduct />
-      </div>
+      
+      {/* Services Section */}
+      <section className="py-12 lg:py-16">
+        <div className="max-w-7xl mx-auto px-4 lg:px-6">
+          <ProductTypes />
+          <ListProduct />
+        </div>
+      </section>
 
       <Footer />
     </div>

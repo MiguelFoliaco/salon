@@ -22,30 +22,53 @@ export const ListProduct = () => {
             localStorage.setItem('productSelected', JSON.stringify(product))
             return router.push(`/booking/${product.id}`)
         }
-
     }
 
+    const filteredProducts = products.filter(p => 
+        !typeSelected || p.type.name.includes(typeSelected.name)
+    );
+
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {
-                loading && (
-                    <span className="loading loading-spinner loading-lg" />
-                )
-            }
-            {
-                (products.length === 0 && !loading) && (
-                    <h2 className="text-center col-span-3 text-md font-medium border-b border-b-neutral/20 pb-2 mb-2 w-full">No products found</h2>
-                )
-            }
-            {
-                products.filter(p => p.type.name.includes(typeSelected?.name || '')).map((product) => (
-                    <ProductCard
-                        key={product.id}
-                        product={product}
-                        onAction={() => handleRedirect(product)}
-                    />
-                ))
-            }
+        <div>
+            {/* Loading State */}
+            {loading && (
+                <div className="flex items-center justify-center py-12">
+                    <span className="loading loading-spinner loading-lg text-primary" />
+                </div>
+            )}
+
+            {/* Empty State */}
+            {products.length === 0 && !loading && (
+                <div className="flex flex-col items-center justify-center py-16 text-center">
+                    <div className="w-16 h-16 rounded-full bg-base-200 flex items-center justify-center mb-4">
+                        <svg className="w-8 h-8 text-base-content/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                        </svg>
+                    </div>
+                    <h3 className="text-lg font-semibold text-base-content mb-1">No hay servicios disponibles</h3>
+                    <p className="text-sm text-base-content/60">Vuelve pronto para ver nuestros servicios</p>
+                </div>
+            )}
+
+            {/* Products Grid */}
+            {!loading && filteredProducts.length > 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    {filteredProducts.map((product) => (
+                        <ProductCard
+                            key={product.id}
+                            product={product}
+                            onAction={() => handleRedirect(product)}
+                        />
+                    ))}
+                </div>
+            )}
+
+            {/* No results for filter */}
+            {!loading && products.length > 0 && filteredProducts.length === 0 && (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                    <p className="text-base-content/60">No hay servicios en esta categoria</p>
+                </div>
+            )}
         </div>
     )
 }
