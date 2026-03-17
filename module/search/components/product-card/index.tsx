@@ -1,13 +1,22 @@
 import { Product } from "@/module/product/actions/get-products";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface ProductCardProps {
     product: Product;
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
+    const router = useRouter()
+
     return (
-        <div className="card bg-base-100 shadow-xl border border-base-200 h-full">
+        <div onClick={() => {
+            if (product.is_service) {
+                router.push(`/booking/${product.id}`)
+            } else {
+                router.push(`/product/${product.id}`)
+            }
+        }} className="hover:scale-95 transition-all cursor-pointer card bg-base-100 shadow-xl border border-base-200 h-full">
             <figure className="relative h-48 w-full bg-base-200">
                 {product.image ? (
                     <Image
@@ -38,7 +47,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
                     <div className="text-xl font-bold text-primary">
                         ${product.value?.toLocaleString()}
                     </div>
-                    {product.stock !== undefined && (
+                    {(product.stock && !product.is_service) && (
                         <div className={`text-xs font-semibold ${(product.stock || 0) > 0 ? "text-success" : "text-error"}`}>
                             {(product.stock || 0) > 0 ? `${product.stock} disponibles` : "Agotado"}
                         </div>

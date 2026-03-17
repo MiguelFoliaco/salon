@@ -1,5 +1,6 @@
 'use server';
 
+import { TablesInsert } from "@/supabase/database.types";
 import { createClient } from "@/supabase/server";
 
 
@@ -7,6 +8,9 @@ type ArgsSendNotification = {
     to: string | string[],
     title: string,
     body: string,
+    richContent?: {
+        image: string;
+    }
     data: Record<string, string>,
     sound?: string,
     badge?: number,
@@ -14,7 +18,7 @@ type ArgsSendNotification = {
     priority?: string,
     channelId?: string,
     mutableContent?: boolean,
-    categoryId: "event_actions"
+    categoryId: "product" | "event_actions" | "promotion" | "location" | "branch"
 }
 
 const defaultOptions: ArgsSendNotification = {
@@ -40,6 +44,14 @@ export const sendNotifications = async (args: ArgsSendNotification) => {
         ...defaultOptions,
         ...args
     }
+    const client = await createClient()
+    const { data: tokenDevice, error } = await client
+        .from("push_token_device_x_user")
+        .select("push_token");
+    if (!tokenDevice) return { error: "Ocurrio un error en base de datos, intentelo mas tarde: " + error };
+    if (tokenDevice.length === 0) return { error: "Aun no hay dispositivos para enviar notificaciones" };
+    options.to = tokenDevice.map((item) => item.push_token);
+
     const response = await fetch('https://exp.host/--/api/v2/push/send', {
         method: "POST",
         headers: {
@@ -58,4 +70,14 @@ export const getTokenDevice = async () => {
         .from("push_token_device_x_user")
         .select("push_token")
     return tokenDevice
+}
+
+
+export const saveNotificationDB = async (args: TablesInsert<'notification'>) => {
+    const client = await createClient()
+    const { data: notification, error } = await client
+        .from("notification")
+        .insert(args)
+    if (error) return { error: "Ocurrio un error en base de datos, intentelo mas tarde: " + error };
+    return notification
 }

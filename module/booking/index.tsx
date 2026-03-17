@@ -18,6 +18,7 @@ import { BsClock } from 'react-icons/bs'
 import { useBranches } from '../branches/context/use-branches'
 import { useProfile } from '../profile/hook/use-profile'
 import { ModalConfirmBooking } from './components/moda-confirm'
+import Image from 'next/image'
 
 export const BookingPage = () => {
     const [selectedDate, setSelectedDate] = useState<Date>();
@@ -32,11 +33,7 @@ export const BookingPage = () => {
     const router = useRouter()
 
     useEffect(() => {
-        const productSelected = localStorage.getItem('productSelected')
-        if (productSelected) {
-            setProductSelected(JSON.parse(productSelected))
-        }
-        else if (params.productId) {
+        if (params.productId) {
             getProductById(params.productId as string)
                 .then((product) => {
                     setProductSelected(product)
@@ -124,6 +121,9 @@ export const BookingPage = () => {
             {
                 productSelected && (
                     <main className='max-w-5xl mx-auto px-4 py-8 md:py-12'>
+                        <div className='w-full h-[200px] relative mb-2'>
+                            <Image src={productSelected.image!} alt={productSelected.name} fill className='object-cover' />
+                        </div>
                         {/* Header Details */}
                         <div className='mb-10'>
                             <h1 className='text-4xl md:text-5xl font-bold text-slate-900 mb-2 tracking-tight'>Book Your Glow</h1>

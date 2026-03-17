@@ -262,6 +262,42 @@ export type Database = {
         }
         Relationships: []
       }
+      notification: {
+        Row: {
+          created_at: string | null
+          data: Json | null
+          deleted_at: string | null
+          description: string
+          id: string
+          image: string | null
+          title: string
+          type: Database["public"]["Enums"]["notification_type"]
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          data?: Json | null
+          deleted_at?: string | null
+          description: string
+          id?: string
+          image?: string | null
+          title: string
+          type: Database["public"]["Enums"]["notification_type"]
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          data?: Json | null
+          deleted_at?: string | null
+          description?: string
+          id?: string
+          image?: string | null
+          title?: string
+          type?: Database["public"]["Enums"]["notification_type"]
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       product_types: {
         Row: {
           created_at: string | null
@@ -576,6 +612,12 @@ export type Database = {
       employe_gender_enum: "male" | "female" | "other"
       employe_rol_enum: "admin" | "cashier" | "stylist"
       identity_type_enum: "DNI" | "PASSPORT" | "ID"
+      notification_type:
+        | "PRODUCT"
+        | "SERVICE"
+        | "PROMOTION"
+        | "LOCATION"
+        | "BRANCH"
       payment_method_enum:
         | "cash"
         | "card"
@@ -717,6 +759,13 @@ export const Constants = {
       employe_gender_enum: ["male", "female", "other"],
       employe_rol_enum: ["admin", "cashier", "stylist"],
       identity_type_enum: ["DNI", "PASSPORT", "ID"],
+      notification_type: [
+        "PRODUCT",
+        "SERVICE",
+        "PROMOTION",
+        "LOCATION",
+        "BRANCH",
+      ],
       payment_method_enum: [
         "cash",
         "card",

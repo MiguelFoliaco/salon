@@ -16,22 +16,22 @@ const items: {
     stats: string
     color: string
 }[] = [
-        {
-            name: 'Ubicación',
-            value: 'location',
-            icon: CiGps,
-            description: 'Notifica a usuarios cercanos sobre ofertas locales',
-            stats: '1.2k usuarios activos',
-            color: 'bg-info/10 text-info border-info/20'
-        },
-        {
-            name: 'Promociones',
-            value: 'promotions',
-            icon: CiStar,
-            description: 'Envía ofertas especiales y descuentos exclusivos',
-            stats: '3.5k suscriptores',
-            color: 'bg-warning/10 text-warning border-warning/20'
-        },
+        // {
+        //     name: 'Ubicación',
+        //     value: 'location',
+        //     icon: CiGps,
+        //     description: 'Notifica a usuarios cercanos sobre ofertas locales',
+        //     stats: '1.2k usuarios activos',
+        //     color: 'bg-info/10 text-info border-info/20'
+        // },
+        // {
+        //     name: 'Promociones',
+        //     value: 'promotions',
+        //     icon: CiStar,
+        //     description: 'Envía ofertas especiales y descuentos exclusivos',
+        //     stats: '3.5k suscriptores',
+        //     color: 'bg-warning/10 text-warning border-warning/20'
+        // },
         {
             name: 'Productos',
             value: 'products',
@@ -40,14 +40,14 @@ const items: {
             stats: '890 notificaciones/mes',
             color: 'bg-primary/10 text-primary border-primary/20'
         },
-        {
-            name: 'Servicios',
-            value: 'services',
-            icon: BiBookHeart,
-            description: 'Comunica mejoras y nuevos servicios disponibles',
-            stats: '2.1k interacciones',
-            color: 'bg-success/10 text-success border-success/20'
-        }
+        // {
+        //     name: 'Servicios',
+        //     value: 'services',
+        //     icon: BiBookHeart,
+        //     description: 'Comunica mejoras y nuevos servicios disponibles',
+        //     stats: '2.1k interacciones',
+        //     color: 'bg-success/10 text-success border-success/20'
+        // }
     ]
 
 const recentActivity = [

@@ -26,7 +26,9 @@ export const Header = () => {
             </div>
 
             <div className="flex items-center gap-2 w-[50%]">
-                <SearchInput />
+                <SearchInput
+                    onClick={(product) => router.push(`/product/${product.id}`)}
+                />
             </div>
             <div>
                 {

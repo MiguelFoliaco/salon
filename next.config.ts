@@ -16,6 +16,12 @@ const nextConfig: NextConfig = {
         hostname: 'res.cloudinary.com',
         port: '',
         pathname: '/**',
+      },
+      {// (https://cdn.pixabay.com/photo/2019/10/17/09/34/hair-4556486_1280.jpg) 
+        protocol: 'https',
+        hostname: 'cdn.pixabay.com',
+        port: '',
+        pathname: '/**',
       }
     ]
   }

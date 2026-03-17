@@ -4,6 +4,7 @@ import { BsImage, BsX, BsUpload, BsSend } from 'react-icons/bs';
 import { BiPackage } from 'react-icons/bi';
 import { SearchInput } from '@/module/search/components/input-search';
 import { InputImage } from '@/module/common/components/input-image';
+import { saveNotificationDB, sendNotifications } from '../actions/send-notification';
 
 interface ModalProductNotificationProps {
     onClose: () => void;
@@ -67,8 +68,32 @@ export const ModalProductNotification = ({ onClose, onSubmit }: ModalProductNoti
         if (!validateForm()) return;
 
         setLoading(true);
-        await new Promise(resolve => setTimeout(resolve, 1500));
-
+        await sendNotifications({
+            body: formData.description,
+            categoryId: 'product',
+            to: 'all',
+            title: formData.title,
+            richContent: {
+                image: formData.image!,
+            },
+            data: {
+                type: 'PRODUCT',
+                productId: formData.productId,
+                image: formData.image!,
+                deepLink: `/product/${formData.productId}`
+            }
+        })
+        const saved = await saveNotificationDB({
+            description: formData.description,
+            title: formData.title,
+            image: formData.image!,
+            type: 'PRODUCT',
+            //@ts-ignore
+            data: formData,
+        })
+        console.log(saved)
+        // await new Promise(resolve => setTimeout(resolve, 1500));
+        console.log('Info: ', formData)
         onSubmit?.(formData);
         setLoading(false);
         handleClose();
@@ -140,7 +165,7 @@ export const ModalProductNotification = ({ onClose, onSubmit }: ModalProductNoti
                     <input
                         type="text"
                         placeholder="Ej: Nuevo sabor disponible"
-                        className={`input input-bordered w-full bg-base-100 ${errors.title ? 'input-error' : ''}`}
+                        className={`input input-bordered w-full rounded-sm bg-base-100 ${errors.title ? 'input-error' : ''}`}
                         value={formData.title}
                         onChange={(e) => {
                             setFormData(prev => ({ ...prev, title: e.target.value }));
@@ -165,7 +190,7 @@ export const ModalProductNotification = ({ onClose, onSubmit }: ModalProductNoti
                     </label>
                     <textarea
                         placeholder="Describe la notificación que recibirán los usuarios..."
-                        className={`textarea textarea-bordered w-full bg-base-100 min-h-[120px] resize-none ${errors.description ? 'textarea-error' : ''}`}
+                        className={`textarea textarea-bordered rounded-sm w-full bg-base-100 min-h-[120px] resize-none ${errors.description ? 'textarea-error' : ''}`}
                         value={formData.description}
                         onChange={(e) => {
                             setFormData(prev => ({ ...prev, description: e.target.value }));
