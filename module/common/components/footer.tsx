@@ -19,10 +19,10 @@ export function Footer() {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-              <input 
-                type="email" 
-                placeholder="Ingresa tu email" 
-                className="input input-bordered bg-neutral-focus/50 border-white/20 text-white placeholder:text-white/50 w-full sm:w-72"
+              <input
+                type="email"
+                placeholder="Ingresa tu email"
+                className="input input-bordered bg-neutral-focus/50 border-white/20  w-full sm:w-72"
               />
               <button className="btn btn-outline border-primary text-primary hover:bg-primary hover:text-primary-content hover:border-primary">
                 Suscribirse

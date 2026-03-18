@@ -7,20 +7,21 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import { BsScissors } from 'react-icons/bs';
 import { BiMapPin } from 'react-icons/bi';
+import { useEmploye } from '@/module/booking/context/use-employe';
 
 export const Header = () => {
 
-    const user = useUser(state => state.user)
+    const { user, clientAdminRole } = useUser(state => state)
     const router = useRouter()
     const { branches } = useBranches()
-    
+
     return (
         <header className="sticky top-0 z-30 bg-base-100 border-b border-base-200">
             <div className="max-w-7xl mx-auto px-4 lg:px-6">
                 <div className="flex items-center justify-between h-16 gap-4">
                     {/* Logo */}
-                    <div 
-                        className="flex items-center gap-2.5 cursor-pointer hover:opacity-80 transition-opacity shrink-0" 
+                    <div
+                        className="flex items-center gap-2.5 cursor-pointer hover:opacity-80 transition-opacity shrink-0"
                         onClick={() => router.push('/')}
                     >
                         <div className="flex items-center justify-center rounded-lg bg-primary p-2">
@@ -63,14 +64,17 @@ export const Header = () => {
                     <div className="flex items-center gap-2">
                         {user ? (
                             <>
-                                <Link 
-                                    className="btn btn-ghost btn-sm text-sm font-medium" 
-                                    href={'/admin'}
-                                >
-                                    Admin
-                                </Link>
-                                <Link 
-                                    className="btn btn-primary btn-sm text-sm font-medium" 
+                                {
+                                    clientAdminRole &&
+                                    <Link
+                                        className="btn btn-ghost btn-sm text-sm font-medium"
+                                        href={'/admin'}
+                                    >
+                                        Admin
+                                    </Link>
+                                }
+                                <Link
+                                    className="btn btn-primary btn-sm text-sm font-medium"
                                     href={'/profile'}
                                 >
                                     Perfil
@@ -78,14 +82,14 @@ export const Header = () => {
                             </>
                         ) : (
                             <>
-                                <Link 
-                                    className="btn btn-ghost btn-sm text-sm font-medium hidden sm:flex" 
+                                <Link
+                                    className="btn btn-ghost btn-sm text-sm font-medium hidden sm:flex"
                                     href={'/auth/login'}
                                 >
                                     Ingresar
                                 </Link>
-                                <Link 
-                                    className="btn btn-primary btn-sm text-sm font-medium" 
+                                <Link
+                                    className="btn btn-primary btn-sm text-sm font-medium"
                                     href={'/auth/signup'}
                                 >
                                     Registrarse

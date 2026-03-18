@@ -2,9 +2,11 @@
 import React from 'react'
 import { useProductTypes } from './hook';
 import { cn } from '@/utils/cn';
+import { useProduct } from '@/module/product/context/useProduct';
 
 export const ProductTypes = () => {
 
+    const { load } = useProduct()
     const { productTypes, selected, typeSelected } = useProductTypes()
 
     return (
@@ -17,30 +19,36 @@ export const ProductTypes = () => {
                     </h2>
                     <div className='w-8 h-1 bg-primary rounded-full hidden sm:block' />
                 </div>
-                
+
                 {/* Filter Pills */}
                 <div className='flex flex-wrap gap-2'>
                     {/* All Services Button */}
                     <button
-                        onClick={() => selected(null)}
+                        onClick={async () => {
+                            await load()
+                            selected(null)
+                        }}
                         className={cn(
                             'px-4 py-2 text-sm font-medium rounded-full transition-all duration-200',
-                            !typeSelected 
-                                ? 'bg-primary text-primary-content shadow-md' 
+                            !typeSelected
+                                ? 'bg-primary text-primary-content shadow-md'
                                 : 'bg-base-200 text-base-content hover:bg-base-300'
                         )}
                     >
                         Todos
                     </button>
-                    
+
                     {productTypes.map((productType) => (
                         <button
-                            onClick={() => selected(productType)} 
+                            onClick={async () => {
+                                await load(productType.id)
+                                selected(productType)
+                            }}
                             key={productType.id}
                             className={cn(
                                 'px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 flex items-center gap-2',
-                                typeSelected?.id === productType.id 
-                                    ? 'bg-primary text-primary-content shadow-md' 
+                                typeSelected?.id === productType.id
+                                    ? 'bg-primary text-primary-content shadow-md'
                                     : 'bg-base-200 text-base-content hover:bg-base-300'
                             )}
                         >

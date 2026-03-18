@@ -8,10 +8,10 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-base-100">
       <Header />
-      
+
       {/* Hero Banner */}
       <Banner />
-      
+
       {/* Services Section */}
       <section className="py-12 lg:py-16">
         <div className="max-w-7xl mx-auto px-4 lg:px-6">

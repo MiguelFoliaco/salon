@@ -22,7 +22,7 @@ export function ProductCard({ product, onAction }: ProductCardProps) {
       )}
     >
       {/* Image section */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-base-200">
+      <div className="relative aspect-4/3 w-full overflow-hidden bg-base-200">
         <Image
           src={product.image || ""}
           alt={product.name}
@@ -32,11 +32,11 @@ export function ProductCard({ product, onAction }: ProductCardProps) {
         />
 
         {/* Overlay gradient on hover */}
-        <div className="absolute inset-0 bg-gradient-to-t from-neutral/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        <div className="absolute inset-0 bg-linear-to-t from-neutral/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
         {/* Type badge */}
         <div className="absolute top-3 left-3 px-3 py-1 text-xs font-bold uppercase tracking-wide rounded-md bg-primary text-primary-content">
-          {product.type.name}
+          {product?.type?.name}
         </div>
       </div>
 
@@ -46,7 +46,7 @@ export function ProductCard({ product, onAction }: ProductCardProps) {
         <h3 className="text-base font-bold leading-snug text-base-content line-clamp-1">
           {product.name}
         </h3>
-        
+
         {/* Description */}
         <p className="text-sm leading-relaxed text-base-content/60 line-clamp-2 min-h-[40px]">
           {product.description}
@@ -63,7 +63,7 @@ export function ProductCard({ product, onAction }: ProductCardProps) {
 
           <button
             onClick={() => onAction?.(product)}
-            className="text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+            className="btn btn-primary btn-ghost btn-sm"
           >
             {product.is_service ? 'Programar' : 'Agregar'}
           </button>

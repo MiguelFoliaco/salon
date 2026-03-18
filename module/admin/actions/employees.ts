@@ -2,6 +2,7 @@
 
 import { createClient } from "@/supabase/server";
 import { revalidatePath } from "next/cache";
+import { cache } from "react";
 
 export async function getAdminEmployees(page = 1, limit = 10, search = '') {
     const supabase = await createClient();
@@ -127,3 +128,24 @@ export async function createEmployee(data: { auth_id: string, name: string, last
     revalidatePath('/admin/employees');
     return true;
 }
+
+export const getAdminEmployee = cache(async () => {
+    const supabase = await createClient();
+    const { data: authData } = await supabase.auth.getUser();
+    if (!authData.user) throw new Error("Unauthorized");
+    const { data, error } = await supabase
+        .from('employes')
+        .select('id, name, last_name, phone, rol, is_active, title, created_at')
+        .eq('auth_id', authData.user.id)
+        .eq('rol', 'admin')
+        .maybeSingle();
+
+    if (error) {
+        console.error("Error fetching admin employees:", error);
+        throw new Error("Could not fetch employees");
+    }
+
+    return data;
+})
+
+export type AdminEmployee = Awaited<ReturnType<typeof getAdminEmployee>>

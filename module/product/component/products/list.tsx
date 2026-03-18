@@ -9,7 +9,6 @@ import { useRouter } from 'next/navigation';
 export const ListProduct = () => {
 
     const { load, products, loading, setProductSelected } = useProduct();
-    const { typeSelected } = useProductTypes()
     const router = useRouter();
 
     useEffect(() => {
@@ -19,14 +18,9 @@ export const ListProduct = () => {
     const handleRedirect = (product: Product) => {
         if (product.is_service) {
             setProductSelected(product)
-            localStorage.setItem('productSelected', JSON.stringify(product))
             return router.push(`/booking/${product.id}`)
         }
     }
-
-    const filteredProducts = products.filter(p => 
-        !typeSelected || p.type.name.includes(typeSelected.name)
-    );
 
     return (
         <div>
@@ -51,9 +45,9 @@ export const ListProduct = () => {
             )}
 
             {/* Products Grid */}
-            {!loading && filteredProducts.length > 0 && (
+            {!loading && products.length > 0 && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                    {filteredProducts.map((product) => (
+                    {products.map((product) => (
                         <ProductCard
                             key={product.id}
                             product={product}
@@ -64,7 +58,7 @@ export const ListProduct = () => {
             )}
 
             {/* No results for filter */}
-            {!loading && products.length > 0 && filteredProducts.length === 0 && (
+            {!loading && products.length > 0 && products.length === 0 && (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                     <p className="text-base-content/60">No hay servicios en esta categoria</p>
                 </div>

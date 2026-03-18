@@ -63,7 +63,7 @@ export const getProducts = cache(async (q: args) => {
     }
 
     if (type) {
-        request = request.eq('product_types.id', type);
+        request = request.eq('product_type_id', type);
     }
 
     if (min !== undefined) {

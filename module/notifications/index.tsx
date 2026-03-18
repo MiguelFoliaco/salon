@@ -1,12 +1,13 @@
 'use client';
-import React, { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { IconType } from 'react-icons';
-import { BiBookHeart, BiBell } from 'react-icons/bi';
 import { BsCup, BsArrowRight, BsSend } from 'react-icons/bs';
-import { CiGps, CiStar } from 'react-icons/ci';
+import { format } from 'date-fns';
 import { HiOutlineUsers } from 'react-icons/hi';
 import { HeaderNotification } from './components/header';
 import { ModalProductNotification } from './components/modal-product-notification';
+import { BasicMetricsNotifications, getBasicMetricsNotifications, getRecentActivity, Notification } from './actions/get-notifications';
+import { truncate } from '@/utils/truncate';
 
 const items: {
     name: string
@@ -50,15 +51,12 @@ const items: {
         // }
     ]
 
-const recentActivity = [
-    { type: 'Promoción', message: 'Descuento 20% enviado', time: 'Hace 2h', users: 342 },
-    { type: 'Producto', message: 'Nuevo lanzamiento anunciado', time: 'Hace 5h', users: 1205 },
-    { type: 'Ubicación', message: 'Alerta zona centro', time: 'Ayer', users: 89 },
-]
-
 export const NotificationsPages = () => {
     const [selectedItem, setSelectedItem] = useState<string | null>(null);
+    const [recentNotifications, setRecentNotifications] = useState<Notification[]>([])
+    const [basicMetrics, setBasicMetrics] = useState<BasicMetricsNotifications | null>(null)
     const [loading, setLoading] = useState(false);
+    const [loadingRecent, setLoadingRecent] = useState(false);
     const [typeSelected, setTypeSelected] = useState<string>('')
 
     const handleSendNotification = async () => {
@@ -69,6 +67,23 @@ export const NotificationsPages = () => {
         setLoading(false);
         setSelectedItem(null);
     }
+
+    const getRecent = useCallback((async () => {
+        setLoadingRecent(true)
+        const basicMetrics = await getBasicMetricsNotifications()
+        const recent = await getRecentActivity()
+        if (recent) {
+            setRecentNotifications(recent)
+        }
+        if (basicMetrics) {
+            setBasicMetrics(basicMetrics)
+        }
+        setLoadingRecent(false)
+    }), [])
+
+    useEffect(() => {
+        getRecent()
+    }, [getRecent])
 
     return (
         <div className='min-h-screen bg-linear-to-br from-base-200 via-base-100 to-base-200 p-6 lg:p-8'>
@@ -185,12 +200,20 @@ export const NotificationsPages = () => {
                             <span className='w-2 h-2 rounded-full bg-success animate-pulse'></span>
                             Estadísticas Rápidas
                         </h3>
-                        <div className='grid grid-cols-2 gap-3'>
-                            <div className='bg-primary/5 rounded-box p-3 border border-primary/10'>
-                                <p className='text-2xl font-bold text-primary'>89%</p>
-                                <p className='text-xs text-base-content/60'>Tasa de apertura</p>
-                            </div>
-                            <div className='bg-success/5 rounded-box p-3 border border-success/10'>
+                        {
+                            basicMetrics && (
+                                <div className='grid grid-cols-2 gap-3'>
+                                    <div className='bg-primary/5 rounded-box p-3 border border-primary/10'>
+                                        <p className='text-2xl font-bold text-primary'>{basicMetrics.sendToday}</p>
+                                        <p className='text-xs text-base-content/60'>Enviadas hoy</p>
+                                    </div>
+                                </div>
+                            )
+                        }
+                        {
+                            loadingRecent && <div className='loading loading-spinner' />
+                        }
+                        {/* <div className='bg-success/5 rounded-box p-3 border border-success/10'>
                                 <p className='text-2xl font-bold text-success'>2.4k</p>
                                 <p className='text-xs text-base-content/60'>Enviadas hoy</p>
                             </div>
@@ -203,6 +226,7 @@ export const NotificationsPages = () => {
                                 <p className='text-xs text-base-content/60'>Programadas</p>
                             </div>
                         </div>
+                             */}
                     </div>
                     {
                         typeSelected !== '' && (
@@ -224,7 +248,14 @@ export const NotificationsPages = () => {
                     <div className='bg-base-100 rounded-box border-2 border-base-300 p-5 shadow-lg'>
                         <h3 className='font-semibold text-base-content mb-4'>Actividad Reciente</h3>
                         <div className='space-y-3'>
-                            {recentActivity.map((activity, idx) => (
+                            {
+                                loadingRecent && (
+                                    <div className='flex items-center justify-center'>
+                                        <span className="loading loading-spinner loading-xs"></span>
+                                    </div>
+                                )
+                            }
+                            {!loadingRecent && recentNotifications.map((activity, idx) => (
                                 <div
 
                                     key={idx}
@@ -233,16 +264,16 @@ export const NotificationsPages = () => {
                                     <div className='w-2 h-2 rounded-full bg-primary mt-2 shrink-0'></div>
                                     <div className='flex-1 min-w-0'>
                                         <p className='text-sm font-medium text-base-content truncate'>
-                                            {activity.message}
+                                            {truncate(activity.description, 20)}
                                         </p>
                                         <div className='flex items-center gap-2 mt-1'>
                                             <span className='badge badge-ghost badge-xs'>{activity.type}</span>
-                                            <span className='text-xs text-base-content/50'>{activity.time}</span>
+                                            <span className='text-xs text-base-content/50'>{format(activity.created_at!, 'dd/MM/yyyy')}</span>
                                         </div>
                                     </div>
                                     <div className='text-right shrink-0'>
-                                        <p className='text-sm font-semibold text-base-content'>{activity.users}</p>
-                                        <p className='text-xs text-base-content/50'>usuarios</p>
+                                        <p className='text-sm font-semibold text-base-content'>Categoria</p>
+                                        <p className='text-xs text-base-content/50'>{activity.type}</p>
                                     </div>
                                 </div>
                             ))}
