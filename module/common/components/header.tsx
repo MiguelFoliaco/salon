@@ -3,6 +3,8 @@ import { useUser } from '@/module/auth/context/useUser';
 import { SelectBranch } from '@/module/branches/components/select-branch';
 import { useBranches } from '@/module/branches/context/use-branches';
 import { SearchInput } from '@/module/search/components/input-search';
+import { CartButton } from '@/module/cart/components/cart-button';
+import { CartDrawer } from '@/module/cart/components/cart-drawer';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import { BsScissors } from 'react-icons/bs';
@@ -59,8 +61,9 @@ export const Header = () => {
                         </Link>
                     </nav>
 
-                    {/* Auth Buttons */}
+                    {/* Cart & Auth Buttons */}
                     <div className="flex items-center gap-2">
+                        <CartButton />
                         {user ? (
                             <>
                                 <Link 
@@ -95,6 +98,7 @@ export const Header = () => {
                     </div>
                 </div>
             </div>
+            <CartDrawer />
         </header>
     )
 }
