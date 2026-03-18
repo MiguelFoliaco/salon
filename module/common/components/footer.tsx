@@ -1,9 +1,40 @@
+'use client';
 import { BiMapPin, BiPhone, BiEnvelope, BiGlobe } from "react-icons/bi";
 import { BsScissors, BsFacebook, BsInstagram, BsTwitter } from "react-icons/bs";
 import Link from "next/link";
+import { useToast } from "../hook/useToast";
+import { sendEmail } from "@/utils/send-email";
+import { useState } from "react";
 
 
 export function Footer() {
+
+  const { openToast } = useToast()
+
+  const [formState, setFormState] = useState({ email: '', name: '', message: '' })
+  const [loading, setLoading] = useState(false)
+
+  const handleSubmit = async () => {
+    if (!formState.name.trim() || !formState.email.trim() || !formState.message.trim()) {
+      openToast('Por favor completa todos los campos.', 'error')
+      return
+    }
+    setLoading(true)
+    try {
+      await sendEmail({
+        email: formState.email,
+        name: formState.name,
+        message: formState.message,
+      })
+      openToast('¡Mensaje enviado! Te contactaremos pronto.', 'success')
+      setFormState({ email: '', name: '', message: '' })
+    } catch {
+      openToast('Ocurrió un error al enviar. Intenta de nuevo.', 'error')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <footer className="bg-base-100">
       {/* VIP Newsletter Section */}
@@ -12,20 +43,42 @@ export function Footer() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="max-w-md">
               <h3 className="text-2xl font-bold text-white mb-2">
-                Unete a nuestra lista VIP para ofertas exclusivas
+                ¿Quieres conocer mas sobre el producto?
               </h3>
               <p className="text-white/70 text-sm">
-                Suscribete para obtener acceso anticipado a reservas y 15% de descuento en tu primera visita.
+                Registra tu mail y te enviaremos mas información al respecto.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-              <input
-                type="email"
-                placeholder="Ingresa tu email"
-                className="input input-bordered bg-neutral-focus/50 border-white/20  w-full sm:w-72"
-              />
-              <button className="btn btn-outline border-primary text-primary hover:bg-primary hover:text-primary-content hover:border-primary">
-                Suscribirse
+              <div className="flex flex-col gap-2">
+                <input
+                  type="text"
+                  placeholder="Ingresa tu nombre"
+                  value={formState.name}
+                  onChange={(e) => setFormState((prev) => ({ ...prev, name: e.target.value }))}
+                  className="input rounded-sm  focus:border-primary bg-neutral-focus/50   w-full sm:w-72"
+                />
+                <input
+                  type="email"
+                  placeholder="Ingresa tu email"
+                  value={formState.email}
+                  onChange={(e) => setFormState((prev) => ({ ...prev, email: e.target.value }))}
+                  className="input rounded-sm  focus:border-primary bg-neutral-focus/50  w-full sm:w-72"
+                />
+                <textarea
+                  placeholder="¿En qué producto estás interesado?"
+                  value={formState.message}
+                  onChange={(e) => setFormState((prev) => ({ ...prev, message: e.target.value }))}
+                  rows={3}
+                  className="textarea rounded-sm focus:border-primary  bg-neutral-focus/50   w-full sm:w-72 resize-none"
+                />
+              </div>
+              <button
+                onClick={handleSubmit}
+                disabled={loading}
+                className="btn btn-outline border-primary text-primary hover:bg-primary hover:text-primary-content hover:border-primary self-end"
+              >
+                {loading ? <span className="loading loading-spinner loading-sm" /> : 'Enviar'}
               </button>
             </div>
           </div>
