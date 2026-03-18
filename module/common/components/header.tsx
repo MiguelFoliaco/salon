@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { BsScissors } from 'react-icons/bs';
 import { BiMapPin } from 'react-icons/bi';
 import { useEmploye } from '@/module/booking/context/use-employe';
+import { CartIcon } from '@/module/cart/components/CartIcon';
 
 export const Header = () => {
 
@@ -62,6 +63,7 @@ export const Header = () => {
 
                     {/* Auth Buttons */}
                     <div className="flex items-center gap-2">
+                        <CartIcon />
                         {user ? (
                             <>
                                 {

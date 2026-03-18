@@ -2,14 +2,21 @@
 import React, { useEffect } from 'react'
 import { ProductCard } from './product-card'
 import { useProduct } from '../../context/useProduct';
-import { useProductTypes } from '@/module/categories/components/product-types/hook';
 import { Product } from '../../actions/get-products';
 import { useRouter } from 'next/navigation';
+import { useCart } from '@/module/cart/context/useCart';
+import { useToast } from '@/module/common/hook/useToast';
 
 export const ListProduct = () => {
 
     const { load, products, loading, setProductSelected } = useProduct();
+    const { addItem, hydrate } = useCart();
+    const { openToast } = useToast();
     const router = useRouter();
+
+    useEffect(() => {
+        hydrate();
+    }, [hydrate])
 
     useEffect(() => {
         load()
@@ -20,6 +27,9 @@ export const ListProduct = () => {
             setProductSelected(product)
             return router.push(`/booking/${product.id}`)
         }
+        // Non-service → add to cart
+        addItem(product)
+        openToast(`"${product.name}" agregado al carrito`, 'success')
     }
 
     return (
