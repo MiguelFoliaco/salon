@@ -76,7 +76,7 @@ export function Footer() {
               <button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="btn btn-outline border-primary text-primary hover:bg-primary hover:text-primary-content hover:border-primary self-end"
+                className="btn btn-secondary self-end"
               >
                 {loading ? <span className="loading loading-spinner loading-sm" /> : 'Enviar'}
               </button>

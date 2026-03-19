@@ -146,7 +146,7 @@ export const TimeSlots = ({ selectedDate, durationInMinutes, onSlotSelect }: Tim
         <div className="flex flex-col h-full w-full">
             {loading ? (
                 <div className="flex justify-center grow p-4">
-                    <span className="loading loading-spinner text-[#f76d91] loading-md"></span>
+                    <span className="loading loading-spinner text-primary loading-md"></span>
                 </div>
             ) : processedSlots.length === 0 ? (
                 <div className="flex items-center justify-center p-8 border border-slate-100 rounded-4xl text-slate-400 font-medium bg-slate-50">
@@ -171,8 +171,8 @@ export const TimeSlots = ({ selectedDate, durationInMinutes, onSlotSelect }: Tim
                                         isDisabled ?
                                             (passTime ? 'border-red-200 bg-red-50 cursor-not-allowed' : 'border-info bg-info/10 cursor-not-allowed')
                                             : isSelected
-                                                ? 'border-[#f76d91] bg-pink-50/50'
-                                                : 'border-slate-100 bg-white hover:border-[#f76d91]/50 hover:shadow-md'
+                                                ? 'text-primary bg-pink-50/50'
+                                                : 'border-slate-100 bg-white hover:text-primary/50 hover:shadow-md'
                                     )
                                 }
                             >
@@ -181,7 +181,7 @@ export const TimeSlots = ({ selectedDate, durationInMinutes, onSlotSelect }: Tim
                                         "font-bold text-base flex items-center gap-2 ",
                                         (isDisabled && passTime) && 'text-error',
                                         (isDisabled && !passTime) && 'text-info',
-                                        isSelected && 'text-[#f76d91]',
+                                        isSelected && 'text-primary',
                                     )}>
                                     {format(slot, "hh:mm a")}
                                     {
@@ -197,7 +197,7 @@ export const TimeSlots = ({ selectedDate, durationInMinutes, onSlotSelect }: Tim
                                         passTime && 'text-error',
                                         !passTime && isDisabled && 'text-info',
                                         !isDisabled && !passTime && 'text-slate-400',
-                                        isSelected && 'text-[#f76d91]'
+                                        isSelected && 'text-primary'
                                     )
                                 }>
                                     {

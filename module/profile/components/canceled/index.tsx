@@ -15,18 +15,18 @@ export const Canceled = () => {
 
     const load = useCallback(async (isLoadMore: boolean = false, force: boolean = false) => {
         const currentPage = isLoadMore ? page + 1 : 1;
-        
+
         if (loading) return;
         setLoading(true);
 
         const response = await getSchedulesByUser({ page: currentPage, limit, filterType: 'cancelled' });
-        
+
         if (isLoadMore) {
             setSchedules(prev => [...prev, ...response.data]);
         } else {
             setSchedules(response.data);
         }
-        
+
         setPage(response.page);
         setTotalPages(response.totalPages);
         setLoading(false);
@@ -64,7 +64,7 @@ export const Canceled = () => {
                             </div>
                             <div>
                                 <h3 className="text-base font-bold text-slate-900 line-through decoration-slate-300">{exp.product.name}</h3>
-                                <p className="text-xs text-slate-500 font-medium mt-1">{format(exp.start_time, 'MMM d, yyyy')} &middot; <BsPencil className="inline text-[#f76d91]"/> {exp.employee.name}</p>
+                                <p className="text-xs text-slate-500 font-medium mt-1">{format(exp.start_time, 'MMM d, yyyy')} &middot; <BsPencil className="inline text-primary" /> {exp.employee.name}</p>
                             </div>
                         </div>
                         <div className="flex flex-col items-end gap-2 text-right">
@@ -79,14 +79,14 @@ export const Canceled = () => {
 
             {loading && (
                 <div className="flex justify-center my-8">
-                    <span className="loading loading-spinner text-[#f76d91] loading-md"></span>
+                    <span className="loading loading-spinner text-primary loading-md"></span>
                 </div>
             )}
 
             {page < totalPages && !loading && (
                 <div className="flex justify-center mt-6">
-                    <button 
-                        onClick={() => load(true)} 
+                    <button
+                        onClick={() => load(true)}
                         className="bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 font-semibold py-2.5 px-6 rounded-full transition-all text-sm shadow-sm"
                     >
                         Cargar más

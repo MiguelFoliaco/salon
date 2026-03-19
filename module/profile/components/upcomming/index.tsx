@@ -19,19 +19,19 @@ export const Uppcoming = () => {
 
     const load = useCallback(async (isLoadMore: boolean = false, force: boolean = false) => {
         const currentPage = isLoadMore ? page + 1 : 1;
-        
+
         // Removed localStorage cache logic temporarily to test pagination reliably
         if (loading) return;
         setLoading(true);
 
         const response = await getSchedulesByUser({ page: currentPage, limit, filterType: 'upcoming' });
-        
+
         if (isLoadMore) {
             setSchedules(prev => [...prev, ...response.data]);
         } else {
             setSchedules(response.data);
         }
-        
+
         setPage(response.page);
         setTotalPages(response.totalPages);
         setLoading(false);
@@ -64,7 +64,7 @@ export const Uppcoming = () => {
             {nextAppointment && (
                 <section>
                     <h2 className="text-lg font-bold flex items-center gap-2 mb-4 text-slate-900">
-                        <span className="text-[#f76d91] text-xl">!</span> Próxima cita
+                        <span className="text-primary text-xl">!</span> Próxima cita
                     </h2>
 
                     <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 flex flex-col md:flex-row">
@@ -77,7 +77,7 @@ export const Uppcoming = () => {
                                     <span className={`text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider ${nextAppointment.status === 'confirmed' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
                                         {nextAppointment.status}
                                     </span>
-                                    <span className="text-2xl font-extrabold text-[#f76d91]">
+                                    <span className="text-2xl font-extrabold text-primary">
                                         ${nextAppointment.product.value.toFixed(2)}
                                     </span>
                                 </div>
@@ -86,27 +86,27 @@ export const Uppcoming = () => {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mb-8 text-sm text-slate-600 font-medium">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[#f76d91]"><BsPencil /></div>
+                                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary"><BsPencil /></div>
                                         <span className="text-slate-400">Personal:</span> <span className="text-slate-900 font-bold">{nextAppointment.employee.name}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[#f76d91]"><BsCalendar /></div>
+                                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary"><BsCalendar /></div>
                                         <span className="text-slate-900 font-bold flex items-center gap-2">{format(nextAppointment.start_time, 'yyyy/MM/dd')}</span>
                                         <span className="text-slate-900 font-bold flex items-center gap-2">{format(nextAppointment.start_time, 'hh:mm a')} <BiRightArrow className="text-slate-300 mx-1" /> {format(nextAppointment.end_time, 'hh:mm a')}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[#f76d91]"><BsClockHistory /></div>
+                                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary"><BsClockHistory /></div>
                                         <span className="text-slate-400">Duración:</span> <span className="text-slate-900 font-bold">{nextAppointment.product.estimate_time_in_minutes} min</span>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-[#f76d91]"><BsGeoAlt /></div>
+                                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-primary"><BsGeoAlt /></div>
                                         <span className="text-slate-900 font-bold">{nextAppointment.branch.address}</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="flex gap-4 mt-auto">
-                                <button className="flex-1 bg-white hover:bg-slate-50 text-[#f76d91] border-2 border-slate-100 hover:border-[#f76d91]/30 font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                                <button className="flex-1 bg-white hover:bg-slate-50 text-primary border-2 border-slate-100 hover:text-primary/30 font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
                                     <BsXCircle /> Cancelar
                                 </button>
                             </div>
@@ -129,8 +129,8 @@ export const Uppcoming = () => {
                                     <div>
                                         <h3 className="text-lg font-bold text-slate-900 mb-1">{booking.product.name}</h3>
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-slate-500 font-medium mb-2">
-                                            <span className="flex items-center gap-1"><BsPencil className="text-[#f76d91]" /> {booking.employee.name}</span>
-                                            <span className="flex items-center gap-1"><BsCalendar className="text-[#f76d91]" /> {format(booking.start_time, 'yyyy/MM/dd hh:mm a')}</span>
+                                            <span className="flex items-center gap-1"><BsPencil className="text-primary" /> {booking.employee.name}</span>
+                                            <span className="flex items-center gap-1"><BsCalendar className="text-primary" /> {format(booking.start_time, 'yyyy/MM/dd hh:mm a')}</span>
                                         </div>
                                         <span className="bg-blue-50 text-blue-600 text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider inline-block">
                                             {booking.status}
@@ -138,7 +138,7 @@ export const Uppcoming = () => {
                                     </div>
                                 </div>
                                 <div className="flex md:flex-col items-center md:items-end justify-between w-full md:w-auto mt-4 md:mt-0 pt-4 md:pt-0 border-t md:border-t-0 border-slate-100">
-                                    <div className="text-xl font-extrabold text-[#f76d91] md:mb-4">${booking.product.value.toFixed(2)}</div>
+                                    <div className="text-xl font-extrabold text-primary md:mb-4">${booking.product.value.toFixed(2)}</div>
                                     <div className="flex items-center gap-3 text-slate-400">
                                         <button className="hover:text-red-500 transition-colors p-2 bg-slate-50 rounded-lg hover:bg-red-50" title="Cancelar"><BsXCircle size={18} /></button>
                                     </div>
@@ -151,14 +151,14 @@ export const Uppcoming = () => {
 
             {loading && (
                 <div className="flex justify-center my-8">
-                    <span className="loading loading-spinner text-[#f76d91] loading-md"></span>
+                    <span className="loading loading-spinner text-primary loading-md"></span>
                 </div>
             )}
 
             {page < totalPages && !loading && (
                 <div className="flex justify-center mt-6">
-                    <button 
-                        onClick={() => load(true)} 
+                    <button
+                        onClick={() => load(true)}
                         className="bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 font-semibold py-2.5 px-6 rounded-full transition-all text-sm shadow-sm"
                     >
                         Cargar más citas

@@ -81,7 +81,7 @@ export const SidebarAdmin = () => {
                             key={item.path}
                             href={item.path}
                             className={`flex flex-col items-center justify-center p-2 rounded-lg ${isActive
-                                ? 'text-[#f76d91]'
+                                ? 'text-primary'
                                 : 'text-slate-400'
                                 }`}
                         >

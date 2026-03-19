@@ -20,12 +20,12 @@ export const EmployesByService = ({ serviceId }: args) => {
     return (
         <div>
             <h2 className='text-xl md:text-2xl font-bold flex items-center gap-2 mb-6 text-slate-900'>
-                <span className='text-[#f76d91] text-2xl'><BsPeople /></span> Select Stylist
+                <span className='text-primary text-2xl'><BsPeople /></span> Select Stylist
             </h2>
 
             {loading && (
                 <div className='flex justify-center my-8'>
-                    <span className='loading loading-spinner text-[#f76d91] loading-lg' />
+                    <span className='loading loading-spinner text-primary loading-lg' />
                 </div>
             )}
 
@@ -38,7 +38,7 @@ export const EmployesByService = ({ serviceId }: args) => {
                             key={employee?.id}
                             className={`
                                 relative min-w-[280px] snap-start bg-white p-3 pr-6 rounded-full border-2 transition-all cursor-pointer flex items-center gap-4 shadow-sm
-                                ${isSelected ? 'border-[#f76d91] bg-pink-50/30' : 'border-slate-100 hover:border-[#f76d91]/50 hover:shadow-md'}
+                                ${isSelected ? 'text-primary bg-pink-50/30' : 'border-slate-100 hover:text-primary/50 hover:shadow-md'}
                             `}
                         >
                             <Image
@@ -50,13 +50,13 @@ export const EmployesByService = ({ serviceId }: args) => {
                             />
                             <div className='flex-1'>
                                 <h3 className='text-base font-bold text-slate-900'>{employee?.name}</h3>
-                                <p className={`text-sm font-medium ${isSelected ? 'text-[#f76d91]' : 'text-slate-500'}`}>
+                                <p className={`text-sm font-medium ${isSelected ? 'text-primary' : 'text-slate-500'}`}>
                                     {employee?.title || 'Stylist'}
                                 </p>
                             </div>
                             {isSelected && (
                                 <div className='absolute -top-2 -right-2 bg-white rounded-full p-0.5 shadow-sm'>
-                                    <BiCheckCircle className='text-[#f76d91] text-2xl' />
+                                    <BiCheckCircle className='text-primary text-2xl' />
                                 </div>
                             )}
                         </div>

@@ -51,7 +51,7 @@ export const AdminSettings = () => {
     if (loading) {
         return (
             <div className="flex justify-center items-center h-full p-20">
-                <span className="loading loading-spinner text-[#f76d91] loading-lg"></span>
+                <span className="loading loading-spinner text-primary loading-lg"></span>
             </div>
         );
     }
@@ -75,7 +75,7 @@ export const AdminSettings = () => {
                 {/* Empresa Info */}
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 overflow-hidden relative">
                     <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                        <BsBuilding className="text-[#f76d91]" /> Información de la Empresa
+                        <BsBuilding className="text-primary" /> Información de la Empresa
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -136,7 +136,7 @@ export const AdminSettings = () => {
                 {/* Billing Info */}
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 overflow-hidden relative">
                     <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                        <BsCardText className="text-[#f76d91]" /> Facturación y DIAN
+                        <BsCardText className="text-primary" /> Facturación y DIAN
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

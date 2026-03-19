@@ -82,7 +82,7 @@ export const AdminProducts = () => {
                     <h1 className="text-3xl font-bold text-slate-800">Productos y Servicios</h1>
                     <p className="text-slate-500 mt-1">Administra el catálogo ofrecido a tus clientes.</p>
                 </div>
-                <button 
+                <button
                     onClick={() => setIsModalOpen(true)}
                     className="btn btn-primary gap-2 text-white"
                 >
@@ -121,7 +121,7 @@ export const AdminProducts = () => {
                             {loading ? (
                                 <tr>
                                     <td colSpan={5} className="p-8 text-center text-slate-500">
-                                        <span className="loading loading-spinner text-[#f76d91]"></span>
+                                        <span className="loading loading-spinner text-primary"></span>
                                     </td>
                                 </tr>
                             ) : products.length === 0 ? (
@@ -203,7 +203,7 @@ export const AdminProducts = () => {
                             <h2 className="text-xl font-bold text-slate-800">Crear Nuevo {form.type === 'service' ? 'Servicio' : 'Producto'}</h2>
                             <button onClick={() => setIsModalOpen(false)} className="btn btn-sm btn-circle btn-ghost"><BsX size={20} /></button>
                         </div>
-                        
+
                         <form onSubmit={handleCreateSubmit} className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
                             <div className="grid grid-cols-2 gap-2 mb-2 bg-slate-100 p-1 rounded-lg">
                                 <button type="button" onClick={() => setForm({ ...form, type: 'service' })} className={`py-2 text-sm font-semibold rounded-md transition-all ${form.type === 'service' ? 'bg-white shadow text-purple-600' : 'text-slate-500 hover:text-slate-700'}`}>Servicio</button>
@@ -212,32 +212,32 @@ export const AdminProducts = () => {
 
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-1">Nombre</label>
-                                <input type="text" required className="input input-bordered w-full" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
+                                <input type="text" required className="input input-bordered w-full" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
                             </div>
-                            
+
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-1">Descripción</label>
-                                <textarea className="textarea textarea-bordered w-full h-20" value={form.description} onChange={e => setForm({...form, description: e.target.value})}></textarea>
+                                <textarea className="textarea textarea-bordered w-full h-20" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}></textarea>
                             </div>
-                            
+
                             <div className="flex gap-4">
                                 <div className="flex-1">
                                     <label className="block text-sm font-semibold text-slate-700 mb-1">Precio base</label>
-                                    <input type="number" required min="0" step="0.01" className="input input-bordered w-full" value={form.value} onChange={e => setForm({...form, value: e.target.value})} />
+                                    <input type="number" required min="0" step="0.01" className="input input-bordered w-full" value={form.value} onChange={e => setForm({ ...form, value: e.target.value })} />
                                 </div>
                                 {form.type === 'service' ? (
                                     <div className="flex-1">
                                         <label className="block text-sm font-semibold text-slate-700 mb-1">Tiempo est. (min)</label>
-                                        <input type="number" required min="1" className="input input-bordered w-full" value={form.estimate_time_in_minutes} onChange={e => setForm({...form, estimate_time_in_minutes: e.target.value})} />
+                                        <input type="number" required min="1" className="input input-bordered w-full" value={form.estimate_time_in_minutes} onChange={e => setForm({ ...form, estimate_time_in_minutes: e.target.value })} />
                                     </div>
                                 ) : (
                                     <div className="flex-1">
                                         <label className="block text-sm font-semibold text-slate-700 mb-1">Stock Inicial</label>
-                                        <input type="number" required min="0" className="input input-bordered w-full" value={form.stock} onChange={e => setForm({...form, stock: e.target.value})} />
+                                        <input type="number" required min="0" className="input input-bordered w-full" value={form.stock} onChange={e => setForm({ ...form, stock: e.target.value })} />
                                     </div>
                                 )}
                             </div>
-                            
+
                             <div className="pt-4 flex gap-3">
                                 <button type="button" className="btn btn-ghost flex-1" onClick={() => setIsModalOpen(false)}>Cancelar</button>
                                 <button type="submit" className="btn btn-primary flex-1 text-white" disabled={submitting}>

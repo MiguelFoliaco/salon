@@ -36,21 +36,21 @@ export const ProfileDetails = ({ clientData }: { clientData: Client }) => {
                 <div className="flex gap-8 border-b border-slate-200 mb-8 overflow-x-auto scrollbar-hide">
                     <button
                         onClick={() => setActiveTab('upcoming')}
-                        className={`pb-4 text-base font-bold flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap ${activeTab === 'upcoming' ? 'border-[#f76d91] text-[#f76d91]' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+                        className={`pb-4 text-base font-bold flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap ${activeTab === 'upcoming' ? 'text-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
                     >
                         <BsCalendarCheck size={18} />
                         Próximamente
                     </button>
                     <button
                         onClick={() => setActiveTab('past')}
-                        className={`pb-4 text-base font-bold flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap ${activeTab === 'past' ? 'border-[#f76d91] text-[#f76d91]' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+                        className={`pb-4 text-base font-bold flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap ${activeTab === 'past' ? 'text-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
                     >
                         <BsClockHistory size={18} />
                         Historia pasada
                     </button>
                     <button
                         onClick={() => setActiveTab('canceled')}
-                        className={`pb-4 text-base font-bold flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap ${activeTab === 'canceled' ? 'border-[#f76d91] text-[#f76d91]' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+                        className={`pb-4 text-base font-bold flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap ${activeTab === 'canceled' ? 'text-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
                     >
                         <BsXCircle size={18} />
                         Cancelado
@@ -70,13 +70,13 @@ export const ProfileDetails = ({ clientData }: { clientData: Client }) => {
                 )}
 
                 {/* Loyalty Program Banner */}
-                <div className="mt-12 bg-orange-50 rounded-3xl p-8 md:p-10 border border-orange-100 flex flex-col items-center text-center">
-                    <div className="w-12 h-12 bg-[#f76d91] text-white rounded-xl shadow-md flex items-center justify-center mb-6 -rotate-12">
+                <div className="mt-12 bg-success/20 rounded-3xl p-8 md:p-10 border border-success flex flex-col items-center text-center">
+                    <div className="w-12 h-12 bg-primary text-white rounded-xl shadow-md flex items-center justify-center mb-6 -rotate-12">
                         <BsTag size={24} />
                     </div>
                     <h2 className="text-2xl font-bold text-slate-900 mb-2 mt-2">Join our Loyalty Program</h2>
                     <p className="text-slate-600 mb-8 max-w-md">You're only 2 bookings away from a 15% discount on your next service!</p>
-                    <button className="bg-[#e45b2f] hover:bg-[#c44b1f] text-white font-bold py-3 px-8 rounded-full shadow-lg shadow-orange-500/30 transition-all transform hover:scale-105">
+                    <button className="btn btn-primary">
                         View My Rewards
                     </button>
                 </div>

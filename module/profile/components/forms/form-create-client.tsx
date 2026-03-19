@@ -73,7 +73,7 @@ export const FormCreateClient = () => {
                     {/* Name */}
                     <div className='space-y-2'>
                         <label className='text-sm font-bold text-slate-700 flex items-center gap-2'>
-                            <BsPerson className='text-[#f76d91]' /> Nombre
+                            <BsPerson className='text-primary' /> Nombre
                         </label>
                         <input
                             type='text'
@@ -81,7 +81,7 @@ export const FormCreateClient = () => {
                             required
                             value={formClient.name}
                             onChange={handleChange}
-                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#f76d91] focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
+                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:text-primary focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
                             placeholder='Ej: Laura'
                         />
                     </div>
@@ -89,7 +89,7 @@ export const FormCreateClient = () => {
                     {/* Lastname */}
                     <div className='space-y-2'>
                         <label className='text-sm font-bold text-slate-700 flex items-center gap-2'>
-                            <BsPerson className='text-[#f76d91]' /> Apellido
+                            <BsPerson className='text-primary' /> Apellido
                         </label>
                         <input
                             type='text'
@@ -97,14 +97,14 @@ export const FormCreateClient = () => {
                             required
                             value={formClient.lastname}
                             onChange={handleChange}
-                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#f76d91] focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
+                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:text-primary focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
                             placeholder='Ej: Rodríguez'
                         />
                     </div>
                     {/* Lastname 2*/}
                     <div className='space-y-2'>
                         <label className='text-sm font-bold text-slate-700 flex items-center gap-2'>
-                            <BsPerson className='text-[#f76d91]' /> Segundo Apellido
+                            <BsPerson className='text-primary' /> Segundo Apellido
                         </label>
                         <input
                             type='text'
@@ -112,7 +112,7 @@ export const FormCreateClient = () => {
                             required
                             value={formClient.lastname_2 || ''}
                             onChange={handleChange}
-                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#f76d91] focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
+                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:text-primary focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
                             placeholder='Ej: Rodríguez'
                         />
                     </div>
@@ -120,14 +120,14 @@ export const FormCreateClient = () => {
                     {/* Identity Type */}
                     <div className='space-y-2'>
                         <label className='text-sm font-bold text-slate-700 flex items-center gap-2'>
-                            <BsPersonVcard className='text-[#f76d91]' /> Tipo de Persona
+                            <BsPersonVcard className='text-primary' /> Tipo de Persona
                         </label>
                         <select
                             name='client_type'
                             required
                             value={formClient.client_type || 'natural'}
                             onChange={handleChange}
-                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#f76d91] focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white appearance-none'
+                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:text-primary focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white appearance-none'
                         >
                             <option value='natural'>Natural</option>
                             <option value='juridico'>Juridica</option>
@@ -137,14 +137,14 @@ export const FormCreateClient = () => {
                     {/* Identity Type */}
                     <div className='space-y-2'>
                         <label className='text-sm font-bold text-slate-700 flex items-center gap-2'>
-                            <BsPersonVcard className='text-[#f76d91]' /> Tipo de Documento
+                            <BsPersonVcard className='text-primary' /> Tipo de Documento
                         </label>
                         <select
                             name='identity_type'
                             required
                             value={formClient.identity_type}
                             onChange={handleChange}
-                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#f76d91] focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white appearance-none'
+                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:text-primary focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white appearance-none'
                         >
                             <option value='DNI'>DNI / Cédula</option>
                             <option value='PASSPORT'>Pasaporte</option>
@@ -155,7 +155,7 @@ export const FormCreateClient = () => {
                     {/* Identity Value */}
                     <div className='space-y-2'>
                         <label className='text-sm font-bold text-slate-700 flex items-center gap-2'>
-                            <BsPersonVcard className='text-[#f76d91]' /> Número de Documento
+                            <BsPersonVcard className='text-primary' /> Número de Documento
                         </label>
                         <input
                             type='text'
@@ -163,7 +163,7 @@ export const FormCreateClient = () => {
                             required
                             value={formClient.identity_value}
                             onChange={handleChange}
-                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#f76d91] focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
+                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:text-primary focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
                             placeholder='Ej: 1023456789'
                         />
                     </div>
@@ -171,10 +171,10 @@ export const FormCreateClient = () => {
                     {/* Phone */}
                     <div className='space-y-2 md:col-span-1'>
                         <label className='text-sm font-bold text-slate-700 flex items-center gap-2'>
-                            <BsTelephone className='text-[#f76d91]' /> Teléfono
+                            <BsTelephone className='text-primary' /> Teléfono
                         </label>
                         <div
-                            className='w-full px-4 py-2 flex rounded-xl border border-slate-200 focus:border-[#f76d91] focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
+                            className='w-full px-4 py-2 flex rounded-xl border border-slate-200 focus:text-primary focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
                         >
                             <select className='select w-fit select-sm border-none' defaultValue={'+57'}>
                                 <option value='+57'>+57 </option>
@@ -194,7 +194,7 @@ export const FormCreateClient = () => {
                     { /* Direction */}
                     <div className='space-y-2 md:col-span-1'>
                         <label className='text-sm font-bold text-slate-700 flex items-center gap-2'>
-                            <BsPersonVcard className='text-[#f76d91]' /> Correo electronico
+                            <BsPersonVcard className='text-primary' /> Correo electronico
                         </label>
                         <input
                             type='email'
@@ -202,14 +202,14 @@ export const FormCreateClient = () => {
                             required
                             value={formClient?.email || user?.email || ''}
                             onChange={handleChange}
-                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#f76d91] focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
+                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:text-primary focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
                             placeholder='Ej: Cartagena de indias, Villa grande'
                         />
                     </div>
                     { /* Direction */}
                     <div className='space-y-2 md:col-span-2'>
                         <label className='text-sm font-bold text-slate-700 flex items-center gap-2'>
-                            <BsPersonVcard className='text-[#f76d91]' /> Dirección
+                            <BsPersonVcard className='text-primary' /> Dirección
                         </label>
                         <input
                             type='text'
@@ -217,7 +217,7 @@ export const FormCreateClient = () => {
                             required
                             value={formClient?.address || ''}
                             onChange={handleChange}
-                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#f76d91] focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
+                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:text-primary focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
                             placeholder='Ej: Cartagena de indias, Villa grande'
                         />
                     </div>

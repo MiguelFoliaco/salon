@@ -15,18 +15,18 @@ export const Past = () => {
 
     const load = useCallback(async (isLoadMore: boolean = false, force: boolean = false) => {
         const currentPage = isLoadMore ? page + 1 : 1;
-        
+
         if (loading) return;
         setLoading(true);
 
         const response = await getSchedulesByUser({ page: currentPage, limit, filterType: 'past' });
-        
+
         if (isLoadMore) {
             setSchedules(prev => [...prev, ...response.data]);
         } else {
             setSchedules(response.data);
         }
-        
+
         setPage(response.page);
         setTotalPages(response.totalPages);
         setLoading(false);
@@ -64,8 +64,8 @@ export const Past = () => {
                             </div>
                             <div>
                                 <h3 className="text-base font-bold text-slate-900">{exp.product.name}</h3>
-                                <p className="text-xs text-slate-500 font-medium mt-1">{format(exp.start_time, 'MMM d, yyyy')} &middot; <BsPencil className="inline text-[#f76d91]"/> {exp.employee.name}</p>
-                                <button className="text-xs font-bold text-[#f76d91] mt-2 flex items-center gap-1 hover:underline">
+                                <p className="text-xs text-slate-500 font-medium mt-1">{format(exp.start_time, 'MMM d, yyyy')} &middot; <BsPencil className="inline text-primary" /> {exp.employee.name}</p>
+                                <button className="text-xs font-bold text-primary mt-2 flex items-center gap-1 hover:underline">
                                     <BsCalendarCheck /> {exp.status === 'completed' ? 'Agendar otra vez' : 'Ver detalles'}
                                 </button>
                             </div>
@@ -82,14 +82,14 @@ export const Past = () => {
 
             {loading && (
                 <div className="flex justify-center my-8">
-                    <span className="loading loading-spinner text-[#f76d91] loading-md"></span>
+                    <span className="loading loading-spinner text-primary loading-md"></span>
                 </div>
             )}
 
             {page < totalPages && !loading && (
                 <div className="flex justify-center mt-6">
-                    <button 
-                        onClick={() => load(true)} 
+                    <button
+                        onClick={() => load(true)}
                         className="bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 font-semibold py-2.5 px-6 rounded-full transition-all text-sm shadow-sm"
                     >
                         Cargar historial anterior

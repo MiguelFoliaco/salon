@@ -61,11 +61,11 @@ export const AdminEmployees = () => {
     };
 
     const selectUser = (user: any) => {
-        setForm(prev => ({ 
-            ...prev, 
-            auth_id: user.auth_id, 
-            name: user.name, 
-            last_name: user.lastname || '' 
+        setForm(prev => ({
+            ...prev,
+            auth_id: user.auth_id,
+            name: user.name,
+            last_name: user.lastname || ''
         }));
         setUserSearch(user.email);
         setSearchResults([]);
@@ -74,7 +74,7 @@ export const AdminEmployees = () => {
     const handleCreateSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!form.auth_id) return alert("Debes seleccionar un usuario válido o ingresar un auth_id");
-        
+
         setSubmitting(true);
         try {
             await createEmployee(form);
@@ -126,7 +126,7 @@ export const AdminEmployees = () => {
                     <h1 className="text-3xl font-bold text-slate-800">Empleados</h1>
                     <p className="text-slate-500 mt-1">Gestiona los permisos y accesos del personal al sistema.</p>
                 </div>
-                <button 
+                <button
                     onClick={() => setIsModalOpen(true)}
                     className="btn btn-primary gap-2 text-white"
                 >
@@ -163,7 +163,7 @@ export const AdminEmployees = () => {
                             {loading ? (
                                 <tr>
                                     <td colSpan={4} className="p-8 text-center text-slate-500">
-                                        <span className="loading loading-spinner text-[#f76d91]"></span>
+                                        <span className="loading loading-spinner text-primary"></span>
                                     </td>
                                 </tr>
                             ) : employees.length === 0 ? (
@@ -252,18 +252,18 @@ export const AdminEmployees = () => {
                             <h2 className="text-xl font-bold text-slate-800">Registrar Nuevo Empleado</h2>
                             <button onClick={() => setIsModalOpen(false)} className="btn btn-sm btn-circle btn-ghost"><BsX size={20} /></button>
                         </div>
-                        
+
                         <form onSubmit={handleCreateSubmit} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
-                            
+
                             {/* User Search Section */}
                             <div className="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 mb-6">
                                 <label className="block text-sm font-semibold text-indigo-900 mb-1">1. Buscar Usuario (Requerido)</label>
                                 <p className="text-xs text-indigo-600 mb-3">Busca un cliente registrado por email o nombre para vincular su cuenta.</p>
-                                
+
                                 <div className="relative">
-                                    <input 
-                                        type="text" 
-                                        placeholder="Escribe email o nombre..." 
+                                    <input
+                                        type="text"
+                                        placeholder="Escribe email o nombre..."
                                         className="input input-sm input-bordered w-full pl-8 border-indigo-200 focus:border-indigo-400"
                                         value={userSearch}
                                         onChange={(e) => handleClientSearch(e.target.value)}
@@ -275,7 +275,7 @@ export const AdminEmployees = () => {
                                 {searchResults.length > 0 && (
                                     <div className="mt-2 bg-white rounded-lg shadow-lg border border-slate-100 overflow-hidden absolute z-10 w-[calc(100%-2rem)] max-h-40 overflow-y-auto">
                                         {searchResults.map(u => (
-                                            <button 
+                                            <button
                                                 key={u.auth_id}
                                                 type="button"
                                                 onClick={() => selectUser(u)}
@@ -298,34 +298,34 @@ export const AdminEmployees = () => {
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-semibold text-slate-700 mb-1">Nombre</label>
-                                    <input type="text" required className="input input-bordered w-full" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
+                                    <input type="text" required className="input input-bordered w-full" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-slate-700 mb-1">Apellido</label>
-                                    <input type="text" required className="input input-bordered w-full" value={form.last_name} onChange={e => setForm({...form, last_name: e.target.value})} />
+                                    <input type="text" required className="input input-bordered w-full" value={form.last_name} onChange={e => setForm({ ...form, last_name: e.target.value })} />
                                 </div>
                             </div>
-                            
+
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-semibold text-slate-700 mb-1">Teléfono</label>
-                                    <input type="tel" className="input input-bordered w-full" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} />
+                                    <input type="tel" className="input input-bordered w-full" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-slate-700 mb-1">Título / Ocupación</label>
-                                    <input type="text" placeholder="Ej: Senior Barber" className="input input-bordered w-full" value={form.title} onChange={e => setForm({...form, title: e.target.value})} />
+                                    <input type="text" placeholder="Ej: Senior Barber" className="input input-bordered w-full" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
                                 </div>
                             </div>
-                            
+
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-1">Rol en el sistema</label>
-                                <select className="select select-bordered w-full font-medium" value={form.rol} onChange={e => setForm({...form, rol: e.target.value as any})}>
+                                <select className="select select-bordered w-full font-medium" value={form.rol} onChange={e => setForm({ ...form, rol: e.target.value as any })}>
                                     <option value="stylist">🌟 Stylist (Estilista/Barbero)</option>
                                     <option value="cashier">💰 Cashier (Cajero/Recepción)</option>
                                     <option value="admin">🔒 Admin (Administrador total)</option>
                                 </select>
                             </div>
-                            
+
                             <div className="pt-4 flex gap-3">
                                 <button type="button" className="btn btn-ghost flex-1" onClick={() => setIsModalOpen(false)}>Cancelar</button>
                                 <button type="submit" className="btn btn-primary flex-1 text-white" disabled={submitting || !form.auth_id}>

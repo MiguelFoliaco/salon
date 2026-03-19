@@ -27,7 +27,7 @@ export const ProductDetailPage = ({ product }: ProductPageProps) => {
     };
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-base-200 w-[80%] mx-auto">
             <Header />
 
             <main className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
@@ -37,12 +37,12 @@ export const ProductDetailPage = ({ product }: ProductPageProps) => {
                     <div className="lg:w-2/3 flex flex-col gap-4">
                         {/* Top row: 2 large images */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="relative aspect-3/4 bg-[#f5f5f5] w-full">
+                            <div className="relative aspect-3/4 bg-base-100 w-full">
                                 {product.image && (
                                     <Image src={product.image} alt={product.name} fill className="object-cover" />
                                 )}
                             </div>
-                            <div className="relative aspect-3/4 bg-[#f5f5f5] w-full hidden md:block">
+                            <div className="relative aspect-3/4 bg-base-100 w-full hidden md:block">
                                 {product.image && (
                                     <Image src={product.image} alt={product.name} fill className="object-cover" />
                                 )}
@@ -50,17 +50,17 @@ export const ProductDetailPage = ({ product }: ProductPageProps) => {
                         </div>
                         {/* Bottom row: 3 smaller images */}
                         <div className="grid-cols-3 gap-4 hidden md:grid">
-                            <div className="relative aspect-3/4 bg-[#f5f5f5] w-full">
+                            <div className="relative aspect-3/4 bg-base-100 w-full">
                                 {product.image && (
                                     <Image src={product.image} alt={product.name} fill className="object-cover object-top" />
                                 )}
                             </div>
-                            <div className="relative aspect-3/4 bg-[#f5f5f5] w-full">
+                            <div className="relative aspect-3/4 bg-base-100 w-full">
                                 {product.image && (
                                     <Image src={product.image} alt={product.name} fill className="object-cover object-center" />
                                 )}
                             </div>
-                            <div className="relative aspect-3/4 bg-[#f5f5f5] w-full">
+                            <div className="relative aspect-3/4 bg-base-100 w-full">
                                 {product.image && (
                                     <Image src={product.image} alt={product.name} fill className="object-cover object-bottom" />
                                 )}
@@ -100,8 +100,8 @@ export const ProductDetailPage = ({ product }: ProductPageProps) => {
                                         key={size}
                                         onClick={() => setSelectedSize(size)}
                                         className={`py-3 text-sm font-medium transition-all ${selectedSize === size
-                                                ? 'bg-slate-900 text-white border-slate-900'
-                                                : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                                            ? 'bg-slate-900 text-white border-slate-900'
+                                            : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
                                             }`}
                                     >
                                         {size}

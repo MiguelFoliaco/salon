@@ -74,7 +74,7 @@ export const AdminClients = () => {
                             {loading ? (
                                 <tr>
                                     <td colSpan={5} className="p-8 text-center text-slate-500">
-                                        <span className="loading loading-spinner text-[#f76d91]"></span>
+                                        <span className="loading loading-spinner text-primary"></span>
                                     </td>
                                 </tr>
                             ) : clients.length === 0 ? (

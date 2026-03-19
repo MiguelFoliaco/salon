@@ -44,7 +44,7 @@ export const Banner = ({ code = 'default', size }: Props) => {
                         <h1 className='text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-4'>
                             Revela Tu
                             <br />
-                            <span className='text-primary'>Mejor Version</span>
+                            <span className='text-secondary'>Mejor Version</span>
                         </h1>
 
                         {/* Description */}
