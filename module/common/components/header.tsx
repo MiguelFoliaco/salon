@@ -3,9 +3,10 @@ import { useUser } from '@/module/auth/context/useUser';
 import { SelectBranch } from '@/module/branches/components/select-branch';
 import { useBranches } from '@/module/branches/context/use-branches';
 import { SearchInput } from '@/module/search/components/input-search';
-import Link from 'next/link'
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { BsScissors } from 'react-icons/bs';
+import { useState } from 'react';
+import { BsScissors, BsList, BsXLg } from 'react-icons/bs';
 import { BiMapPin } from 'react-icons/bi';
 import { useEmploye } from '@/module/booking/context/use-employe';
 import { CartIcon } from '@/module/cart/components/CartIcon';
@@ -15,6 +16,7 @@ export const Header = () => {
     const { user, clientAdminRole } = useUser(state => state)
     const router = useRouter()
     const { branches } = useBranches()
+    const [menuOpen, setMenuOpen] = useState(false)
 
     return (
         <header className="sticky top-0 z-30 bg-base-100 border-b border-base-200">
@@ -40,7 +42,7 @@ export const Header = () => {
                         />
                     </div>
 
-                    {/* Branch Selector with Location Icon */}
+                    {/* Branch Selector with Location Icon — desktop only */}
                     {branches.length > 0 && (
                         <div className="hidden lg:flex items-center gap-1.5 text-sm">
                             <BiMapPin className="size-4 text-primary" />
@@ -48,7 +50,7 @@ export const Header = () => {
                         </div>
                     )}
 
-                    {/* Navigation Links */}
+                    {/* Nav Links — desktop only */}
                     <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-base-content/70">
                         <Link href="/search" className="hover:text-primary transition-colors">
                             Servicios
@@ -61,20 +63,20 @@ export const Header = () => {
                         </Link>
                     </nav>
 
-                    {/* Auth Buttons */}
+                    {/* Auth + Cart + Hamburger */}
                     <div className="flex items-center gap-2">
                         <CartIcon />
+
                         {user ? (
                             <>
-                                {
-                                    clientAdminRole &&
+                                {clientAdminRole && (
                                     <Link
-                                        className="btn btn-ghost btn-sm text-sm font-medium"
+                                        className="btn btn-ghost btn-sm text-sm font-medium hidden sm:flex"
                                         href={'/admin'}
                                     >
                                         Admin
                                     </Link>
-                                }
+                                )}
                                 <Link
                                     className="btn btn-primary btn-sm text-sm font-medium"
                                     href={'/profile'}
@@ -91,16 +93,93 @@ export const Header = () => {
                                     Ingresar
                                 </Link>
                                 <Link
-                                    className="btn btn-primary btn-sm text-sm font-medium"
+                                    className="btn btn-primary btn-sm text-sm font-medium hidden sm:flex"
                                     href={'/auth/signup'}
                                 >
                                     Registrarse
                                 </Link>
                             </>
                         )}
+
+                        {/* Hamburger — mobile only */}
+                        <button
+                            className="btn btn-ghost btn-sm lg:hidden"
+                            onClick={() => setMenuOpen((v) => !v)}
+                            aria-label="Abrir menú"
+                        >
+                            {menuOpen ? <BsXLg className="size-5" /> : <BsList className="size-5" />}
+                        </button>
                     </div>
                 </div>
+
+                {/* Mobile search bar */}
+                <div className="pb-3 md:hidden">
+                    <SearchInput
+                        onClick={(product) => {
+                            router.push(`/product/${product.id}`)
+                            setMenuOpen(false)
+                        }}
+                    />
+                </div>
             </div>
+
+            {/* Mobile Dropdown Menu */}
+            {menuOpen && (
+                <div className="lg:hidden border-t border-base-200 bg-base-100 px-4 py-4 flex flex-col gap-4 animate-in slide-in-from-top-2 duration-200">
+                    {/* Nav links */}
+                    <nav className="flex flex-col gap-1">
+                        <Link
+                            href="/search"
+                            className="py-2 px-3 rounded-lg text-sm font-medium text-base-content/70 hover:text-primary hover:bg-base-200 transition-colors"
+                            onClick={() => setMenuOpen(false)}
+                        >
+                            Servicios
+                        </Link>
+                        <Link
+                            href="/search"
+                            className="py-2 px-3 rounded-lg text-sm font-medium text-base-content/70 hover:text-primary hover:bg-base-200 transition-colors"
+                            onClick={() => setMenuOpen(false)}
+                        >
+                            Estilistas
+                        </Link>
+                        <Link
+                            href="/search"
+                            className="py-2 px-3 rounded-lg text-sm font-medium text-base-content/70 hover:text-primary hover:bg-base-200 transition-colors"
+                            onClick={() => setMenuOpen(false)}
+                        >
+                            Precios
+                        </Link>
+                    </nav>
+
+                    {/* Branch selector */}
+                    {branches.length > 0 && (
+                        <div className="flex items-center gap-1.5 text-sm px-3">
+                            <BiMapPin className="size-4 text-primary shrink-0" />
+                            <SelectBranch />
+                        </div>
+                    )}
+
+                    {/* Auth buttons for mobile */}
+                    {!user && (
+                        <div className="flex flex-col gap-2 pt-2 border-t border-base-200">
+                            <Link
+                                className="btn btn-ghost btn-sm w-full"
+                                href={'/auth/login'}
+                                onClick={() => setMenuOpen(false)}
+                            >
+                                Ingresar
+                            </Link>
+                            <Link
+                                className="btn btn-primary btn-sm w-full"
+                                href={'/auth/signup'}
+                                onClick={() => setMenuOpen(false)}
+                            >
+                                Registrarse
+                            </Link>
+                        </div>
+                    )}
+                </div>
+            )}
         </header>
     )
 }

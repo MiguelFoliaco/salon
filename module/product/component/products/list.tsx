@@ -10,9 +10,9 @@ import { useToast } from '@/module/common/hook/useToast';
 export const ListProduct = () => {
 
     const { load, products, loading, setProductSelected } = useProduct();
-    const { addItem, hydrate } = useCart();
-    const { openToast } = useToast();
+    const { hydrate, addItem } = useCart()
     const router = useRouter();
+    const { openToast } = useToast()
 
     useEffect(() => {
         hydrate();
@@ -27,9 +27,8 @@ export const ListProduct = () => {
             setProductSelected(product)
             return router.push(`/booking/${product.id}`)
         }
-        // Non-service → add to cart
-        addItem(product)
-        openToast(`"${product.name}" agregado al carrito`, 'success')
+        router.push(`/product/${product.id}`)
+
     }
 
     return (
@@ -62,6 +61,10 @@ export const ListProduct = () => {
                             key={product.id}
                             product={product}
                             onAction={() => handleRedirect(product)}
+                            onAddToCard={(product) => {
+                                addItem(product)
+                                openToast("Producto agregado al carrito", "success")
+                            }}
                         />
                     ))}
                 </div>

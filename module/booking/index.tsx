@@ -104,7 +104,7 @@ export const BookingPage = () => {
 
 
     return (
-        <div className='w-full min-h-screen bg-slate-50 pb-40 font-sans'>
+        <div className='w-full min-h-screen bg-slate-50 md:pb-40 pb-80 font-sans'>
             {
                 (schedule && productSelected && selectedEmployee) && (
                     <ModalConfirmBooking
@@ -151,7 +151,7 @@ export const BookingPage = () => {
                                     <h2 className='text-xl md:text-2xl font-bold flex items-center gap-2 mb-6 text-slate-900'>
                                         <span className='text-primary text-2xl'><BsClock /></span> Seleccionar hora
                                     </h2>
-                                    <div className='w-full max-h-[500px] overflow-auto'>
+                                    <div className='w-full lg:max-h-[500px] max-h-[700px] overflow-auto py-5'>
                                         {selectedDate ? (
                                             <TimeSlots onSlotSelect={setSelectedSlot} selectedDate={selectedDate} durationInMinutes={productSelected?.estimate_time_in_minutes || 30} />
                                         ) : (
@@ -187,14 +187,14 @@ export const BookingPage = () => {
                                 </div>
                             </div>
 
-                            <div className='flex items-center justify-between w-full md:w-auto gap-8'>
+                            <div className='flex flex-col sm:flex-row items-center justify-between w-full md:w-auto gap-8'>
                                 <p className='text-2xl md:text-3xl font-extrabold text-slate-900'>
                                     ${Intl.NumberFormat('en-US').format(calculatePrice(productSelected))}
                                 </p>
                                 <button
                                     disabled={disable}
                                     onClick={handleNextCheckout}
-                                    className='bg-[#f76d91] hover:bg-[#e45b7f] text-white font-bold py-3 px-8 rounded-full shadow-lg shadow-[#f76d91]/30 transition-all transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none disabled:transform-none flex items-center gap-2 whitespace-nowrap'
+                                    className='bg-primary hover:bg-primary/80 text-white font-bold py-3 px-8 rounded-full shadow-lg shadow-primary/30 transition-all transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none disabled:transform-none flex items-center gap-2 whitespace-nowrap'
                                 >
                                     Continue to Checkout
                                     <BiRightArrow className='text-xl' />

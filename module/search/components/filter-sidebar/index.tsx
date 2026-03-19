@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { ProductType } from '@/module/search/actions/get-product-types';
+import { BsXLg } from 'react-icons/bs';
 
 export interface FilterState {
     type?: string;
@@ -13,24 +14,34 @@ interface FilterSidebarProps {
     productTypes: ProductType[];
     filters: FilterState;
     onChange: (filters: FilterState) => void;
+    onClose?: () => void;
 }
 
-export const FilterSidebar = ({ productTypes, filters, onChange }: FilterSidebarProps) => {
+export const FilterSidebar = ({ productTypes, filters, onChange, onClose }: FilterSidebarProps) => {
     const [localFilters, setLocalFilters] = useState<FilterState>(filters);
 
     const handleApply = () => {
         onChange(localFilters);
+        onClose?.();
     };
 
     const handleClear = () => {
         const empty = { type: undefined, minPrice: undefined, maxPrice: undefined };
         setLocalFilters(empty);
         onChange(empty);
+        onClose?.();
     };
 
     return (
-        <div className="bg-base-100 border border-base-200 rounded-box p-4 sticky top-4 h-fit w-full lg:w-64 flex-shrink-0">
-            <h3 className="font-bold text-lg mb-4">Filtros</h3>
+        <div className="bg-base-100 border border-base-200 rounded-box p-4 h-fit w-full lg:w-64 shrink-0 lg:sticky lg:top-4">
+            <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-lg">Filtros</h3>
+                {onClose && (
+                    <button onClick={onClose} className="btn btn-ghost btn-sm btn-circle" aria-label="Cerrar filtros">
+                        <BsXLg className="size-4" />
+                    </button>
+                )}
+            </div>
 
             {/* Categoria */}
             <div className="form-control mb-4">

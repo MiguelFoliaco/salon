@@ -3,15 +3,20 @@
 import Image from "next/image"
 import { cn } from "@/utils/cn"
 import { Product } from "../../actions/get-products"
+import clsx from "clsx"
 
 
 
 interface ProductCardProps {
   product: Product
   onAction?: (product: Product) => void
+  /*
+  * this is only for products are not services
+  */
+  onAddToCard?: (product: Product) => void
 }
 
-export function ProductCard({ product, onAction }: ProductCardProps) {
+export function ProductCard({ product, onAction, onAddToCard }: ProductCardProps) {
 
   return (
     <article
@@ -60,13 +65,24 @@ export function ProductCard({ product, onAction }: ProductCardProps) {
             </span>
             <span className="text-xs font-medium text-base-content/50">COP</span>
           </div>
-
-          <button
-            onClick={() => onAction?.(product)}
-            className="btn btn-primary btn-ghost btn-sm"
-          >
-            {product.is_service ? 'Programar' : 'Agregar'}
-          </button>
+          <div className="join">
+            {
+              !product.is_service && <button onClick={() => onAction?.(product)} className="btn btn-primary btn-sm join-item shadow-none">
+                Ver
+              </button>
+            }
+            <button
+              onClick={() => product.is_service ? onAction?.(product) : onAddToCard?.(product)}
+              className={
+                clsx(
+                  "btn btn-primary btn-outline btn-sm shadow-none",
+                  !product.is_service && 'join-item'
+                )
+              }
+            >
+              {product.is_service ? 'Programar' : 'Agregar'}
+            </button>
+          </div>
         </div>
       </div>
     </article>
