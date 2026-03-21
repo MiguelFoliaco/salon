@@ -8,6 +8,7 @@ import { Footer } from '@/module/common/components/footer';
 import { useCart } from '@/module/cart/context/useCart';
 import { BiShoppingBag, BiChevronDown, BiCar, BiStore } from 'react-icons/bi';
 import { useToast } from '@/module/common/hook/useToast';
+import { useBranches } from '@/module/branches/context/use-branches';
 
 interface ProductPageProps {
     product: Product;
@@ -16,15 +17,16 @@ interface ProductPageProps {
 export const ProductDetailPage = ({ product }: ProductPageProps) => {
     const { addItem } = useCart();
     const { openToast } = useToast();
-    const [selectedSize, setSelectedSize] = useState<string>('M');
-
+    const { selectedBranch } = useBranches()
     // Placeholder sizes since the DB doesn't have sizes yet
-    const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    // const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
     const handleAddToCart = () => {
         addItem(product);
         openToast('Producto agregado al carrito', 'success');
     };
+
+    const stock = product.inventory.find(item => item.branch_id === selectedBranch?.id)?.stock || 0;
 
     return (
         <div className="min-h-screen bg-base-200 w-[80%] mx-auto">
@@ -90,34 +92,20 @@ export const ProductDetailPage = ({ product }: ProductPageProps) => {
                         <div className="mb-10">
                             <div className="flex justify-between items-center mb-4">
                                 <span className="text-sm font-bold text-slate-900 tracking-wide">SIZE</span>
-                                <button className="text-xs text-slate-500 underline underline-offset-4 hover:text-slate-900 transition-colors">
-                                    VIEW SIZE GUIDE
-                                </button>
                             </div>
-                            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                                {sizes.map(size => (
-                                    <button
-                                        key={size}
-                                        onClick={() => setSelectedSize(size)}
-                                        className={`py-3 text-sm font-medium transition-all ${selectedSize === size
-                                            ? 'bg-slate-900 text-white border-slate-900'
-                                            : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                                            }`}
-                                    >
-                                        {size}
-                                    </button>
-                                ))}
-                            </div>
+                            <p>
+                                Stock: {product.inventory[0]?.stock}
+                            </p>
                         </div>
 
                         {/* Add to Bag Button */}
                         <button
                             onClick={handleAddToCart}
                             className="bg-slate-900 hover:bg-slate-800 text-white w-full py-4 flex items-center justify-center gap-3 transition-colors mb-6 text-sm font-bold tracking-wider uppercase disabled:opacity-50"
-                            disabled={!product.stock && !product.is_service}
+                            disabled={!stock && !product.is_service}
                         >
                             <BiShoppingBag className="text-lg" />
-                            {(!product.stock && !product.is_service) ? 'Agotado' : 'Add to Bag'}
+                            {(!stock && !product.is_service) ? 'Agotado' : 'Add to Bag'}
                         </button>
 
                         {/* Delivery Info */}

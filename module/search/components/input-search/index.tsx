@@ -1,4 +1,5 @@
 'use client';
+import { useBranches } from '@/module/branches/context/use-branches';
 import { useToast } from '@/module/common/hook/useToast';
 import { getProducts, Products } from '@/module/product/actions/get-products';
 import Image from 'next/image';
@@ -19,16 +20,18 @@ export const SearchInput = ({ onClick, showMore = true }: Props) => {
     const [result, setResult] = useState<Products>([]);
     const { openToast } = useToast()
     const searchParams = useSearchParams()
-
+    const { selectedBranch } = useBranches();
 
     const search = useCallback(async (open?: boolean) => {
+        if (!selectedBranch) return openToast('Selecione una sucursal', 'warning')
         if (!query) return openToast('Digite algo para buscar', 'warning')
         if (loading) return
         setLoading(true)
         const response = await getProducts({
             query: query,
             page: 1,
-            limit: 10
+            limit: 10,
+            branchId: selectedBranch.id
         });
         setLoading(false)
         setOpen(open ?? true)

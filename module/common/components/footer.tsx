@@ -132,7 +132,7 @@ export function Footer() {
                 </li>
                 <li className="flex justify-between">
                   <span className="text-base-content/60">Domingos</span>
-                  <span className="font-medium text-error">Cerrado</span>
+                  <span className="font-medium text-primary">Cerrado</span>
                 </li>
               </ul>
             </div>

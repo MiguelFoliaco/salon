@@ -11,17 +11,24 @@ const select = `
     image,
     is_active,
     name,
+
     type:product_types(
         id,
         name
     ),
-    stock,
+
+    inventory:inventory_by_branch!inner(
+        stock,
+        branch_id
+    ),
+
     taxe:taxes(
         id,
         name,
         percentage,
         code
     ),
+
     updated_at,
     value,
     is_service,
@@ -35,6 +42,7 @@ type args = {
     max?: number;
     page?: number;
     limit?: number;
+    branchId: string;
 };
 
 export const getProducts = cache(async (q: args) => {
@@ -52,9 +60,12 @@ export const getProducts = cache(async (q: args) => {
     const from = (page - 1) * limit;
     const to = from + limit - 1;
 
+    console.log('Type ID ', type)
+
     let request = client
         .from('products')
         .select(select, { count: 'exact' })
+        .eq('inventory.branch_id', q.branchId)
         .range(from, to)
         .order('created_at', { ascending: false });
 

@@ -21,7 +21,7 @@ export function ProductCard({ product, onAction, onAddToCard }: ProductCardProps
   return (
     <article
       className={cn(
-        "group relative flex flex-col overflow-hidden rounded-xl bg-base-100 border border-base-200",
+        "group relative flex flex-col overflow-hidden  bg-base-100 border border-base-300",
         "transition-all duration-300 ease-out",
         "hover:shadow-xl hover:-translate-y-1"
       )}

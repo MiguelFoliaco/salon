@@ -9,6 +9,7 @@ import { FilterSidebar, FilterState } from '../filter-sidebar';
 import { ProductList } from '../product-list';
 import { Pagination } from '../pagination';
 import { useProductTypes } from '@/module/categories/components/product-types/hook';
+import { useBranches } from '@/module/branches/context/use-branches';
 
 
 
@@ -38,11 +39,13 @@ export const SearchContainer = () => {
         minPrice: minPriceParam,
         maxPrice: maxPriceParam,
     });
+    const { selectedBranch } = useBranches();
 
     // We keep page decoupled slightly so we can immediately update it
     const [page, setPage] = useState(pageParam);
 
     const fetchProducts = useCallback(async () => {
+        if (!selectedBranch) return openToast('Selecione una sucursal', 'warning')
         setLoading(true);
         const response = await getProducts({
             query,
@@ -51,6 +54,7 @@ export const SearchContainer = () => {
             type: filters.type,
             min: filters.minPrice,
             max: filters.maxPrice,
+            branchId: selectedBranch.id
         });
 
         if (response.error) {

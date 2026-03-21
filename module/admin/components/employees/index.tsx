@@ -121,7 +121,7 @@ export const AdminEmployees = () => {
 
     return (
         <div className="p-4 md:p-8 w-full max-w-7xl mx-auto">
-            <div className="flex justify-between items-center mb-8 gap-4 flex-col md:flex-row items-start md:items-center">
+            <div className="flex justify-between items-center mb-8 gap-4 flex-col md:flex-row md:items-center">
                 <div>
                     <h1 className="text-3xl font-bold text-slate-800">Empleados</h1>
                     <p className="text-slate-500 mt-1">Gestiona los permisos y accesos del personal al sistema.</p>

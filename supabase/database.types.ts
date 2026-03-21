@@ -88,6 +88,30 @@ export type Database = {
           },
         ]
       }
+      brands: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          logo: string | null
+          name: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          logo?: string | null
+          name: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          logo?: string | null
+          name?: string
+        }
+        Relationships: []
+      }
       clients: {
         Row: {
           address: string | null
@@ -286,6 +310,99 @@ export type Database = {
         }
         Relationships: []
       }
+      inventory_by_branch: {
+        Row: {
+          branch_id: string
+          id: string
+          max_stock: number | null
+          min_stock: number | null
+          product_id: string
+          stock: number
+          updated_at: string | null
+        }
+        Insert: {
+          branch_id: string
+          id?: string
+          max_stock?: number | null
+          min_stock?: number | null
+          product_id: string
+          stock?: number
+          updated_at?: string | null
+        }
+        Update: {
+          branch_id?: string
+          id?: string
+          max_stock?: number | null
+          min_stock?: number | null
+          product_id?: string
+          stock?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_by_branch_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_by_branch_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_movements: {
+        Row: {
+          branch_id: string
+          created_at: string | null
+          id: string
+          movement_type: Database["public"]["Enums"]["inventory_movement_type_enum"]
+          notes: string | null
+          product_id: string
+          quantity: number
+          reference_id: string | null
+        }
+        Insert: {
+          branch_id: string
+          created_at?: string | null
+          id?: string
+          movement_type: Database["public"]["Enums"]["inventory_movement_type_enum"]
+          notes?: string | null
+          product_id: string
+          quantity: number
+          reference_id?: string | null
+        }
+        Update: {
+          branch_id?: string
+          created_at?: string | null
+          id?: string
+          movement_type?: Database["public"]["Enums"]["inventory_movement_type_enum"]
+          notes?: string | null
+          product_id?: string
+          quantity?: number
+          reference_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_movements_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_movements_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notification: {
         Row: {
           created_at: string | null
@@ -322,6 +439,38 @@ export type Database = {
         }
         Relationships: []
       }
+      product_gallery: {
+        Row: {
+          alt: string | null
+          created_at: string | null
+          id: string
+          image_url: string
+          product_id: string
+        }
+        Insert: {
+          alt?: string | null
+          created_at?: string | null
+          id?: string
+          image_url: string
+          product_id: string
+        }
+        Update: {
+          alt?: string | null
+          created_at?: string | null
+          id?: string
+          image_url?: string
+          product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_images_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_types: {
         Row: {
           created_at: string | null
@@ -345,6 +494,7 @@ export type Database = {
       }
       products: {
         Row: {
+          brand_id: string | null
           code: string | null
           created_at: string | null
           description: string | null
@@ -361,6 +511,7 @@ export type Database = {
           value: number
         }
         Insert: {
+          brand_id?: string | null
           code?: string | null
           created_at?: string | null
           description?: string | null
@@ -377,6 +528,7 @@ export type Database = {
           value: number
         }
         Update: {
+          brand_id?: string | null
           code?: string | null
           created_at?: string | null
           description?: string | null
@@ -394,6 +546,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "products_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "products_product_type_id_fkey"
             columns: ["product_type_id"]
             isOneToOne: false
@@ -405,6 +564,51 @@ export type Database = {
             columns: ["tax_id"]
             isOneToOne: false
             referencedRelation: "taxes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchases: {
+        Row: {
+          branch_id: string
+          created_at: string | null
+          id: string
+          products: Json | null
+          services: Json | null
+          supplier_id: string | null
+          total_amount: number | null
+        }
+        Insert: {
+          branch_id: string
+          created_at?: string | null
+          id?: string
+          products?: Json | null
+          services?: Json | null
+          supplier_id?: string | null
+          total_amount?: number | null
+        }
+        Update: {
+          branch_id?: string
+          created_at?: string | null
+          id?: string
+          products?: Json | null
+          services?: Json | null
+          supplier_id?: string | null
+          total_amount?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchases_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchases_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
             referencedColumns: ["id"]
           },
         ]
@@ -540,6 +744,33 @@ export type Database = {
           },
         ]
       }
+      suppliers: {
+        Row: {
+          address: string | null
+          created_at: string | null
+          email: string | null
+          id: string
+          name: string
+          phone: string | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+        }
+        Relationships: []
+      }
       taxes: {
         Row: {
           code: string
@@ -563,6 +794,58 @@ export type Database = {
           percentage?: number
         }
         Relationships: []
+      }
+      transaction_items: {
+        Row: {
+          branch_id: string
+          id: string
+          product_id: string
+          quantity: number
+          total_price: number
+          transaction_id: string
+          unit_price: number
+        }
+        Insert: {
+          branch_id: string
+          id?: string
+          product_id: string
+          quantity: number
+          total_price: number
+          transaction_id: string
+          unit_price: number
+        }
+        Update: {
+          branch_id?: string
+          id?: string
+          product_id?: string
+          quantity?: number
+          total_price?: number
+          transaction_id?: string
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transaction_items_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transaction_items_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       transactions: {
         Row: {
@@ -636,6 +919,7 @@ export type Database = {
       employe_gender_enum: "male" | "female" | "other"
       employe_rol_enum: "admin" | "cashier" | "stylist"
       identity_type_enum: "DNI" | "PASSPORT" | "ID"
+      inventory_movement_type_enum: "in" | "out" | "adjustment"
       notification_type:
         | "PRODUCT"
         | "SERVICE"
@@ -783,6 +1067,7 @@ export const Constants = {
       employe_gender_enum: ["male", "female", "other"],
       employe_rol_enum: ["admin", "cashier", "stylist"],
       identity_type_enum: ["DNI", "PASSPORT", "ID"],
+      inventory_movement_type_enum: ["in", "out", "adjustment"],
       notification_type: [
         "PRODUCT",
         "SERVICE",

@@ -6,6 +6,7 @@ import { Product } from '../../actions/get-products';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/module/cart/context/useCart';
 import { useToast } from '@/module/common/hook/useToast';
+import { useBranches } from '@/module/branches/context/use-branches';
 
 export const ListProduct = () => {
 
@@ -13,14 +14,16 @@ export const ListProduct = () => {
     const { hydrate, addItem } = useCart()
     const router = useRouter();
     const { openToast } = useToast()
+    const { selectedBranch } = useBranches();
 
     useEffect(() => {
         hydrate();
     }, [hydrate])
 
     useEffect(() => {
-        load()
-    }, [load])
+        if (!selectedBranch) return openToast('Selecione una sucursal', 'warning')
+        load(selectedBranch.id)
+    }, [load, selectedBranch])
 
     const handleRedirect = (product: Product) => {
         if (product.is_service) {

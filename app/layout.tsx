@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 // Supports weights 100-900
-import '@fontsource-variable/montserrat';
+import '@fontsource/source-serif-pro';
 import "./globals.css";
 import { Toast } from "@/module/common/components/toast";
 import { LayoutClient } from "./layoutClient";

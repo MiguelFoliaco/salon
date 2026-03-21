@@ -6,7 +6,7 @@ type IProductContext = {
     productSelected: Product | null;
     setProductSelected: (product: Product | null) => void
     setProducts: (products: Products) => void
-    load: (productTypeId?: string) => Promise<void>
+    load: (branchId: string, productTypeId?: string) => Promise<void>
     loading: boolean
 }
 
@@ -14,9 +14,9 @@ export const useProduct = create<IProductContext>(set => ({
     products: [],
     setProducts: (products) => set({ products }),
     loading: false,
-    load: async (productTypeId?: string) => {
+    load: async (branchId, productTypeId?: string) => {
         set({ loading: true })
-        const products = await getProducts({ query: '', type: productTypeId });
+        const products = await getProducts({ query: '', type: productTypeId, branchId });
         set({ loading: false })
         if (!products.data) return
         set({ products: products.data, loading: false })

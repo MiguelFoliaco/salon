@@ -121,8 +121,8 @@ export const BookingPage = () => {
             {
                 productSelected && (
                     <main className='max-w-5xl mx-auto px-4 py-8 md:py-12'>
-                        <div className='w-full h-[200px] relative mb-2'>
-                            <Image src={productSelected.image!} alt={productSelected.name} fill className='object-cover' />
+                        <div className='w-full h-[400px] relative mb-2 shadow'>
+                            <Image src={productSelected.image!} alt={productSelected.name} quality={100} fill className='object-cover' />
                         </div>
                         {/* Header Details */}
                         <div className='mb-10'>
@@ -142,7 +142,7 @@ export const BookingPage = () => {
                                     <h2 className='text-xl md:text-2xl font-bold flex items-center gap-2 mb-6 text-slate-900'>
                                         <span className='text-primary text-2xl'><BiCalendar /></span> Choose Date
                                     </h2>
-                                    <div className='w-full flex justify-center bg-white rounded-4xl p-6 shadow-sm border border-slate-100'>
+                                    <div className='w-full flex justify-center bg-white  p-6 shadow-sm border border-slate-100'>
                                         <BookingCalendar disabled={!selectedEmployee} selected={selectedDate} onSelectDate={setSelectedDate} />
                                     </div>
                                 </section>
@@ -155,7 +155,7 @@ export const BookingPage = () => {
                                         {selectedDate ? (
                                             <TimeSlots onSlotSelect={setSelectedSlot} selectedDate={selectedDate} durationInMinutes={productSelected?.estimate_time_in_minutes || 30} />
                                         ) : (
-                                            <div className='w-full h-full flex items-center justify-center min-h-[300px] bg-white rounded-4xl border border-slate-100'>
+                                            <div className='w-full h-full flex items-center justify-center min-h-[300px] bg-white  border border-slate-100'>
                                                 <p className='text-center text-lg text-slate-400 font-medium'>Primero selecciona una fecha</p>
                                             </div>
                                         )}
@@ -170,7 +170,7 @@ export const BookingPage = () => {
             {/* Bottom Floating Summary Bar */}
             {
                 productSelected && (
-                    <div className='fixed bottom-4 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-[90%] md:max-w-5xl bg-white border border-slate-100 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] rounded-2xl py-5 px-6 md:px-8 z-50'>
+                    <div className='fixed bottom-4 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-[90%] md:max-w-5xl bg-white border border-slate-100 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)]  py-5 px-6 md:px-8 z-50'>
                         <div className='flex flex-col md:flex-row justify-between items-center gap-4'>
                             <div className='flex-1 w-full'>
                                 <p className='text-xs font-bold text-slate-400 tracking-widest uppercase mb-1'>Booking Summary</p>
@@ -194,7 +194,7 @@ export const BookingPage = () => {
                                 <button
                                     disabled={disable}
                                     onClick={handleNextCheckout}
-                                    className='bg-primary hover:bg-primary/80 text-white font-bold py-3 px-8 rounded-full shadow-lg shadow-primary/30 transition-all transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none disabled:transform-none flex items-center gap-2 whitespace-nowrap'
+                                    className='bg-primary hover:bg-primary/80 text-white font-bold py-3 px-8  shadow-lg shadow-primary/30 transition-all transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none disabled:transform-none flex items-center gap-2 whitespace-nowrap'
                                 >
                                     Continue to Checkout
                                     <BiRightArrow className='text-xl' />
