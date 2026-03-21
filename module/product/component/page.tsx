@@ -9,6 +9,7 @@ import { useCart } from '@/module/cart/context/useCart';
 import { BiShoppingBag, BiChevronDown, BiCar, BiStore } from 'react-icons/bi';
 import { useToast } from '@/module/common/hook/useToast';
 import { useBranches } from '@/module/branches/context/use-branches';
+import { GalleryProduct } from './gallery';
 
 interface ProductPageProps {
     product: Product;
@@ -36,39 +37,7 @@ export const ProductDetailPage = ({ product }: ProductPageProps) => {
                 <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
 
                     {/* Left: Image Gallery (Mimicking the visual style with placeholders) */}
-                    <div className="lg:w-2/3 flex flex-col gap-4">
-                        {/* Top row: 2 large images */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="relative aspect-3/4 bg-base-100 w-full">
-                                {product.image && (
-                                    <Image src={product.image} alt={product.name} fill className="object-cover" />
-                                )}
-                            </div>
-                            <div className="relative aspect-3/4 bg-base-100 w-full hidden md:block">
-                                {product.image && (
-                                    <Image src={product.image} alt={product.name} fill className="object-cover" />
-                                )}
-                            </div>
-                        </div>
-                        {/* Bottom row: 3 smaller images */}
-                        <div className="grid-cols-3 gap-4 hidden md:grid">
-                            <div className="relative aspect-3/4 bg-base-100 w-full">
-                                {product.image && (
-                                    <Image src={product.image} alt={product.name} fill className="object-cover object-top" />
-                                )}
-                            </div>
-                            <div className="relative aspect-3/4 bg-base-100 w-full">
-                                {product.image && (
-                                    <Image src={product.image} alt={product.name} fill className="object-cover object-center" />
-                                )}
-                            </div>
-                            <div className="relative aspect-3/4 bg-base-100 w-full">
-                                {product.image && (
-                                    <Image src={product.image} alt={product.name} fill className="object-cover object-bottom" />
-                                )}
-                            </div>
-                        </div>
-                    </div>
+                    <GalleryProduct product={product} />
 
                     {/* Right: Product Details */}
                     <div className="lg:w-1/3 flex flex-col pt-4 lg:pt-8 sticky top-24 h-fit">

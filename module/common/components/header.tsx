@@ -19,7 +19,7 @@ export const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false)
 
     return (
-        <header className="sticky top-0 z-30 bg-base-100 border-b border-base-200">
+        <header className="sticky top-0 z-30 bg-base-100 border-b shadow-sm border-base-200">
             <div className="max-w-7xl mx-auto px-4 lg:px-6">
                 <div className="flex items-center justify-between h-16 gap-4">
                     {/* Logo */}

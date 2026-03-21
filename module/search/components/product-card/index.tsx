@@ -47,9 +47,9 @@ export const ProductCard = ({ product }: ProductCardProps) => {
                     <div className="text-xl font-bold text-primary">
                         ${product.value?.toLocaleString()}
                     </div>
-                    {(product.stock && !product.is_service) && (
-                        <div className={`text-xs font-semibold ${(product.stock || 0) > 0 ? "text-success" : "text-error"}`}>
-                            {(product.stock || 0) > 0 ? `${product.stock} disponibles` : "Agotado"}
+                    {(product.inventory[0]?.stock && !product.is_service) && (
+                        <div className={`text-xs font-semibold ${(product.inventory[0]?.stock || 0) > 0 ? "text-success" : "text-error"}`}>
+                            {(product.inventory[0]?.stock || 0) > 0 ? `${product.inventory[0]?.stock} disponibles` : "Agotado"}
                         </div>
                     )}
                 </div>

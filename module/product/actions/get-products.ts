@@ -32,7 +32,12 @@ const select = `
     updated_at,
     value,
     is_service,
-    estimate_time_in_minutes
+    estimate_time_in_minutes,
+    gallery: product_gallery(
+        id,
+        image_url,
+        alt
+    )
 `;
 
 type args = {
