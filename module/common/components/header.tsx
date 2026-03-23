@@ -38,7 +38,15 @@ export const Header = () => {
                     {/* Search Bar */}
                     <div className="flex-1 max-w-md hidden md:block">
                         <SearchInput
-                            onClick={(product) => router.push(`/product/${product.id}`)}
+                            onClick={(product) => {
+                                if (product.is_service) {
+                                    router.push(`/booking/${product.id}`)
+                                }
+                                else {
+
+                                    router.push(`/product/${product.id}`)
+                                }
+                            }}
                         />
                     </div>
 

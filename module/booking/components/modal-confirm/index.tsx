@@ -44,12 +44,12 @@ export function ModalConfirmBooking({
                 products: [],
                 services: [service.id],
                 total_amount: calculatePrice(service),
-                reference_code: schedule.id,
+                // reference_code: schedule.id, // esta se genera en la accion
                 payment_method: 'cash',
                 status: 'pending',
                 branch_id: schedule.branch_id,
                 tax_amount: 0,
-                schedule_id: schedule.id,
+                schedule_id: response.data.id,
             })
 
             if (!responseSavePurchase.success || !responseSavePurchase.data?.id) {
@@ -61,7 +61,7 @@ export function ModalConfirmBooking({
             const hash256 = await generateHash({
                 amount,
                 currency: 'COP',
-                reference: responseSavePurchase.data.id,
+                reference: responseSavePurchase.data.reference_code!,
                 integrity: process.env.NEXT_PUBLIC_INTEGRITY_HASH || ''
             })
             if (!hash256.response.data.hash) {
@@ -79,9 +79,8 @@ export function ModalConfirmBooking({
             script.setAttribute("data-public-key", CONSTANT.WOMPI_PUBLIC_KEY)
             script.setAttribute("data-currency", "COP")
             script.setAttribute("data-amount-in-cents", amount.toString())
-            script.setAttribute("data-reference", responseSavePurchase.data.id)
+            script.setAttribute("data-reference", responseSavePurchase.data.reference_code!)
             script.setAttribute("data-signature:integrity", hash256.response.data.hash)
-            script.setAttribute("data-redirect-url", CONSTANT.URL_APP)
             form.appendChild(script)
             containerCheckout.current?.appendChild(form)
             setTimeout(() => {

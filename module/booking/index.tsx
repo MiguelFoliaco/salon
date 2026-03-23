@@ -130,6 +130,10 @@ export const BookingPage = () => {
                             <p className='text-lg text-primary font-medium'>Pick a date and time for your sweet transformation</p>
                         </div>
 
+                        <div role="alert" className='w-full alert alert-info alert-soft my-5'>
+                            <BsInfo className="w-5 h-5" />
+                            <span>Recuerda que debes hacer tu pago para confirmar tu cita, si no realizas el pago en los proximos 15 minutos, tu cita sera cancelada</span>
+                        </div>
                         <div className='space-y-12'>
                             {/* Select Stylist */}
                             <section>
@@ -163,10 +167,7 @@ export const BookingPage = () => {
                                 </section>
                             </div>
                         </div>
-                        <div role="alert" className='w-full alert alert-info alert-soft mt-5'>
-                            <BsInfo className="w-5 h-5" />
-                            <span>Recuerda que debes hacer tu pago para confirmar tu cita, si no realizas el pago en los proximos 15 minutos, tu cita sera cancelada</span>
-                        </div>
+
                     </main>
                 )
             }

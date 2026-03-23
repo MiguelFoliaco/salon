@@ -602,6 +602,7 @@ export type Database = {
           created_at: string | null
           employee_id: string | null
           end_time: string
+          expires_at: string
           id: string
           notes: string | null
           product_id: string
@@ -615,6 +616,7 @@ export type Database = {
           created_at?: string | null
           employee_id?: string | null
           end_time: string
+          expires_at?: string
           id?: string
           notes?: string | null
           product_id: string
@@ -628,6 +630,7 @@ export type Database = {
           created_at?: string | null
           employee_id?: string | null
           end_time?: string
+          expires_at?: string
           id?: string
           notes?: string | null
           product_id?: string

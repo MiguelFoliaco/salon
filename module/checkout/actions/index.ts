@@ -23,7 +23,7 @@ export const savePurchase = async (data: Purchase) => {
         }
     }
 
-    const reference = generateId() + '_' + data.transaction_type + '_' + truncate(data.client_id!, 5)
+    const reference = data.schedule_id + '_' + generateId()
 
     //Esto inicialmente se registra aqui con el estatus 'pedding' en el webhook se actualiza a 'completed' o 'cancelled'
     const supabase = await createClient()
