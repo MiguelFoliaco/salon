@@ -116,13 +116,13 @@ export const ProductDetailPage = ({ product }: ProductPageProps) => {
                                     <ul className="list-disc pl-4 space-y-2">
                                         <li>CÓDIGO DE PRODUCTO: {product.code || product.id.slice(0, 8)}</li>
                                         <li>{product.is_service ? 'TIPO: SERVICIO' : 'TIPO: PRODUCTO FÍSICO'}</li>
-                                        <li>MATERIAL DE ALTA CALIDAD.</li>
-                                        <li>INSTRUCCIONES DE CUIDADO INCLUIDAS EN EL EMPAQUE.</li>
+                                        {/* <li>MATERIAL DE ALTA CALIDAD.</li>
+                                        <li>INSTRUCCIONES DE CUIDADO INCLUIDAS EN EL EMPAQUE.</li> */}
                                     </ul>
                                 </div>
                             </details>
 
-                            <details className="group">
+                            {/* <details className="group">
                                 <summary className="flex justify-between items-center font-bold cursor-pointer list-none py-5 text-sm tracking-wide text-slate-900 border-b border-slate-200">
                                     OUR COMMITMENT
                                     <span className="transition group-open:rotate-180">
@@ -132,7 +132,7 @@ export const ProductDetailPage = ({ product }: ProductPageProps) => {
                                 <div className="text-slate-600 text-sm py-4 border-b border-slate-200 leading-relaxed uppercase">
                                     <p>EN GLOW SALON, NOS COMPROMETEMOS A OFRECER PRODUCTOS QUE CUBRAN LOS MÁS ALTOS ESTÁNDARES ÉTICOS Y DE CALIDAD, VALORANDO LA SOSTENIBILIDAD Y EL IMPACTO POSITIVO EN NUESTRA COMUNIDAD.</p>
                                 </div>
-                            </details>
+                            </details> */}
 
                         </div>
 

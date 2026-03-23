@@ -149,7 +149,7 @@ export const TimeSlots = ({ selectedDate, durationInMinutes, onSlotSelect }: Tim
                     <span className="loading loading-spinner text-primary loading-md"></span>
                 </div>
             ) : processedSlots.length === 0 ? (
-                <div className="flex items-center justify-center p-8 border border-slate-100 rounded-4xl text-slate-400 font-medium bg-slate-50">
+                <div className="flex items-center justify-center p-8 border border-slate-100  text-slate-400 font-medium bg-slate-50">
                     No hay horas disponibles para este día
                 </div>
             ) : (
@@ -167,7 +167,7 @@ export const TimeSlots = ({ selectedDate, durationInMinutes, onSlotSelect }: Tim
                                 disabled={isDisabled}
                                 className={
                                     clsx(
-                                        " flex flex-col items-center justify-center py-3 px-2 rounded-4xl border transition-all shadow-sm",
+                                        " flex flex-col items-center justify-center py-3 px-2 border transition-all shadow-sm",
                                         isDisabled ?
                                             (passTime ? 'border-red-200 bg-red-50 cursor-not-allowed' : 'border-info bg-info/10 cursor-not-allowed')
                                             : isSelected

@@ -35,7 +35,7 @@ export const Toast = () => {
     return (
         <div className={
             clsx(
-                "fixed top-10 transition right-0 left-0 z-50 m-auto w-[80%] lg:w-[30%]",
+                "fixed scroll-auto top-10 transition right-0 left-0 z-1000 m-auto w-[80%] lg:w-[30%]",
                 {
                     "-translate-y-[200%]": !open,
                     "translate-y-0": open,

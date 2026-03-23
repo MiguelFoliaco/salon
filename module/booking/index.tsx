@@ -14,10 +14,10 @@ import { useEmploye } from './context/use-employe'
 import { calculatePrice } from '../utils/calculate-priece'
 import { TablesInsert } from '@/supabase/database.types'
 import { BiCalendar, BiRightArrow } from 'react-icons/bi'
-import { BsClock } from 'react-icons/bs'
+import { BsClock, BsInfo } from 'react-icons/bs'
 import { useBranches } from '../branches/context/use-branches'
 import { useProfile } from '../profile/hook/use-profile'
-import { ModalConfirmBooking } from './components/moda-confirm'
+import { ModalConfirmBooking } from './components/modal-confirm'
 import Image from 'next/image'
 
 export const BookingPage = () => {
@@ -97,14 +97,14 @@ export const BookingPage = () => {
         setSelectedSlot(undefined)
         setSelectedEmployee(null)
         setProductSelected(null)
-        router.push('/')
+        router.push('/profile')
     }
 
     const disable = !selectedDate || !selectedEmployee
 
 
     return (
-        <div className='w-full min-h-screen bg-slate-50 md:pb-40 pb-80 font-sans'>
+        <div className='w-full min-h-screen bg-slate-50 md:pb-40 pb-80 font-sans '>
             {
                 (schedule && productSelected && selectedEmployee) && (
                     <ModalConfirmBooking
@@ -162,6 +162,10 @@ export const BookingPage = () => {
                                     </div>
                                 </section>
                             </div>
+                        </div>
+                        <div role="alert" className='w-full alert alert-info alert-soft mt-5'>
+                            <BsInfo className="w-5 h-5" />
+                            <span>Recuerda que debes hacer tu pago para confirmar tu cita, si no realizas el pago en los proximos 15 minutos, tu cita sera cancelada</span>
                         </div>
                     </main>
                 )

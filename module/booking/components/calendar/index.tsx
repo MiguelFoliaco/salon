@@ -64,7 +64,7 @@ export const BookingCalendar = ({ selected, onSelectDate, disabled }: BookingCal
             disabled={{ before: new Date() }}
             hidden={{ dayOfWeek: generateHiddenDays }}
             classNames={{
-                selected: 'bg-primary rounded-full text-secondary-content',
+                selected: 'bg-primary rounded-full text-primary-content ',
                 month_caption: 'font-semibold mb-2 ',
                 button_next: 'mb-4 ml-3',
                 button_previous: 'mb-4',

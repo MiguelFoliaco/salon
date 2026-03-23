@@ -18,9 +18,9 @@
   --color-accent-content: #FFFFFF;
   --color-neutral: #1e293b;
   --color-neutral-content: #FFFFFF;
-  --color-info: #bae6fd;
-  --color-info-content: #0284c7;
-  --color-success: #bbf7d0;
+  --color-info: #2676ff;
+  --color-info-content: #FFFFFF;
+  --color-success: #07cc4c;
   --color-success-content: #166534;
   --color-warning: #fef08a;
   --color-warning-content: #854d0e;
@@ -57,5 +57,5 @@ textarea {
 
 
 .calendar .rdp-chevron {
-  fill: var(--color-primary)
+  fill: var(--color-primary);
 }

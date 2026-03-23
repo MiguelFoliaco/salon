@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 export const SelectBranch = () => {
 
-    const { branches, selectedBranch, updateSelectedBranch } = useBranches()
+    const { branches, updateSelectedBranch } = useBranches()
 
     useEffect(() => {
         if (branches.length > 0) {

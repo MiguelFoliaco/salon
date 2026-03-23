@@ -33,7 +33,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
             </figure>
             <div className="card-body p-4">
                 {product.type && (
-                    <div className="badge badge-secondary badge-outline text-xs mb-2">
+                    <div className="badge badge-primary badge-outline text-xs mb-2">
                         {product.type.name}
                     </div>
                 )}
@@ -48,7 +48,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
                         ${product.value?.toLocaleString()}
                     </div>
                     {(product.inventory[0]?.stock && !product.is_service) && (
-                        <div className={`text-xs font-semibold ${(product.inventory[0]?.stock || 0) > 0 ? "text-success" : "text-error"}`}>
+                        <div className={`text-xs font-semibold ${(product.inventory[0]?.stock || 0) > 0 ? "text-info" : "text-error"}`}>
                             {(product.inventory[0]?.stock || 0) > 0 ? `${product.inventory[0]?.stock} disponibles` : "Agotado"}
                         </div>
                     )}

@@ -21,7 +21,7 @@ export const ListProduct = () => {
     }, [hydrate])
 
     useEffect(() => {
-        if (!selectedBranch) return openToast('Selecione una sucursal', 'warning')
+        if (!selectedBranch) return
         load(selectedBranch.id)
     }, [load, selectedBranch])
 

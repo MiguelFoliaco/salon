@@ -568,51 +568,6 @@ export type Database = {
           },
         ]
       }
-      purchases: {
-        Row: {
-          branch_id: string
-          created_at: string | null
-          id: string
-          products: Json | null
-          services: Json | null
-          supplier_id: string | null
-          total_amount: number | null
-        }
-        Insert: {
-          branch_id: string
-          created_at?: string | null
-          id?: string
-          products?: Json | null
-          services?: Json | null
-          supplier_id?: string | null
-          total_amount?: number | null
-        }
-        Update: {
-          branch_id?: string
-          created_at?: string | null
-          id?: string
-          products?: Json | null
-          services?: Json | null
-          supplier_id?: string | null
-          total_amount?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "purchases_branch_id_fkey"
-            columns: ["branch_id"]
-            isOneToOne: false
-            referencedRelation: "branches"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "purchases_supplier_id_fkey"
-            columns: ["supplier_id"]
-            isOneToOne: false
-            referencedRelation: "suppliers"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       push_token_device_x_user: {
         Row: {
           auth_id: string | null
@@ -850,41 +805,60 @@ export type Database = {
       transactions: {
         Row: {
           amount: number
+          branch_id: string | null
           client_id: string | null
           created_at: string | null
           id: string
           payment_method: Database["public"]["Enums"]["payment_method_enum"]
+          products: Json | null
           reference_code: string | null
           schedule_id: string | null
+          services: Json | null
+          status: Database["public"]["Enums"]["transaction_status_enum"] | null
           tax_amount: number | null
           total_amount: number
           transaction_type: Database["public"]["Enums"]["transaction_type_enum"]
         }
         Insert: {
           amount: number
+          branch_id?: string | null
           client_id?: string | null
           created_at?: string | null
           id?: string
           payment_method: Database["public"]["Enums"]["payment_method_enum"]
+          products?: Json | null
           reference_code?: string | null
           schedule_id?: string | null
+          services?: Json | null
+          status?: Database["public"]["Enums"]["transaction_status_enum"] | null
           tax_amount?: number | null
           total_amount: number
           transaction_type: Database["public"]["Enums"]["transaction_type_enum"]
         }
         Update: {
           amount?: number
+          branch_id?: string | null
           client_id?: string | null
           created_at?: string | null
           id?: string
           payment_method?: Database["public"]["Enums"]["payment_method_enum"]
+          products?: Json | null
           reference_code?: string | null
           schedule_id?: string | null
+          services?: Json | null
+          status?: Database["public"]["Enums"]["transaction_status_enum"] | null
           tax_amount?: number | null
           total_amount?: number
           transaction_type?: Database["public"]["Enums"]["transaction_type_enum"]
         }
         Relationships: [
+          {
+            foreignKeyName: "transactions_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "transactions_client_id_fkey"
             columns: ["client_id"]
@@ -935,6 +909,7 @@ export type Database = {
         | "other"
       product_type_enum: "service" | "product"
       schedule_status_enum: "pending" | "confirmed" | "cancelled" | "completed"
+      transaction_status_enum: "pending" | "completed" | "cancelled"
       transaction_type_enum: "income" | "expense"
     }
     CompositeTypes: {
@@ -1085,6 +1060,7 @@ export const Constants = {
       ],
       product_type_enum: ["service", "product"],
       schedule_status_enum: ["pending", "confirmed", "cancelled", "completed"],
+      transaction_status_enum: ["pending", "completed", "cancelled"],
       transaction_type_enum: ["income", "expense"],
     },
   },
