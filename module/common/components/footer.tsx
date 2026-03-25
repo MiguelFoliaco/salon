@@ -38,7 +38,7 @@ export function Footer() {
   return (
     <footer className="bg-base-100">
       {/* VIP Newsletter Section */}
-      <div className="bg-neutral mx-4 lg:mx-auto max-w-7xl rounded-2xl my-8">
+      <div className="bg-neutral mx-4 lg:mx-auto max-w-7xl  my-8">
         <div className="px-6 py-10 lg:px-12 lg:py-12">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="max-w-md">
@@ -56,21 +56,21 @@ export function Footer() {
                   placeholder="Ingresa tu nombre"
                   value={formState.name}
                   onChange={(e) => setFormState((prev) => ({ ...prev, name: e.target.value }))}
-                  className="input rounded-sm  focus:border-primary bg-neutral-focus/50   w-full sm:w-72"
+                  className="input focus:border-primary bg-neutral-focus/50   w-full sm:w-72"
                 />
                 <input
                   type="email"
                   placeholder="Ingresa tu email"
                   value={formState.email}
                   onChange={(e) => setFormState((prev) => ({ ...prev, email: e.target.value }))}
-                  className="input rounded-sm  focus:border-primary bg-neutral-focus/50  w-full sm:w-72"
+                  className="input focus:border-primary bg-neutral-focus/50  w-full sm:w-72"
                 />
                 <textarea
                   placeholder="¿En qué producto estás interesado?"
                   value={formState.message}
                   onChange={(e) => setFormState((prev) => ({ ...prev, message: e.target.value }))}
                   rows={3}
-                  className="textarea rounded-sm focus:border-primary  bg-neutral-focus/50   w-full sm:w-72 resize-none"
+                  className="textarea focus:border-primary  bg-neutral-focus/50   w-full sm:w-72 resize-none"
                 />
               </div>
               <button

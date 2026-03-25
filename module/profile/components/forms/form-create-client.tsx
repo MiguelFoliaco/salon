@@ -1,10 +1,15 @@
 import { TablesInsert } from '@/supabase/database.types'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useUser } from '@/module/auth/context/useUser'
 import { useToast } from '@/module/common/hook/useToast'
-import { useProfile, useProfilePage } from '../../hook/use-profile'
+import { useProfile } from '../../hook/use-profile'
 import { saveClient } from '../../actions/save-client'
-import { BsPersonVcard, BsPerson, BsTelephone } from 'react-icons/bs'
+import { BsPersonVcard, BsPerson, BsTelephone, BsArrowLeft, } from 'react-icons/bs'
+import { Client } from '../../actions/get-client'
+import { BiLocationPlus } from 'react-icons/bi'
+import { useRegion } from '@/module/domicilios/context/use-region'
+import { Map } from '@/module/domicilios/map'
+import { FaMapLocation } from 'react-icons/fa6'
 
 const defaultInto: TablesInsert<'clients'> = {
     auth_id: '',
@@ -15,13 +20,28 @@ const defaultInto: TablesInsert<'clients'> = {
     phone: ''
 }
 
-export const FormCreateClient = () => {
-    const [formClient, setFormClient] = useState<TablesInsert<'clients'>>(defaultInto)
+type Props = {
+    client: Client | null
+    editProfile: boolean
+    setEditProfile: (value: boolean) => void
+}
+
+export const FormCreateClient = ({ client, editProfile, setEditProfile }: Props) => {
+    const [formClient, setFormClient] = useState<TablesInsert<'clients'>>(client ?? defaultInto)
+    const { regions, loadCities, cities } = useRegion()
+    const [loadingCities, setLoadingCities] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [loadingLocation, setLoadingLocation] = useState(false)
     const { setClient } = useProfile()
     const { user } = useUser()
     const { openToast } = useToast()
     const { load } = useProfile()
+
+    useEffect(() => {
+        if (client) {
+            setFormClient(client)
+        }
+    }, [client])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target
@@ -31,6 +51,8 @@ export const FormCreateClient = () => {
             setFormClient(prev => ({ ...prev, [name]: newValue }))
             return;
         }
+
+        console.log(name, value)
         setFormClient(prev => ({ ...prev, [name]: value }))
     }
 
@@ -44,7 +66,7 @@ export const FormCreateClient = () => {
         setLoading(true)
         try {
             const entry = { ...formClient, auth_id: user.id }
-            const result = await saveClient({ entry })
+            const result = await saveClient({ entry, type: client ? 'update' : 'insert' })
 
             if (result.status && result.data) {
                 openToast(result.msg || 'Perfil creado correctamente', 'success')
@@ -61,11 +83,50 @@ export const FormCreateClient = () => {
         }
     }
 
+    const handleRegionChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+        if (event.target.value !== '') {
+            setFormClient({ ...formClient, departament: event.target?.value })
+            const _region = regions.find(e => e.name.toLocaleLowerCase() === event.target?.value.toLocaleLowerCase()) || null
+            setLoadingCities(true)
+            await loadCities(_region?.id || 0)
+            setLoadingCities(false)
+        }
+    }
+
+    const loadLocation = async () => {
+        if (navigator.geolocation) {
+            setLoadingLocation(true)
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    setFormClient({
+                        ...formClient,
+                        latitude: position.coords.latitude.toString(),
+                        longitude: position.coords.longitude.toString()
+                    })
+                    openToast('Ubicación cargada correctamente', 'success')
+                    setLoadingLocation(false)
+                },
+                (error) => {
+                    openToast(error.message, 'error')
+                    setLoadingLocation(false)
+                }
+            )
+        }
+    }
+
+
     return (
-        <div className='w-full max-w-2xl mx-auto bg-white border border-slate-100 shadow-sm rounded-4xl p-8 md:p-10'>
+        <div className='w-full max-w-2xl mx-auto bg-white border border-slate-100 shadow-sm p-8 md:p-10'>
             <div className='mb-8 text-center'>
-                <h2 className='text-2xl font-bold text-slate-900 mb-2'>Completa tu Perfil</h2>
-                <p className='text-slate-500'>Necesitamos algunos datos para gestionar tus reservas.</p>
+                <h2 className='text-2xl font-bold text-slate-900 mb-2'>Completa tu Perfil
+                    {
+                        client &&
+                        <button onClick={() => setEditProfile(false)} className='btn btn-circle btn-sm btn-ghost ml-3' title="Volver">
+                            <BsArrowLeft />
+                        </button>
+                    }
+                </h2>
+                <p className='text-neutral/70'>Necesitamos algunos datos para gestionar tus reservas.</p>
             </div>
 
             <form onSubmit={handleSubmit} className='space-y-6'>
@@ -81,7 +142,7 @@ export const FormCreateClient = () => {
                             required
                             value={formClient.name}
                             onChange={handleChange}
-                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:text-primary focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
+                            className='w-full input'
                             placeholder='Ej: Laura'
                         />
                     </div>
@@ -97,7 +158,7 @@ export const FormCreateClient = () => {
                             required
                             value={formClient.lastname}
                             onChange={handleChange}
-                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:text-primary focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
+                            className='w-full input'
                             placeholder='Ej: Rodríguez'
                         />
                     </div>
@@ -112,7 +173,7 @@ export const FormCreateClient = () => {
                             required
                             value={formClient.lastname_2 || ''}
                             onChange={handleChange}
-                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:text-primary focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
+                            className='w-full input'
                             placeholder='Ej: Rodríguez'
                         />
                     </div>
@@ -127,7 +188,7 @@ export const FormCreateClient = () => {
                             required
                             value={formClient.client_type || 'natural'}
                             onChange={handleChange}
-                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:text-primary focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white appearance-none'
+                            className='w-full input'
                         >
                             <option value='natural'>Natural</option>
                             <option value='juridico'>Juridica</option>
@@ -144,7 +205,7 @@ export const FormCreateClient = () => {
                             required
                             value={formClient.identity_type}
                             onChange={handleChange}
-                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:text-primary focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white appearance-none'
+                            className='w-full input'
                         >
                             <option value='DNI'>DNI / Cédula</option>
                             <option value='PASSPORT'>Pasaporte</option>
@@ -163,7 +224,7 @@ export const FormCreateClient = () => {
                             required
                             value={formClient.identity_value}
                             onChange={handleChange}
-                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:text-primary focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
+                            className='w-full input'
                             placeholder='Ej: 1023456789'
                         />
                     </div>
@@ -174,7 +235,7 @@ export const FormCreateClient = () => {
                             <BsTelephone className='text-primary' /> Teléfono
                         </label>
                         <div
-                            className='w-full px-4 py-2 flex rounded-xl border border-slate-200 focus:text-primary focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
+                            className='w-full input'
                         >
                             <select className='select w-fit select-sm border-none' defaultValue={'+57'}>
                                 <option value='+57'>+57 </option>
@@ -202,12 +263,68 @@ export const FormCreateClient = () => {
                             required
                             value={formClient?.email || user?.email || ''}
                             onChange={handleChange}
-                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:text-primary focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
+                            className='w-full input'
                             placeholder='Ej: Cartagena de indias, Villa grande'
                         />
                     </div>
+
+                    <div className="space-y-2 md:col-span-1">
+                        <label className='text-sm font-bold text-slate-700 flex items-center gap-2'>
+                            <BiLocationPlus className='text-primary' /> Departamento
+                        </label>
+                        <select
+                            value={formClient?.departament ?? ''}
+                            onChange={handleRegionChange}
+                            name="departament" id="departament" className='w-full input'>
+                            <option value="">Seleccione un departamento</option>
+                            {regions.map((region) => (
+                                <option key={region.id} value={region.name}>
+                                    {region.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="space-y-2 md:col-span-1">
+                        <label className='text-sm font-bold text-slate-700 flex items-center gap-2'>
+                            <BiLocationPlus className='text-primary' /> Ciudad
+                            {loadingCities && <span className="loading loading-spinner loading-xs"></span>}
+                        </label>
+                        <select
+                            disabled={cities.length === 0}
+                            value={formClient?.city_or_municipality!}
+                            onChange={(event) => {
+                                if (event.target.value !== '') {
+                                    setFormClient({ ...formClient, city_or_municipality: event.target.value })
+                                }
+                            }}
+                            name="city_or_municipality" id="city_or_municipality" className='w-full input'>
+                            <option value="">{
+                                formClient?.city_or_municipality ?? 'Seleccione una ciudad'
+                            }</option>
+                            {cities?.map((city) => (
+                                <option key={city.id} value={city.name}>
+                                    {city.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className='space-y-2 md:col-span-1'>
+                        <label className='text-sm font-bold text-slate-700 flex items-center gap-2'>
+                            <BsPersonVcard className='text-primary' /> Codigo Postal
+                        </label>
+                        <input
+                            type='number'
+                            name='postal_code'
+                            required
+                            value={formClient?.postal_code || ''}
+                            onChange={handleChange}
+                            className='w-full input'
+                            placeholder='Ej: 130001'
+                        />
+                    </div>
+
                     { /* Direction */}
-                    <div className='space-y-2 md:col-span-2'>
+                    <div className='space-y-2 md:col-span-1'>
                         <label className='text-sm font-bold text-slate-700 flex items-center gap-2'>
                             <BsPersonVcard className='text-primary' /> Dirección
                         </label>
@@ -217,9 +334,68 @@ export const FormCreateClient = () => {
                             required
                             value={formClient?.address || ''}
                             onChange={handleChange}
-                            className='w-full px-4 py-3 rounded-xl border border-slate-200 focus:text-primary focus:ring-2 focus:ring-[#f76d91]/20 outline-none transition-all text-slate-900 bg-slate-50 focus:bg-white'
+                            className='w-full input'
                             placeholder='Ej: Cartagena de indias, Villa grande'
                         />
+                    </div>
+                    <div className='divider col-span-2' />
+                    <div className='space-y-2 md:col-span-2 grid grid-cols-2 gap-2'>
+                        <p className='text-sm text-slate-500 col-span-2'>Le recomendamos ingresar las coordenadas para presicion en la entrega de sus productos.</p>
+
+                        <fieldset >
+                            <label className='text-sm font-bold text-slate-700 flex items-center gap-2'>
+                                <BiLocationPlus className='text-primary' /> Latitud
+                            </label>
+                            <input
+                                type='text'
+                                name='latitude'
+                                required
+                                disabled
+                                value={formClient?.latitude || ''}
+                                // onChange={handleChange}
+                                className='w-full input'
+                                placeholder='Ej: 10.4203'
+                            />
+                        </fieldset>
+                        <fieldset>
+                            <label className='text-sm font-bold text-slate-700 flex items-center gap-2'>
+                                <BiLocationPlus className='text-primary' /> Longitud
+                            </label>
+                            <input
+                                type='text'
+                                disabled
+                                name='longitude'
+                                required
+                                value={formClient?.longitude || ''}
+                                // onChange={handleChange}
+                                className='w-full input'
+                                placeholder='Ej: -75.5667'
+                            />
+                        </fieldset>
+                    </div>
+
+                    <button type='button' onClick={loadLocation} disabled={loadingLocation} className='w-fit col-span-2 btn btn-sm btn-primary mx-auto'>
+                        {loadingLocation ? (
+                            <>
+                                <span className='loading loading-spinner loading-sm'></span>
+                                Cargando...
+                            </>
+                        ) : (
+                            'Cargar ubicación'
+                        )}
+                    </button>
+
+                    <div className="w-full h-[300px] border border-dotted col-span-2 border-neutral/20 flex items-center justify-center">
+                        {
+                            formClient?.latitude && formClient?.longitude && (
+                                <Map width='100%' height='100%' position={[Number(formClient?.latitude!), Number(formClient?.longitude!)]} />
+                            )
+                        }
+                        {
+                            !formClient?.latitude && !formClient?.longitude && (
+                                <FaMapLocation className='text-neutral/50' size={200} />
+                            )
+                        }
                     </div>
 
                 </div>
@@ -228,7 +404,7 @@ export const FormCreateClient = () => {
                     <button
                         type='submit'
                         disabled={loading}
-                        className='btn btn-primary w-full btn-lg'
+                        className='btn btn-primary w-full '
                     >
                         {loading ? (
                             <>
@@ -240,7 +416,7 @@ export const FormCreateClient = () => {
                         )}
                     </button>
                 </div>
-            </form>
-        </div>
+            </form >
+        </div >
     )
 }

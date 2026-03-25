@@ -6,7 +6,7 @@ import { Uppcoming } from '../upcomming';
 import { Past } from '../past';
 import { Canceled } from '../canceled';
 
-export const ProfileDetails = ({ clientData }: { clientData: Client }) => {
+export const ProfileDetails = ({ clientData, editProfile, setEditProfile }: { clientData: Client, editProfile: boolean, setEditProfile: (value: boolean) => void }) => {
     const { user } = useUser()
     const [activeTab, setActiveTab] = useState('upcoming');
     return (
@@ -19,6 +19,12 @@ export const ProfileDetails = ({ clientData }: { clientData: Client }) => {
                     <div>
                         <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2 tracking-tight">
                             Hola, {clientData?.name || user?.user_metadata?.full_name || 'Gorgeous'}!
+
+                            <div className='tooltip tooltip-right font-light' data-tip="Editar información">
+                                <button className='btn btn-circle ml-3 btn-ghost btn-sm' onClick={() => setEditProfile(!editProfile)}>
+                                    <BsPencil size={18} />
+                                </button>
+                            </div>
                         </h1>
                         <p className="text-lg text-slate-500 font-medium">Gestiona tus próximas visitas al salón y las anteriores.</p>
                     </div>

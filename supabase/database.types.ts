@@ -116,55 +116,73 @@ export type Database = {
         Row: {
           address: string | null
           auth_id: string
+          city_or_municipality: string | null
           client_type: Database["public"]["Enums"]["client_type_enum"]
           code_phone: string | null
           code_verification: string | null
+          country: string | null
           created_at: string | null
+          departament: string | null
           email: string | null
           id: string
           identity_type: Database["public"]["Enums"]["identity_type_enum"]
           identity_value: string
           lastname: string
           lastname_2: string | null
+          latitude: string | null
+          longitude: string | null
           name: string
           phone: string
           photo: string | null
+          postal_code: string | null
           updated_at: string | null
         }
         Insert: {
           address?: string | null
           auth_id: string
+          city_or_municipality?: string | null
           client_type?: Database["public"]["Enums"]["client_type_enum"]
           code_phone?: string | null
           code_verification?: string | null
+          country?: string | null
           created_at?: string | null
+          departament?: string | null
           email?: string | null
           id?: string
           identity_type: Database["public"]["Enums"]["identity_type_enum"]
           identity_value: string
           lastname: string
           lastname_2?: string | null
+          latitude?: string | null
+          longitude?: string | null
           name: string
           phone: string
           photo?: string | null
+          postal_code?: string | null
           updated_at?: string | null
         }
         Update: {
           address?: string | null
           auth_id?: string
+          city_or_municipality?: string | null
           client_type?: Database["public"]["Enums"]["client_type_enum"]
           code_phone?: string | null
           code_verification?: string | null
+          country?: string | null
           created_at?: string | null
+          departament?: string | null
           email?: string | null
           id?: string
           identity_type?: Database["public"]["Enums"]["identity_type_enum"]
           identity_value?: string
           lastname?: string
           lastname_2?: string | null
+          latitude?: string | null
+          longitude?: string | null
           name?: string
           phone?: string
           photo?: string | null
+          postal_code?: string | null
           updated_at?: string | null
         }
         Relationships: []

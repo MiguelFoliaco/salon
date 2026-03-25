@@ -10,6 +10,7 @@ import { useProfile } from './hook/use-profile';
 export const ProfilePage = ({ clientData }: { clientData: Client | null }) => {
 
     const { client, setClient, loading } = useProfile();
+    const [editProfile, setEditProfile] = useState(false)
 
     useEffect(() => {
         if (client || clientData) {
@@ -32,9 +33,13 @@ export const ProfilePage = ({ clientData }: { clientData: Client | null }) => {
                     </div>
                 }
                 {
-                    client ? <ProfileDetails clientData={client} />
+                    client ? editProfile ? <FormCreateClient client={client} editProfile={editProfile} setEditProfile={setEditProfile} /> : <ProfileDetails clientData={client} editProfile={editProfile} setEditProfile={setEditProfile} />
                         :
-                        <FormCreateClient />
+                        <FormCreateClient
+                            client={client}
+                            editProfile={editProfile}
+                            setEditProfile={setEditProfile}
+                        />
                 }
 
             </main>
