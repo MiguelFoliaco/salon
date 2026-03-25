@@ -7,23 +7,26 @@ import { useRouter } from 'next/navigation';
 import { MdOpenInNew } from 'react-icons/md';
 import { useState } from 'react';
 import { useProfile } from '@/module/profile/hook/use-profile';
+import { calculatePrice } from '@/module/utils/calculate-priece';
 
 export const OrderSummary = () => {
-    const { items, subtotal, clearCart } = useCart();
+    const { items, subtotal: getRawTotal, clearCart } = useCart();
     const { client } = useProfile()
     const { user } = useUser((s) => s);
     const router = useRouter();
     const [reciveMode, setReciveMode] = useState<'local' | 'domicilio'>('local')
 
-    const sub = subtotal();
+    // getRawTotal() returns sum of product.value * quantity
+    let total = 0;
+    let sub = 0;
+    let taxAmount = 0;
 
-    // Calculate weighted average tax from cart items
-    const taxAmount = items.reduce((acc, { product, quantity }) => {
-        const pct = product.taxe?.percentage ?? 0;
-        return acc + (product.value * quantity * pct) / 100;
-    }, 0);
-
-    const total = sub + taxAmount;
+    items.forEach(item => {
+        const itemPrice = calculatePrice(item.product, item.quantity);
+        total += itemPrice.total;
+        sub += itemPrice.subtotal;
+        taxAmount += itemPrice.tax;
+    });
 
     const handleCheckout = () => {
         if (!user) {
@@ -37,6 +40,7 @@ export const OrderSummary = () => {
 
     const isValidPass = (client?.address && reciveMode === 'domicilio' || reciveMode === 'local') && (client?.phone && client?.identity_value && client?.identity_type)
 
+
     return (
         <div className="bg-base-100 border-2 border-base-200 shadow-lg p-6 flex flex-col gap-4 sticky top-20">
             <h2 className="text-lg font-bold text-base-content">Resumen del pedido</h2>
@@ -44,13 +48,13 @@ export const OrderSummary = () => {
             <div className="flex flex-col gap-3 text-sm">
                 <div className="flex justify-between text-base-content/70">
                     <span>Subtotal</span>
-                    <span>${sub.toLocaleString('es-CO')} COP</span>
+                    <span>${sub.toLocaleString('es-CO', { maximumFractionDigits: 2 })} COP</span>
                 </div>
 
                 {taxAmount > 0 && (
                     <div className="flex justify-between text-base-content/70">
                         <span>Impuestos</span>
-                        <span>${taxAmount.toLocaleString('es-CO')} COP</span>
+                        <span>${taxAmount.toLocaleString('es-CO', { maximumFractionDigits: 2 })} COP</span>
                     </div>
                 )}
 
@@ -74,7 +78,7 @@ export const OrderSummary = () => {
 
                 <div className="flex justify-between font-bold text-base-content text-base">
                     <span>Total</span>
-                    <span className="text-primary text-xl">${total.toLocaleString('es-CO')} COP</span>
+                    <span className="text-primary text-xl">${total.toLocaleString('es-CO', { maximumFractionDigits: 2 })} COP</span>
                 </div>
             </div>
 

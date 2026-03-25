@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { BiMinus, BiPlus, BiTrash } from 'react-icons/bi';
 import { CartItem as CartItemType, useCart } from '../context/useCart';
+import { calculatePrice } from '@/module/utils/calculate-priece';
 
 interface Props {
     item: CartItemType;
@@ -65,7 +66,7 @@ export const CartItem = ({ item }: Props) => {
 
                 {/* Line total */}
                 <p className="text-sm font-semibold text-base-content/70">
-                    ${(product.value * quantity).toLocaleString('es-CO')}
+                    ${calculatePrice(product, quantity).total.toLocaleString('es-CO', { maximumFractionDigits: 2 })}
                 </p>
             </div>
         </div>

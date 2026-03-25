@@ -10,6 +10,7 @@ import { BiShoppingBag, BiChevronDown, BiCar, BiStore } from 'react-icons/bi';
 import { useToast } from '@/module/common/hook/useToast';
 import { useBranches } from '@/module/branches/context/use-branches';
 import { GalleryProduct } from './gallery';
+import { calculatePrice } from '@/module/utils/calculate-priece';
 
 interface ProductPageProps {
     product: Product;
@@ -50,7 +51,7 @@ export const ProductDetailPage = ({ product }: ProductPageProps) => {
                                 {product.name}
                             </h1>
                             <p className="text-2xl font-bold text-slate-900 mb-2">
-                                ${product.value.toLocaleString('es-CO')}
+                                ${calculatePrice(product).total.toLocaleString('es-CO')}
                             </p>
                             <p className="text-sm text-slate-500">
                                 o 4 pagos sin interés con tarjeta de crédito

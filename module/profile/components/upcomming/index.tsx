@@ -9,7 +9,7 @@ import { format } from 'date-fns'
 import { BiRightArrow } from 'react-icons/bi';
 import { cn } from '@/utils/cn';
 import { IoReload } from 'react-icons/io5';
-
+import { calculatePrice } from '@/module/utils/calculate-priece';
 
 export const Uppcoming = () => {
 
@@ -85,7 +85,7 @@ export const Uppcoming = () => {
                                         {nextAppointment.status}
                                     </span>
                                     <span className="text-2xl font-extrabold text-primary">
-                                        ${nextAppointment.product.value.toFixed(2)}
+                                        ${calculatePrice(nextAppointment.product).total.toFixed(2)}
                                     </span>
                                 </div>
 
@@ -152,7 +152,7 @@ export const Uppcoming = () => {
                                     </div>
                                 </div>
                                 <div className="flex md:flex-col items-center md:items-end justify-between w-full md:w-auto mt-4 md:mt-0 pt-4 md:pt-0 border-t md:border-t-0 border-slate-100">
-                                    <div className="text-xl font-extrabold text-primary md:mb-4">${booking.product.value.toFixed(2)}</div>
+                                    <div className="text-xl font-extrabold text-primary md:mb-4">${calculatePrice(booking.product).total.toFixed(2)}</div>
                                     <div className="flex items-center gap-3 text-slate-400">
                                         <button className="hover:text-red-500 transition-colors p-2 bg-slate-50 rounded-lg hover:bg-red-50" title="Cancelar"><BsXCircle size={18} /></button>
                                     </div>

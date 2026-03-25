@@ -194,7 +194,7 @@ export const BookingPage = () => {
 
                             <div className='flex flex-col sm:flex-row items-center justify-between w-full md:w-auto gap-8'>
                                 <p className='text-2xl md:text-3xl font-extrabold text-slate-900'>
-                                    ${Intl.NumberFormat('en-US').format(calculatePrice(productSelected))}
+                                    ${Intl.NumberFormat('en-US').format(calculatePrice(productSelected).total)}
                                 </p>
                                 <button
                                     disabled={disable}

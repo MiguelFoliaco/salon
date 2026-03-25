@@ -274,6 +274,57 @@ export type Database = {
         }
         Relationships: []
       }
+      delivery: {
+        Row: {
+          actual_end_time: string | null
+          actual_start_time: string | null
+          created_at: string | null
+          deliver_id: string | null
+          estimate_end_time: string
+          estimate_start_time: string
+          id: string
+          purchase_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          actual_end_time?: string | null
+          actual_start_time?: string | null
+          created_at?: string | null
+          deliver_id?: string | null
+          estimate_end_time: string
+          estimate_start_time: string
+          id?: string
+          purchase_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          actual_end_time?: string | null
+          actual_start_time?: string | null
+          created_at?: string | null
+          deliver_id?: string | null
+          estimate_end_time?: string
+          estimate_start_time?: string
+          id?: string
+          purchase_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "delivery_deliver_id_fkey"
+            columns: ["deliver_id"]
+            isOneToOne: false
+            referencedRelation: "employes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "delivery_purchase_id_fkey"
+            columns: ["purchase_id"]
+            isOneToOne: false
+            referencedRelation: "purchases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       employes: {
         Row: {
           address: string | null
@@ -582,6 +633,85 @@ export type Database = {
             columns: ["tax_id"]
             isOneToOne: false
             referencedRelation: "taxes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchases: {
+        Row: {
+          address_delivery: string
+          city_delivery: string
+          client_id: string | null
+          country_delivery: string
+          created_at: string | null
+          department_delivery: string
+          id: string
+          latitude_delivery: number | null
+          longitude_delivery: number | null
+          products: Json
+          reference_code: string | null
+          service_id: string | null
+          shedule_id: string | null
+          status: Database["public"]["Enums"]["purchase_status_enum"] | null
+          total_amount: number
+          updated_at: string | null
+        }
+        Insert: {
+          address_delivery: string
+          city_delivery: string
+          client_id?: string | null
+          country_delivery?: string
+          created_at?: string | null
+          department_delivery: string
+          id?: string
+          latitude_delivery?: number | null
+          longitude_delivery?: number | null
+          products: Json
+          reference_code?: string | null
+          service_id?: string | null
+          shedule_id?: string | null
+          status?: Database["public"]["Enums"]["purchase_status_enum"] | null
+          total_amount: number
+          updated_at?: string | null
+        }
+        Update: {
+          address_delivery?: string
+          city_delivery?: string
+          client_id?: string | null
+          country_delivery?: string
+          created_at?: string | null
+          department_delivery?: string
+          id?: string
+          latitude_delivery?: number | null
+          longitude_delivery?: number | null
+          products?: Json
+          reference_code?: string | null
+          service_id?: string | null
+          shedule_id?: string | null
+          status?: Database["public"]["Enums"]["purchase_status_enum"] | null
+          total_amount?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchases_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchases_shedule_id_fkey"
+            columns: ["shedule_id"]
+            isOneToOne: false
+            referencedRelation: "schedules"
             referencedColumns: ["id"]
           },
         ]
@@ -912,7 +1042,7 @@ export type Database = {
     Enums: {
       client_type_enum: "natural" | "juridico"
       employe_gender_enum: "male" | "female" | "other"
-      employe_rol_enum: "admin" | "cashier" | "stylist"
+      employe_rol_enum: "admin" | "cashier" | "stylist" | "delivery"
       identity_type_enum: "DNI" | "PASSPORT" | "ID"
       inventory_movement_type_enum: "in" | "out" | "adjustment"
       notification_type:
@@ -929,6 +1059,12 @@ export type Database = {
         | "daviplata"
         | "other"
       product_type_enum: "service" | "product"
+      purchase_status_enum:
+        | "pending"
+        | "completed"
+        | "in_progress"
+        | "on_the_way"
+        | "cancelled"
       schedule_status_enum: "pending" | "confirmed" | "cancelled" | "completed"
       transaction_status_enum: "pending" | "completed" | "cancelled"
       transaction_type_enum: "income" | "expense"
@@ -1061,7 +1197,7 @@ export const Constants = {
     Enums: {
       client_type_enum: ["natural", "juridico"],
       employe_gender_enum: ["male", "female", "other"],
-      employe_rol_enum: ["admin", "cashier", "stylist"],
+      employe_rol_enum: ["admin", "cashier", "stylist", "delivery"],
       identity_type_enum: ["DNI", "PASSPORT", "ID"],
       inventory_movement_type_enum: ["in", "out", "adjustment"],
       notification_type: [
@@ -1080,6 +1216,13 @@ export const Constants = {
         "other",
       ],
       product_type_enum: ["service", "product"],
+      purchase_status_enum: [
+        "pending",
+        "completed",
+        "in_progress",
+        "on_the_way",
+        "cancelled",
+      ],
       schedule_status_enum: ["pending", "confirmed", "cancelled", "completed"],
       transaction_status_enum: ["pending", "completed", "cancelled"],
       transaction_type_enum: ["income", "expense"],
