@@ -24,7 +24,7 @@ export const ProfilePage = ({ clientData }: { clientData: Client | null }) => {
         <div className="w-full min-h-screen bg-slate-50 pb-20 font-sans">
             <Header />
 
-            <main className="max-w-5xl mx-auto px-4 py-8 md:py-12">
+            <main className="max-w-7xl mx-auto px-4 py-8 md:py-12">
 
                 {
                     loading && <div className='w-screen h-screen bg-linear-to-br to-black from-30% from-primary fixed z-30 top-0 left-0 flex items-center justify-center gap-2'>

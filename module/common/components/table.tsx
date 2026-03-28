@@ -1,18 +1,28 @@
 'use client';
 import { useMemo, useState, type CSSProperties, type JSX } from "react";
 
-type Header<T> = {
-    key: keyof T;
+export type NestedKeyOf<ObjectType> = ObjectType extends object
+    ? {
+        [Key in keyof ObjectType & string]: NonNullable<ObjectType[Key]> extends Date | Array<any> | Function
+        ? `${Key}`
+        : NonNullable<ObjectType[Key]> extends object
+        ? `${Key}` | `${Key}.${NestedKeyOf<NonNullable<ObjectType[Key]>>}`
+        : `${Key}`;
+    }[keyof ObjectType & string]
+    : string;
+
+export type Header<T> = {
+    key: NestedKeyOf<T> | (string & {});
     title: string;
 };
 
-type Props<T> = {
+export type Props<T> = {
     showPagination?: boolean;
     headers: Header<T>[];
     headerStyles?: CSSProperties
-    styleByField?: (field: keyof T, value: T[keyof T]) => CSSProperties | undefined
-    parseValue?: (field: keyof T, value: T[keyof T]) => string | number
-    onRenderField?: (field: keyof T, value: T[keyof T], item: T) => React.ReactNode
+    styleByField?: (field: NestedKeyOf<T> | (string & {}), value: any) => CSSProperties | undefined
+    parseValue?: (field: NestedKeyOf<T> | (string & {}), value: any) => string | number
+    onRenderField?: (field: NestedKeyOf<T> | (string & {}), value: any, item: T) => React.ReactNode
     data: T[];
     pageSize?: number;
     numeration?: boolean;
@@ -23,7 +33,7 @@ type Props<T> = {
     FooterComponent?: (props: { currentPage: number, allItems: number, pageSize: number, allPages: number, goToPage: (page: number) => void, next: () => void, prev: () => void }) => JSX.Element
 };
 //TODO: Falta agregar props para controlar que acción realizar por fila como se ve en el diseño de figma, [ver, editar, eliminar]
-export function Table<T extends Record<string, unknown>>({
+export function Table<T extends Record<string, any>>({
     headers,
     data,
     pageSize = 10,
@@ -101,12 +111,17 @@ export function Table<T extends Record<string, unknown>>({
                                     </td>
                                 }
                                 {headers.map((h) => {
-                                    const component = onRenderField?.(h.key, row[h.key], row)
+                                    const path = String(h.key);
+                                    const value = path.includes('.')
+                                        ? path.split('.').reduce((acc: any, part) => acc && acc[part] !== undefined ? acc[part] : undefined, row)
+                                        : row[path as keyof T];
+
+                                    const component = onRenderField?.(h.key as any, value, row)
                                     return (
-                                        <td key={String(h.key)} style={styleByField?.(h.key, row[h.key])}>
+                                        <td key={path} className="text-xs" style={styleByField?.(h.key as any, value)}>
                                             {
                                                 component ? component :
-                                                    (parseValue ? parseValue(h.key, row[h.key]) : row[h.key]) as React.ReactNode
+                                                    (parseValue ? parseValue(h.key as any, value) : value) as React.ReactNode
                                             }
                                         </td>
                                     )

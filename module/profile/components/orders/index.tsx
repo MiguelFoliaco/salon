@@ -2,11 +2,23 @@
 import React, { useEffect } from 'react'
 import { useProfile } from '../../hook/use-profile';
 import { useState } from 'react';
-import { getOrders, Order, Orders as Ords } from './actions';
+import { getOrdersWithDelivery, OrderWithDelivery, OrdersWithDelivery as Ords } from './actions';
 import { Table } from '@/module/common/components/table';
-import { format } from 'date-fns';
+import { differenceInDays, format } from 'date-fns';
 import { Product } from '@/module/product/actions/get-products';
 import { cn } from '@/utils/cn';
+import { truncate } from '@/utils/truncate';
+
+
+const MAPSTATUS: Record<NonNullable<NonNullable<OrderWithDelivery['purchase']>['status']>, string> = {
+    'pending': 'Pendiente',
+    'in_progress': 'En progreso',
+    'completed': 'Completado',
+    'cancelled': 'Cancelado',
+    'on_the_way': 'En camino',
+
+}
+
 
 type Products = (Product & { quantity: number })[]
 // En esta seccion se debe especificar el estado del domicilio, agregar a cada order en la consulta con la base de datos.
@@ -25,7 +37,7 @@ export const Orders = () => {
     useEffect(() => {
         if (!client) return;
         setLoading(true);
-        getOrders({ client_id: client.id, page, limit }).then((res) => {
+        getOrdersWithDelivery({ client_id: client.id, page, limit }).then((res) => {
             setOrders(res.data)
             setTotalPages(res.totalPages)
             setPage(res.page)
@@ -57,30 +69,27 @@ export const Orders = () => {
                     (!loading && orders) &&
                     <div>
 
-                        <Table<Order>
+                        <Table<OrderWithDelivery>
 
                             headers={[
                                 { key: 'created_at', title: 'Fecha' },
-                                { key: 'branch', title: 'Sucursal' },
-                                { key: 'status', title: 'Estado' },
-                                { key: 'address_delivery', title: 'Dirc. De entrega' },
-                                { key: 'reference_code', title: 'Referencia' },
-                                { key: 'products', title: 'Productos' },
-                                { key: 'total_amount', title: 'Total' },
+                                { key: 'purchase.branch.name', title: 'Sucursal' },
+                                { key: 'purchase.status', title: 'Estado de compra' },
+                                { key: 'actual_end_time', title: 'Estado de entrega' },
+                                { key: 'purchase.address_delivery', title: 'Dirc. De entrega' },
+                                { key: 'purchase.reference_code', title: 'Referencia' },
+                                { key: 'purchase.products', title: 'Productos' },
+                                { key: 'purchase.total_amount', title: 'Total' },
                             ]}
 
                             onRenderField={(key, value, order) => {
                                 if (key === 'created_at') {
                                     return format(value as string, 'yyyy/MM/dd');
                                 }
-                                if (key === 'total_amount') {
+                                if (key === 'purchase.total_amount') {
                                     return `$${Number(value).toFixed(2)}`;
                                 }
-                                if (key == 'branch') {
-                                    const branch = value as { name: string };
-                                    return branch?.name
-                                }
-                                if (key === 'products') {
+                                if (key === 'purchase.products') {
                                     return <button onClick={() => {
                                         if (products.order_id === order.id) {
                                             setProducts({ order_id: '', products: [] })
@@ -98,6 +107,27 @@ export const Orders = () => {
                                         }
                                     </button>
                                 }
+                                if (key === 'actual_end_time') {
+                                    if (!value) {
+                                        return <p className='text-xs text-red-500'>Pendiente</p>
+                                    }
+                                    const isDelivered = differenceInDays(new Date(), new Date(value as string)) > 0;
+                                    return <p className={cn(
+                                        'text-xs',
+                                        isDelivered ? 'text-green-500' : 'text-red-500'
+                                    )}>
+                                        {isDelivered ? 'Entregado' : 'Pendiente'}
+                                    </p>
+                                }
+                                if (key === 'purchase.reference_code') {
+                                    return <div className='tooltip' data-tip={value as string}>
+                                        <p className='text-xs cursor-pointer hover:underline'>{truncate(value as string, 10)}</p>
+                                    </div>
+                                }
+
+                                if (key === 'purchase.status') {
+                                    return <p className='text-xs'>{MAPSTATUS[value as NonNullable<NonNullable<OrderWithDelivery['purchase']>['status']>]}</p>
+                                }
                                 return value as React.ReactNode;
                             }}
 
@@ -113,7 +143,7 @@ export const Orders = () => {
                             'w-full bg-base-100 flex flex-col items-center justify-center p-10 border border-gray-200 gap-5',
                             products.order_id === '' && 'hidden'
                         )}>
-                            <h3 className='text-lg font-semibold'>Productos de la orden {products.order_id}</h3>
+                            <h3 className='text-lg'>Productos de la orden {products.order_id}</h3>
                             <Table<Products[0]>
                                 headers={[
                                     { key: 'image', title: 'Imagen' },
