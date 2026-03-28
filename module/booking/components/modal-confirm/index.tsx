@@ -7,7 +7,7 @@ import { TablesInsert } from "@/supabase/database.types"
 import { FiCalendar, FiClock, FiUser, FiScissors, FiX, FiCheck, FiDollarSign } from "react-icons/fi"
 import { saveSchedule } from "../../actions/schedule-by-employe"
 import { useToast } from "@/module/common/hook/useToast"
-import { generateHash, savePurchase } from "@/module/checkout/actions"
+import { generateHash, saveTransaction } from "@/module/checkout/actions"
 import { useRef, useState } from "react"
 import { CONSTANT } from "@/constant"
 
@@ -36,14 +36,14 @@ export function ModalConfirmBooking({
                 return;
             }
 
-            const amount = calculatePrice(service) * 100
-            const responseSavePurchase = await savePurchase({
+            const amount = calculatePrice(service).total * 100
+            const responseSavePurchase = await saveTransaction({
                 amount,
                 transaction_type: 'income',
                 client_id: schedule.client_id,
                 products: [],
                 services: [service.id],
-                total_amount: calculatePrice(service),
+                total_amount: calculatePrice(service).total,
                 // reference_code: schedule.id, // esta se genera en la accion
                 payment_method: 'cash',
                 status: 'pending',
@@ -178,7 +178,7 @@ export function ModalConfirmBooking({
                             <span className="font-medium">Total a pagar</span>
                         </div>
                         <span className="text-2xl font-bold text-gray-800">
-                            ${calculatePrice(service).toFixed(2)}
+                            ${calculatePrice(service).total.toFixed(2)}
                         </span>
                     </div>
 

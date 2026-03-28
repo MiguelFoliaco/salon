@@ -5,6 +5,8 @@ import { useUser } from '@/module/auth/context/useUser'
 import { Uppcoming } from '../upcomming';
 import { Past } from '../past';
 import { Canceled } from '../canceled';
+import { TbTruckDelivery } from 'react-icons/tb';
+import { Orders } from '../orders';
 
 export const ProfileDetails = ({ clientData, editProfile, setEditProfile }: { clientData: Client, editProfile: boolean, setEditProfile: (value: boolean) => void }) => {
     const { user } = useUser()
@@ -31,27 +33,34 @@ export const ProfileDetails = ({ clientData, editProfile, setEditProfile }: { cl
                 </div>
 
                 {/* Tabs */}
-                <div className="flex gap-8 border-b border-slate-200 mb-8 overflow-x-auto scrollbar-hide">
+                <div className="tabs tabs-boxed">
                     <button
                         onClick={() => setActiveTab('upcoming')}
-                        className={`pb-4 text-base font-bold flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap ${activeTab === 'upcoming' ? 'text-primary ' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+                        className={`tab flex gap-2 ${activeTab === 'upcoming' ? 'tab-active' : ''}`}
                     >
                         <BsCalendarCheck size={18} />
                         Próximamente
                     </button>
                     <button
                         onClick={() => setActiveTab('past')}
-                        className={`pb-4 text-base font-bold flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap ${activeTab === 'past' ? 'text-primary' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+                        className={`tab flex gap-2 ${activeTab === 'past' ? 'tab-active' : ''}`}
                     >
                         <BsClockHistory size={18} />
                         Historia pasada
                     </button>
                     <button
                         onClick={() => setActiveTab('canceled')}
-                        className={`pb-4 text-base font-bold flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap ${activeTab === 'canceled' ? 'text-primary ' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+                        className={`tab flex gap-2 ${activeTab === 'canceled' ? 'tab-active' : ''}`}
                     >
                         <BsXCircle size={18} />
                         Cancelado
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('orders')}
+                        className={`tab flex gap-2 ${activeTab === 'orders' ? 'tab-active' : ''}`}
+                    >
+                        <TbTruckDelivery size={18} />
+                        Mis pedidos
                     </button>
                 </div>
 
@@ -66,7 +75,11 @@ export const ProfileDetails = ({ clientData, editProfile, setEditProfile }: { cl
                 {activeTab === 'canceled' && (
                     <Canceled />
                 )}
-
+                {
+                    activeTab === 'orders' && (
+                        <Orders />
+                    )
+                }
                 {/* Loyalty Program Banner */}
                 {/* <div className="mt-12 bg-success/20  p-8 md:p-10 border border-success flex flex-col items-center text-center">
                     <div className="w-12 h-12 bg-primary text-white shadow-md flex items-center justify-center mb-6 -rotate-12">

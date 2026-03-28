@@ -640,6 +640,7 @@ export type Database = {
       purchases: {
         Row: {
           address_delivery: string
+          branch_id: string | null
           city_delivery: string
           client_id: string | null
           country_delivery: string
@@ -658,6 +659,7 @@ export type Database = {
         }
         Insert: {
           address_delivery: string
+          branch_id?: string | null
           city_delivery: string
           client_id?: string | null
           country_delivery?: string
@@ -676,6 +678,7 @@ export type Database = {
         }
         Update: {
           address_delivery?: string
+          branch_id?: string | null
           city_delivery?: string
           client_id?: string | null
           country_delivery?: string
@@ -693,6 +696,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "purchases_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "purchases_client_id_fkey"
             columns: ["client_id"]

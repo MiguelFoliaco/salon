@@ -51,7 +51,7 @@ export const Uppcoming = () => {
         return null;
     }, [schedules])
 
-    if (!nextAppointment && !loading) return <div className='w-full rounded-sm bg-base-100 flex flex-col items-center justify-center p-10 border border-gray-200 gap-5'>
+    if (!nextAppointment && !loading) return <div className='w-full bg-base-100 flex flex-col items-center justify-center p-10 border border-gray-200 gap-5'>
         <p>No tienes citas próximamente</p>
         <button className='btn btn-primary px-10' onClick={() => load(false, true)} disabled={loading}>
             Recargar

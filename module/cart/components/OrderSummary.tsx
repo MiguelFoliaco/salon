@@ -5,16 +5,23 @@ import { useCart } from '../context/useCart';
 import { useUser } from '@/module/auth/context/useUser';
 import { useRouter } from 'next/navigation';
 import { MdOpenInNew } from 'react-icons/md';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useProfile } from '@/module/profile/hook/use-profile';
 import { calculatePrice } from '@/module/utils/calculate-priece';
+import { generateHash, savePurchase, saveTransaction } from '@/module/checkout/actions';
+import { CONSTANT } from '@/constant';
+import { generateId } from '@/utils/generate-id';
+import { useBranches } from '@/module/branches/context/use-branches';
+import { useToast } from '@/module/common/hook/useToast';
 
 export const OrderSummary = () => {
-    const { items, subtotal: getRawTotal, clearCart } = useCart();
+    const { items, clearCart } = useCart();
+    const { selectedBranch } = useBranches()
     const { client } = useProfile()
     const { user } = useUser((s) => s);
     const router = useRouter();
-    const [reciveMode, setReciveMode] = useState<'local' | 'domicilio'>('local')
+    const { openToast } = useToast()
+    const [reciveMode, setReciveMode] = useState<'local' | 'domicilio'>('local');
 
     // getRawTotal() returns sum of product.value * quantity
     let total = 0;
@@ -28,15 +35,106 @@ export const OrderSummary = () => {
         taxAmount += itemPrice.tax;
     });
 
-    const handleCheckout = () => {
+    const handleCheckout = async () => {
+        if (!selectedBranch) {
+            router.push('/branches');
+            return;
+        }
         if (!user) {
             router.push('/auth/login?redirect=/cart');
             return;
         }
+        if (!client?.address || !client?.city_or_municipality || !client?.departament) {
+            openToast("Por favor complete su dirección de entrega", "error")
+            return
+        }
+
+        const products = items.map(e => {
+            const product = e.product
+            return {
+                ...product,
+                quantity: e.quantity,
+            }
+        })
+        const reference = `order_${generateId()}`
+        const purchase = await savePurchase({
+            address_delivery: client?.address,
+            city_delivery: client?.city_or_municipality,
+            department_delivery: client?.departament,
+            country_delivery: 'Colombia',
+            products,
+            total_amount: total,
+            reference_code: reference,
+            status: 'pending',
+            branch_id: selectedBranch.id,
+            client_id: client?.id,
+            latitude_delivery: Number(client?.latitude),
+            longitude_delivery: Number(client?.longitude),
+            service_id: null,
+            shedule_id: null,
+        })
+        if (!purchase.success) {
+            openToast(purchase?.message || 'Error al guardar el pedido', 'error');
+            return;
+        }
+        const responseSaveTransaction = await saveTransaction({
+            amount: total,
+            transaction_type: 'income',
+            client_id: client?.id,
+            branch_id: selectedBranch.id,
+            tax_amount: taxAmount,
+            products,
+            services: [],
+            total_amount: total,
+            reference_code: reference,
+            payment_method: 'other',
+            status: 'pending',
+        });
+
+        if (!responseSaveTransaction.success) {
+            openToast(responseSaveTransaction?.message || 'Error al guardar el pedido', 'error');
+            return;
+        }
+        const hash = await generateHash({
+            amount: total * 100,
+            currency: 'COP',
+            integrity: CONSTANT.WOMPI_INTEGRITY_HASH,
+            reference: responseSaveTransaction.data?.reference_code!,
+        })
+
+
+        if (!hash.response.data.hash) {
+            openToast("Ocurrio un error al generar el hash, por favor intentelo mas tarde, revise en sus citas e intente pagar desde ahí", "error")
+            return
+        }
+
+        openToast("Cita agendada exitosamente, para confirmar sera redireccionado ha realizar el pago mediante WOMPI", "success")
+
+        const form = document.createElement('form')
+        const script = document.createElement('script')
+        script.src = "https://checkout.wompi.co/widget.js"
+        script.setAttribute("data-render", "button")
+        script.setAttribute("data-expiration-time", hash.expirationTime)
+        script.setAttribute("data-public-key", CONSTANT.WOMPI_PUBLIC_KEY)
+        script.setAttribute("data-currency", "COP")
+        script.setAttribute("data-amount-in-cents", (total * 100).toString())
+        script.setAttribute("data-reference", responseSaveTransaction.data?.reference_code!)
+        script.setAttribute("data-signature:integrity", hash.response.data.hash)
+        form.style.display = 'none';
+        form.appendChild(script)
+        document.body.appendChild(form)
         // TODO: connect to payment/order flow
-        alert('¡Pedido procesado! (flujo de pago pendiente)');
-        clearCart();
+        setTimeout(() => {
+            const button = form.querySelector("button");
+            if (!button) {
+                openToast("Ocurrio un error al generar el pago, por favor intentelo mas tarde, revise en sus citas e intente pagar desde ahí", "error")
+                return
+            }
+            button.click()
+            clearCart();
+        }, 1000)
     };
+
 
     const isValidPass = (client?.address && reciveMode === 'domicilio' || reciveMode === 'local') && (client?.phone && client?.identity_value && client?.identity_type)
 
@@ -105,6 +203,7 @@ export const OrderSummary = () => {
             >
                 Seguir comprando
             </button>
+
 
             {/* Security badge */}
             <div className="flex items-center gap-2 bg-base-200 rounded-xl p-3 text-xs text-base-content/60">
