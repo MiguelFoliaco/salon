@@ -69,7 +69,7 @@ export function Table<T extends Record<string, any>>({
         <div className="w-full">
 
             <div className={
-                "overflow-x-auto rounded-box border border-base-content/5 bg-base-100 " +
+                "overflow-x-auto border  border-base-content/5 bg-base-100 " +
                 containerClassName
             }>
                 <table className={"table border-base-300 border " + tableClassNameContent}>
