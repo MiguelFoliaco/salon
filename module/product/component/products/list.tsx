@@ -27,10 +27,11 @@ export const ListProduct = () => {
 
     const handleRedirect = (product: Product) => {
         if (product.is_service) {
+            console.log('Redirect: ', product)
             setProductSelected(product)
-            return router.push(`/booking/${product.id}`)
+            return router.push(`/booking/${product.code || product.id}`)
         }
-        router.push(`/product/${product.id}`)
+        router.push(`/product/${product.code || product.id}`)
 
     }
 

@@ -31,6 +31,7 @@ export type Props<T> = {
     containerClassName?: string,
     selectable?: boolean
     FooterComponent?: (props: { currentPage: number, allItems: number, pageSize: number, allPages: number, goToPage: (page: number) => void, next: () => void, prev: () => void }) => JSX.Element
+    ActionFielComponent?: (item: T) => React.ReactNode
 };
 //TODO: Falta agregar props para controlar que acción realizar por fila como se ve en el diseño de figma, [ver, editar, eliminar]
 export function Table<T extends Record<string, any>>({
@@ -47,7 +48,8 @@ export function Table<T extends Record<string, any>>({
     numerationTitle,
     containerClassName,
     selectable,
-    FooterComponent
+    FooterComponent,
+    ActionFielComponent
 }: Props<T>) {
 
     const [page, setPage] = useState(1);
@@ -93,6 +95,13 @@ export function Table<T extends Record<string, any>>({
                                     {h.title}
                                 </th>
                             ))}
+                            {
+                                ActionFielComponent && (
+                                    <th>
+                                        Acciones
+                                    </th>
+                                )
+                            }
                         </tr>
                     </thead>
 
@@ -126,6 +135,13 @@ export function Table<T extends Record<string, any>>({
                                         </td>
                                     )
                                 })}
+                                {
+                                    ActionFielComponent && (
+                                        <td>
+                                            {ActionFielComponent(row)}
+                                        </td>
+                                    )
+                                }
                             </tr>
                         ))}
                     </tbody>

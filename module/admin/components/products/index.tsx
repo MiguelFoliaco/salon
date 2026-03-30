@@ -1,26 +1,32 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getAdminProducts, toggleProductStatus, createAdminProduct } from '../../actions/products';
-import { BsPlusLg, BsSearch, BsToggleOn, BsToggleOff, BsBoxSeam, BsScissors, BsX } from 'react-icons/bs';
+import { getAdminProducts, toggleProductStatus, createAdminProduct, type AdminProduct } from '../../actions/products';
+import { BsPlusLg, BsSearch, BsToggleOn, BsToggleOff, BsBoxSeam, BsScissors, BsX, BsClock } from 'react-icons/bs';
+import { useBranches } from '@/module/branches/context/use-branches';
+import { useConfigurations } from '@/module/configurations/context/use-configurations';
+import { useToast } from '@/module/common/hook/useToast';
+import { Table } from '@/module/common/components/table';
+import { ModalCreateProductOrService } from './modal-create';
 
 export const AdminProducts = () => {
-    const [products, setProducts] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [products, setProducts] = useState<AdminProduct[]>([]);
+    const [loading, setLoading] = useState(false);
+    const { openToast } = useToast()
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [search, setSearch] = useState('');
-
+    const { branches, load, selectedBranch, updateSelectedBranch } = useBranches()
+    const { configuration } = useConfigurations()
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [submitting, setSubmitting] = useState(false);
-    const [form, setForm] = useState({
-        name: '', description: '', value: '', type: 'service', estimate_time_in_minutes: '30', stock: '0'
-    });
 
-    const loadProducts = async (p = 1, s = search) => {
+
+    const loadProducts = async (p = 1, s = search, branchId: string) => {
+        if (loading) return;
         setLoading(true);
         try {
-            const res = await getAdminProducts(p, 10, s);
+            const res = await getAdminProducts({ page: p, limit: 10, search: s, branchId: branchId });
+            console.log(res.data)
             setProducts(res.data || []);
             setTotalPages(res.totalPages);
             setPage(p);
@@ -31,39 +37,35 @@ export const AdminProducts = () => {
         }
     };
 
+
     useEffect(() => {
-        loadProducts();
+        if (configuration) {
+            load(configuration.id)
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        loadProducts(1, search);
-    };
+    useEffect(() => {
+        if (selectedBranch?.id) {
+            loadProducts(1, search, selectedBranch.id);
+        }
+    }, [selectedBranch]);
 
-    const handleCreateSubmit = async (e: React.FormEvent) => {
+    const handleSearch = async (e: React.FormEvent) => {
+        if (!selectedBranch?.id) {
+            openToast("Por favor seleccione una sucursal", "info")
+            return
+        }
         e.preventDefault();
-        setSubmitting(true);
         try {
-            await createAdminProduct({
-                name: form.name,
-                description: form.description,
-                value: parseFloat(form.value),
-                is_service: form.type === 'service',
-                estimate_time_in_minutes: parseInt(form.estimate_time_in_minutes),
-                stock: form.type === 'product' ? parseInt(form.stock) : 0,
-                is_active: true
-            });
-            setIsModalOpen(false);
-            setForm({ name: '', description: '', value: '', type: 'service', estimate_time_in_minutes: '30', stock: '0' });
-            loadProducts();
-        } catch (err) {
-            console.error(err);
-            alert("Error al crear el producto o servicio");
-        } finally {
-            setSubmitting(false);
+            await loadProducts(1, search, selectedBranch.id);
+        } catch (error) {
+            console.error(error);
+            openToast("Error al buscar productos", "error")
         }
     };
+
+
 
     const handleToggleStatus = async (id: string, currentStatus: boolean) => {
         try {
@@ -91,8 +93,8 @@ export const AdminProducts = () => {
                 </button>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div className="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
+            <div className=" shadow-sm  overflow-hidden">
+                <div className="p-4 border-b border-slate-200 bg-slate-50 flex items-center gap-2">
                     <form onSubmit={handleSearch} className="relative w-full max-w-md">
                         <input
                             type="text"
@@ -104,149 +106,131 @@ export const AdminProducts = () => {
                         <BsSearch className="absolute left-3 top-2.5 text-slate-400" size={14} />
                         <button type="submit" className="hidden">Buscar</button>
                     </form>
+
+                    <select name="branch-id" className="select select-sm ml-auto" onChange={(e) => {
+                        if (e.target.value === "") {
+                            updateSelectedBranch(null)
+                        } else {
+                            const branch = branches.find((branch) => branch.id === e.target.value)
+                            if (branch) {
+                                updateSelectedBranch(branch)
+                                loadProducts(1, search, branch.id)
+                            }
+                        }
+                    }}>
+                        <option value="">Todas las sucursales</option>
+                        {branches.map((branch) => (
+                            <option key={branch.id} value={branch.id}>
+                                {branch.name}
+                            </option>
+                        ))}
+                    </select>
+                    <button className="btn btn-sm btn-primary shadow-none" onClick={() => loadProducts(1, search, selectedBranch?.id || "")}>Recargar</button>
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 text-sm">
-                                <th className="p-4 font-semibold">Nombre</th>
-                                <th className="p-4 font-semibold">Tipo</th>
-                                <th className="p-4 font-semibold">Precio / Tax</th>
-                                <th className="p-4 font-semibold text-center">Stock / Tiempo</th>
-                                <th className="p-4 font-semibold text-right">Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
-                                <tr>
-                                    <td colSpan={5} className="p-8 text-center text-slate-500">
-                                        <span className="loading loading-spinner text-primary"></span>
-                                    </td>
-                                </tr>
-                            ) : products.length === 0 ? (
-                                <tr>
-                                    <td colSpan={5} className="p-8 text-center text-slate-500">
-                                        No se encontraron productos o servicios.
-                                    </td>
-                                </tr>
-                            ) : (
-                                products.map((item) => (
-                                    <tr key={item.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                                        <td className="p-4">
-                                            <p className="font-medium text-slate-900">{item.name}</p>
-                                        </td>
-                                        <td className="p-4">
-                                            <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold ${item.is_service ? 'bg-purple-50 text-purple-600' : 'bg-orange-50 text-orange-600'}`}>
-                                                {item.is_service ? <BsScissors /> : <BsBoxSeam />}
-                                                {item.is_service ? 'Servicio' : 'Producto'}
-                                            </div>
-                                        </td>
-                                        <td className="p-4">
-                                            <p className="font-medium text-slate-900">${item.value}</p>
-                                            <p className="text-xs text-slate-500">Tax: {item.taxe?.percentage ? `${item.taxe.percentage * 100}%` : 'N/A'}</p>
-                                        </td>
-                                        <td className="p-4 text-center">
-                                            {item.is_service ? (
-                                                <span className="text-sm text-slate-600">{item.estimate_time_in_minutes} min</span>
-                                            ) : (
-                                                <span className={`text-sm font-semibold ${item.stock > 0 ? 'text-green-600' : 'text-red-500'}`}>
-                                                    {item.stock} uni
-                                                </span>
-                                            )}
-                                        </td>
-                                        <td className="p-4 text-right">
-                                            <button
-                                                onClick={() => handleToggleStatus(item.id, item.is_active)}
-                                                className={`btn btn-sm btn-ghost gap-2 ${item.is_active ? 'text-green-600' : 'text-slate-400'}`}
-                                            >
-                                                {item.is_active ? 'Activo' : 'Inactivo'}
-                                                {item.is_active ? <BsToggleOn size={24} /> : <BsToggleOff size={24} />}
+                    {
+                        products?.length === 0 ? (
+                            <div className="flex items-center justify-center h-64">
+                                <p className="text-slate-500">
+                                    {
+                                        selectedBranch ? (
+                                            <>
+                                                No se encontraron productos para la sucursal {selectedBranch.name}
+                                            </>
+                                        ) : (
+                                            <>
+                                                Seleccione una sucursal para ver los productos
+                                            </>
+                                        )
+                                    }
+                                </p>
+                            </div>
+                        ) : (
+                            <Table<AdminProduct>
+                                data={products}
+                                headers={[
+                                    { key: 'product.name', title: 'Nombre' },
+                                    { key: 'product.is_service', title: 'Tipo' },
+                                    { key: 'product.value', title: 'Precio' },
+                                    { key: 'product.stock', title: 'Stock / Tiempo' },
+                                    { key: 'product.is_active', title: 'Estado', },
+                                ]}
+                                ActionFielComponent={(item) => {
+                                    return (
+                                        <div className="flex gap-2">
+                                            <button className="btn btn-xs btn-primary shadow-none" onClick={() => handleToggleStatus(item.id, item.product.is_active!!)}>
+                                                {item.product.is_active ? 'Inactivar' : 'Activar'}
                                             </button>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+                                        </div>
+                                    )
+                                }}
+                                onRenderField={(key, value, item) => {
+                                    if (key === 'product.is_service') {
+                                        return <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold ${item.product.is_service ? 'bg-purple-50 text-purple-600' : 'bg-orange-50 text-orange-600'}`}>
+                                            {item.product?.is_service ? <BsScissors /> : <BsBoxSeam />}
+                                            {item.product?.is_service ? 'Servicio' : 'Producto'}
+                                        </div>
+                                    }
+                                    if (key === 'product.value') {
+                                        return `$${item.product.value}`;
+                                    }
+                                    if (key === 'product.stock') {
+                                        return <div className="flex items-center gap-2">{
+                                            item.product.is_service ? (
+                                                <span className="text-xs flex gap-1 items-center justify-center">
+                                                    <BsClock /> {item.product.estimate_time_in_minutes} min
+                                                </span>
+                                            ) : (
+                                                <span className="text-xs font-medium">{item.stock}</span>
+                                            )
+                                        }
+                                        </div>;
+                                    }
+                                    if (key === 'product.is_active') {
+                                        return item.product.is_active ? 'Activo' : 'Inactivo';
+                                    }
+                                    return value;
+                                }}
+
+                                FooterComponent={() => (
+                                    <div className="p-4 border-t border-slate-200 flex justify-center gap-2 bg-slate-50">
+                                        <button
+                                            disabled={page === 1}
+                                            onClick={() => loadProducts(page - 1, search, selectedBranch?.id || "")}
+                                            className="btn btn-sm btn-outline bg-white"
+                                        >
+                                            Anterior
+                                        </button>
+                                        <span className="flex items-center text-sm font-medium text-slate-500 px-4">
+                                            {
+                                                loading ? <span className="loading loading-spinner"></span> : `Página ${page} de ${totalPages}`
+                                            }
+                                        </span>
+                                        <button
+                                            disabled={page === totalPages}
+                                            onClick={() => loadProducts(page + 1, search, selectedBranch?.id || "")}
+                                            className="btn btn-sm btn-outline bg-white"
+                                        >
+                                            Siguiente
+                                        </button>
+                                    </div>
+                                )}
+                            />
+                        )
+                    }
                 </div>
 
-                {/* Pagination */}
-                {!loading && totalPages > 1 && (
-                    <div className="p-4 border-t border-slate-200 flex justify-center gap-2 bg-slate-50">
-                        <button
-                            disabled={page === 1}
-                            onClick={() => loadProducts(page - 1)}
-                            className="btn btn-sm btn-outline bg-white"
-                        >
-                            Anterior
-                        </button>
-                        <span className="flex items-center text-sm font-medium text-slate-500 px-4">
-                            Página {page} de {totalPages}
-                        </span>
-                        <button
-                            disabled={page === totalPages}
-                            onClick={() => loadProducts(page + 1)}
-                            className="btn btn-sm btn-outline bg-white"
-                        >
-                            Siguiente
-                        </button>
-                    </div>
-                )}
+
             </div>
 
             {/* Modal for Creating Product/Service */}
             {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4">
-                    <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl relative overflow-hidden">
-                        <div className="p-6 border-b border-slate-100 flex justify-between items-center">
-                            <h2 className="text-xl font-bold text-slate-800">Crear Nuevo {form.type === 'service' ? 'Servicio' : 'Producto'}</h2>
-                            <button onClick={() => setIsModalOpen(false)} className="btn btn-sm btn-circle btn-ghost"><BsX size={20} /></button>
-                        </div>
-
-                        <form onSubmit={handleCreateSubmit} className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
-                            <div className="grid grid-cols-2 gap-2 mb-2 bg-slate-100 p-1 rounded-lg">
-                                <button type="button" onClick={() => setForm({ ...form, type: 'service' })} className={`py-2 text-sm font-semibold rounded-md transition-all ${form.type === 'service' ? 'bg-white shadow text-purple-600' : 'text-slate-500 hover:text-slate-700'}`}>Servicio</button>
-                                <button type="button" onClick={() => setForm({ ...form, type: 'product' })} className={`py-2 text-sm font-semibold rounded-md transition-all ${form.type === 'product' ? 'bg-white shadow text-orange-600' : 'text-slate-500 hover:text-slate-700'}`}>Producto Físico</button>
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-semibold text-slate-700 mb-1">Nombre</label>
-                                <input type="text" required className="input input-bordered w-full" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-semibold text-slate-700 mb-1">Descripción</label>
-                                <textarea className="textarea textarea-bordered w-full h-20" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}></textarea>
-                            </div>
-
-                            <div className="flex gap-4">
-                                <div className="flex-1">
-                                    <label className="block text-sm font-semibold text-slate-700 mb-1">Precio base</label>
-                                    <input type="number" required min="0" step="0.01" className="input input-bordered w-full" value={form.value} onChange={e => setForm({ ...form, value: e.target.value })} />
-                                </div>
-                                {form.type === 'service' ? (
-                                    <div className="flex-1">
-                                        <label className="block text-sm font-semibold text-slate-700 mb-1">Tiempo est. (min)</label>
-                                        <input type="number" required min="1" className="input input-bordered w-full" value={form.estimate_time_in_minutes} onChange={e => setForm({ ...form, estimate_time_in_minutes: e.target.value })} />
-                                    </div>
-                                ) : (
-                                    <div className="flex-1">
-                                        <label className="block text-sm font-semibold text-slate-700 mb-1">Stock Inicial</label>
-                                        <input type="number" required min="0" className="input input-bordered w-full" value={form.stock} onChange={e => setForm({ ...form, stock: e.target.value })} />
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="pt-4 flex gap-3">
-                                <button type="button" className="btn btn-ghost flex-1" onClick={() => setIsModalOpen(false)}>Cancelar</button>
-                                <button type="submit" className="btn btn-primary flex-1 text-white" disabled={submitting}>
-                                    {submitting ? <span className="loading loading-spinner"></span> : `Crear ${form.type === 'service' ? 'Servicio' : 'Producto'}`}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                <ModalCreateProductOrService
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    onSubmit={() => loadProducts(1, search, selectedBranch?.id || "")}
+                />
             )}
         </div>
     );

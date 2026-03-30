@@ -20,7 +20,7 @@ export const EmployesByService = ({ serviceId }: args) => {
     return (
         <div>
             <h2 className='text-xl md:text-2xl font-bold flex items-center gap-2 mb-6 text-slate-900'>
-                <span className='text-primary text-2xl'><BsPeople /></span> Select Stylist
+                <span className='text-primary text-2xl'><BsPeople /></span> Escoge un estilista
             </h2>
 
             {loading && (

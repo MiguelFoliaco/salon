@@ -1,3 +1,4 @@
+'use client';
 
 import { Header } from '../common/components/header'
 import { useParams } from 'next/navigation'
@@ -36,6 +37,7 @@ export const BookingPage = () => {
         if (params.productId) {
             getProductById(params.productId as string)
                 .then((product) => {
+                    console.log('Product ', product)
                     setProductSelected(product)
                 })
                 .catch(() => {
@@ -126,8 +128,8 @@ export const BookingPage = () => {
                         </div>
                         {/* Header Details */}
                         <div className='mb-10'>
-                            <h1 className='text-4xl md:text-5xl font-bold text-slate-900 mb-2 tracking-tight'>Book Your Glow</h1>
-                            <p className='text-lg text-primary font-medium'>Pick a date and time for your sweet transformation</p>
+                            <h1 className='text-4xl md:text-5xl font-bold text-slate-900 mb-2 tracking-tight'>Agenda tu {productSelected.name}</h1>
+                            <p className='text-lg text-primary font-medium'>Escoge una fecha y hora para tu cita</p>
                         </div>
 
                         <div role="alert" className='w-full alert alert-info alert-soft my-5'>
@@ -144,7 +146,7 @@ export const BookingPage = () => {
                             <div className='flex flex-col lg:flex-row gap-8 lg:gap-12'>
                                 <section className='flex-[0.45] w-full'>
                                     <h2 className='text-xl md:text-2xl font-bold flex items-center gap-2 mb-6 text-slate-900'>
-                                        <span className='text-primary text-2xl'><BiCalendar /></span> Choose Date
+                                        <span className='text-primary text-2xl'><BiCalendar /></span> Escoge una fecha
                                     </h2>
                                     <div className='w-full flex justify-center bg-white  p-6 shadow-sm border border-slate-100'>
                                         <BookingCalendar disabled={!selectedEmployee} selected={selectedDate} onSelectDate={setSelectedDate} />
