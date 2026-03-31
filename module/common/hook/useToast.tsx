@@ -5,9 +5,9 @@ import { create } from 'zustand'
 type IToastContext = {
     msg: string;
     time: number;
-    status: 'info' | 'success' | 'warning' | 'error';
+    status: 'info' | 'success' | 'warning' | 'error' | 'loading';
     open: boolean;
-    openToast: (msg: string, status?: 'info' | 'success' | 'warning' | 'error', time?: number) => void
+    openToast: (msg: string, status?: 'info' | 'success' | 'warning' | 'error' | 'loading', time?: number) => void
 }
 
 export const useToast = create<IToastContext>(set => ({

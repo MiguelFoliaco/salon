@@ -508,6 +508,53 @@ export type Database = {
         }
         Relationships: []
       }
+      polygons_coverage: {
+        Row: {
+          branch_id: string
+          color: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          points: Json
+          price: number
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          points: Json
+          price: number
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          points?: Json
+          price?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "polygons_coverage_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_gallery: {
         Row: {
           alt: string | null

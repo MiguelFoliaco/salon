@@ -24,6 +24,7 @@ type Props = {
 export default function Map({ position = [4.7110, -74.0721], width = '100%', height = '500px' }: Props) {
     return (
         <MapContainer
+            fadeAnimation
             // @ts-ignore
             zoom={13}
             scrollWheelZoom={false}
@@ -42,7 +43,7 @@ export default function Map({ position = [4.7110, -74.0721], width = '100%', hei
             <Marker
                 // @ts-ignore
                 position={position}>
-                <Popup>Bogotá 🚀</Popup>
+                <Popup>Estamos Aquí</Popup>
             </Marker>
         </MapContainer>
     );

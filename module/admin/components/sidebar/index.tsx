@@ -14,6 +14,7 @@ import {
 } from 'react-icons/bs';
 import { useUser } from '@/module/auth/context/useUser';
 import { logout } from '@/module/auth/actions/session';
+import { BiShapePolygon } from 'react-icons/bi';
 
 export const SidebarAdmin = () => {
     const pathname = usePathname();
@@ -25,6 +26,7 @@ export const SidebarAdmin = () => {
         { name: 'Empleados', path: '/admin/employees', icon: <BsPersonBadge size={20} /> },
         { name: 'Clientes', path: '/admin/clients', icon: <BsPeople size={20} /> },
         { name: 'Domicilios', path: '/admin/orders', icon: <BsTruck size={20} /> },
+        { name: 'Poligonos', path: '/admin/polygons', icon: <BiShapePolygon size={20} /> },
         { name: 'Impuestos', path: '/admin/taxes', icon: <BsCashCoin size={20} /> },
         { name: 'Configuración', path: '/admin/settings', icon: <BsGear size={20} /> },
         { name: 'Notificaciones', path: '/admin/notifications', icon: <BsGear size={20} /> },
