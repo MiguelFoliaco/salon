@@ -9,8 +9,8 @@ import '@radix-ui/themes/styles.css';
 import { getConfiguration } from "@/module/configurations/actions/get-configurations";
 
 export const metadata: Metadata = {
-  title: "Glow Salon | Experiencia Premium de Belleza",
-  description: "Servicios de estilismo y cuidado personal de clase mundial. Agenda tu cita hoy y revela tu mejor version.",
+  title: "Reserva Salon | Agenda tus citas",
+  description: "Agenda tus citas en linea",
 };
 
 // zoom disable  

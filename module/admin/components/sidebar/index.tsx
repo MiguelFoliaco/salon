@@ -15,6 +15,7 @@ import {
 import { useUser } from '@/module/auth/context/useUser';
 import { logout } from '@/module/auth/actions/session';
 import { BiShapePolygon } from 'react-icons/bi';
+import { CONSTANT } from '@/constant';
 
 export const SidebarAdmin = () => {
     const pathname = usePathname();
@@ -43,7 +44,7 @@ export const SidebarAdmin = () => {
             {/* Desktop Sidebar */}
             <aside className="hidden md:flex flex-col w-64 bg-base-100 border-r border-base-200 h-full p-4 relative z-20 shadow-sm">
                 <div className="mb-8 px-4 py-2">
-                    <h1 className="text-2xl font-black tracking-tight">Admin<span className="text-primary">Panel</span></h1>
+                    <h1 className="text-2xl font-black tracking-tight">Admin<span className="text-primary">{CONSTANT.NAME}</span></h1>
                 </div>
 
                 <nav className="flex-1 space-y-2">

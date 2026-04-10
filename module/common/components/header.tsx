@@ -10,6 +10,8 @@ import { BsScissors, BsList, BsXLg } from 'react-icons/bs';
 import { BiMapPin } from 'react-icons/bi';
 import { useEmploye } from '@/module/booking/context/use-employe';
 import { CartIcon } from '@/module/cart/components/CartIcon';
+import Image from 'next/image';
+import { CONSTANT } from '@/constant';
 
 export const Header = () => {
 
@@ -27,11 +29,11 @@ export const Header = () => {
                         className="flex items-center gap-2.5 cursor-pointer hover:opacity-80 transition-opacity shrink-0"
                         onClick={() => router.push('/')}
                     >
-                        <div className="flex items-center justify-center rounded-lg bg-primary p-2">
-                            <BsScissors className="size-5 text-primary-content" />
+                        <div className="flex items-center justify-center rounded-lg">
+                            <Image quality={100} src={CONSTANT.LOGO} alt="Logo" width={50} height={50} />
                         </div>
                         <span className="text-lg font-bold tracking-tight hidden sm:block">
-                            GLOW SALON
+                            {CONSTANT.NAME}
                         </span>
                     </div>
 

@@ -84,7 +84,7 @@ export const Orders = () => {
 
                             onRenderField={(key, value, order) => {
                                 if (key === 'created_at') {
-                                    return format(value as string, 'yyyy/MM/dd');
+                                    return format(value as string, 'yyyy/MM/dd - hh:mm a');
                                 }
                                 if (key === 'purchase.total_amount') {
                                     return `$${Number(value).toFixed(2)}`;

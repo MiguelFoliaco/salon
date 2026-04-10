@@ -5,7 +5,7 @@ import { useCart } from '../context/useCart';
 import { useUser } from '@/module/auth/context/useUser';
 import { useRouter } from 'next/navigation';
 import { MdOpenInNew } from 'react-icons/md';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useProfile } from '@/module/profile/hook/use-profile';
 import { calculatePrice } from '@/module/utils/calculate-priece';
 import { generateHash, savePurchase, saveTransaction } from '@/module/checkout/actions';
@@ -13,18 +13,21 @@ import { CONSTANT } from '@/constant';
 import { generateId } from '@/utils/generate-id';
 import { useBranches } from '@/module/branches/context/use-branches';
 import { useToast } from '@/module/common/hook/useToast';
+import { getPolygonsByBranch, Polygons } from '@/module/polygons/actions';
+import { calculatePolygons } from '@/module/polygons/utils/calculate-polygons';
+
 
 export const OrderSummary = () => {
-    const { items, clearCart } = useCart();
+    const { items, clearCart, priceDelivery, type, setPriceDelivery, setType } = useCart();
     const { selectedBranch } = useBranches()
     const { client } = useProfile()
     const { user } = useUser((s) => s);
     const router = useRouter();
     const { openToast } = useToast()
-    const [reciveMode, setReciveMode] = useState<'local' | 'domicilio'>('local');
+    const [loading, setLoading] = useState(false);
 
     // getRawTotal() returns sum of product.value * quantity
-    let total = 0;
+    let total = 0 + (type === 'delivery' ? priceDelivery || 0 : 0);
     let sub = 0;
     let taxAmount = 0;
 
@@ -34,6 +37,32 @@ export const OrderSummary = () => {
         sub += itemPrice.subtotal;
         taxAmount += itemPrice.tax;
     });
+
+    const loadPolygons = useCallback(async () => {
+        try {
+            if (!selectedBranch) return
+            setLoading(true)
+            const data = await getPolygonsByBranch(selectedBranch.id)
+            if (data) {
+                console.log(data)
+                const polygon = calculatePolygons(data, Number(client?.latitude), Number(client?.longitude))
+                if (polygon) {
+                    setPriceDelivery(polygon.price)
+
+                } else {
+                    openToast('No se encontro un polígono para su dirección, por favor intente de nuevo más tarde.', 'error')
+                    setType('local')
+                }
+            }
+        }
+        catch (err) {
+            console.log(err);
+            openToast('Error al cargar los polígonos, por favor intente de nuevo más tarde.', 'error')
+        }
+        finally {
+            setLoading(false)
+        }
+    }, [])
 
     const handleCheckout = async () => {
         if (!selectedBranch) {
@@ -135,8 +164,15 @@ export const OrderSummary = () => {
         }, 1000)
     };
 
+    const handleChangeType = async (type: 'local' | 'delivery') => {
+        if (type === 'delivery') {
+            await loadPolygons()
+        }
+        setType(type);
+    }
 
-    const isValidPass = (client?.address && reciveMode === 'domicilio' || reciveMode === 'local') && (client?.phone && client?.identity_value && client?.identity_type)
+
+    const isValidPass = (client?.address && type === 'delivery' || type === 'local') && (client?.phone && client?.identity_value && client?.identity_type)
 
 
     return (
@@ -158,18 +194,22 @@ export const OrderSummary = () => {
 
                 <div className="flex flex-col text-base-content/70">
                     <div className='join'>
-                        <button className={`btn btn-sm shadow-none  join-item ${reciveMode === 'local' ? 'btn-primary' : ''}`} onClick={() => setReciveMode('local')}>Recoger en el local</button>
-                        <button className={`btn btn-sm shadow-none  join-item ${reciveMode === 'domicilio' ? 'btn-primary' : ''}`} onClick={() => setReciveMode('domicilio')}>Domicilio</button>
+                        <button disabled={loading} className={`btn btn-sm shadow-none  join-item ${type === 'local' ? 'btn-primary' : ''}`} onClick={() => handleChangeType('local')}>Recoger en el local</button>
+                        <button disabled={loading} className={`btn btn-sm shadow-none  join-item ${type === 'delivery' ? 'btn-primary' : ''}`} onClick={() => handleChangeType('delivery')}>Domicilio</button>
+                        {
+                            loading && <span className="ml-2 loading loading-spinner loading-sm"></span>
+                        }
                     </div>
                 </div>
 
                 {
-                    reciveMode == 'domicilio' &&
+                    type == 'delivery' &&
                     <div className='flex flex-col text-base-content/70'>
                         <p className='text-primary font-semibold'>Dirección de entrega</p>
                         <p className='text-sm'>Departamento: {client?.departament}</p>
                         <p className='text-sm'>Ciudad: {client?.city_or_municipality}</p>
                         <p className='text-sm'>Dirección: {client?.address}</p>
+                        <p className='text-sm'>Precio de domicilio: {priceDelivery ? `$${priceDelivery.toLocaleString('es-CO', { maximumFractionDigits: 2 })} COP` : 'Gratis'}</p>
                     </div>
                 }
                 <div className="divider my-0" />
@@ -190,7 +230,7 @@ export const OrderSummary = () => {
             }
             <button
                 onClick={handleCheckout}
-                disabled={items.length === 0 || !isValidPass}
+                disabled={items.length === 0 || !isValidPass || (type == 'delivery' && !priceDelivery)}
                 className="btn btn-primary w-full mt-2"
             >
                 Ir a pagar

@@ -8,6 +8,7 @@ const CART_KEY = 'salon_cart';
 export interface CartItem {
     product: Product;
     quantity: number;
+
 }
 
 interface CartStore {
@@ -20,6 +21,10 @@ interface CartStore {
     clearCart: () => void;
     totalItems: () => number;
     subtotal: () => number;
+    priceDelivery?: number;
+    type: 'local' | 'delivery';
+    setPriceDelivery: (priceDelivery: number) => void;
+    setType: (type: 'local' | 'delivery') => void;
 }
 
 const saveToStorage = (items: CartItem[]) => {
@@ -40,7 +45,9 @@ const loadFromStorage = (): CartItem[] => {
 export const useCart = create<CartStore>((set, get) => ({
     items: [],
     hydrated: false,
-
+    type: 'local',
+    setPriceDelivery: (priceDelivery: number) => set({ priceDelivery }),
+    setType: (type: 'local' | 'delivery') => set({ type }),
     hydrate: () => {
         if (get().hydrated) return;
         set({ items: loadFromStorage(), hydrated: true });
