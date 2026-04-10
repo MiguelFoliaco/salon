@@ -4,6 +4,7 @@ import Image from "next/image"
 import { cn } from "@/utils/cn"
 import { Product } from "../../actions/get-products"
 import clsx from "clsx"
+import { calculatePrice } from "@/module/utils/calculate-priece"
 
 
 
@@ -61,7 +62,7 @@ export function ProductCard({ product, onAction, onAddToCard }: ProductCardProps
         <div className="mt-auto flex items-center justify-between gap-3 pt-2">
           <div className="flex items-baseline gap-1">
             <span className="text-xl font-bold tracking-tight text-base-content">
-              ${product.value.toLocaleString("es-CO")}
+              ${calculatePrice(product).total.toLocaleString("es-CO")}
             </span>
             <span className="text-xs font-medium text-base-content/50">COP</span>
           </div>

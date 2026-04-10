@@ -3,6 +3,7 @@
 import { useUser } from "@/module/auth/context/useUser";
 import { useBranches } from "@/module/branches/context/use-branches";
 import { Configuration } from "@/module/configurations/actions/get-configurations";
+import { useRegion } from "@/module/domicilios/context/use-region";
 import { useProfile } from "@/module/profile/hook/use-profile";
 import { User } from "@supabase/supabase-js";
 import { useEffect } from "react";
@@ -19,8 +20,13 @@ export const LayoutClient = ({ children, user, configuration }: LayoutClientProp
     const updateUser = useUser(state => state.updateUser)
     const { load } = useBranches()
     const { load: loadProfile } = useProfile()
-    useEffect(() => {
+    const { load: loadRegion } = useRegion()
 
+    useEffect(() => {
+        loadRegion()
+    }, [])
+
+    useEffect(() => {
         if (user) {
             updateUser(user)
         }

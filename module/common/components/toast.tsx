@@ -7,7 +7,8 @@ const titleByStatus = {
     info: 'information',
     success: 'success',
     warning: 'warning',
-    error: 'error'
+    error: 'error',
+    loading: 'loading'
 }
 const colorByStatus = {
     info: {
@@ -24,7 +25,11 @@ const colorByStatus = {
     },
     error: {
         bg: 'bg-error',
-        text: 'text-white'
+        text: 'text-white',
+    },
+    loading: {
+        bg: 'bg-neutral',
+        text: 'text-neutral-content',
     }
 }
 
@@ -51,11 +56,16 @@ export const Toast = () => {
                 )
             }>
                 <div className="flex  gap-2">
-                    <BsInfoCircle size={20} className={
-                        clsx(
-                            colorByStatus[status].text
-                        )
-                    } />
+                    {
+                        status !== 'loading' ?
+                            <BsInfoCircle size={20} className={
+                                clsx(
+                                    colorByStatus[status].text
+                                )
+                            } />
+                            :
+                            <span className="loading loading-spinner" />
+                    }
                     <p className="font-medium capitalize">{titleByStatus[status]}</p>
                 </div>
                 <p className="text-sm mt-1">{msg}</p>

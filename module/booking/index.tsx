@@ -1,3 +1,4 @@
+'use client';
 
 import { Header } from '../common/components/header'
 import { useParams } from 'next/navigation'
@@ -18,7 +19,11 @@ import { BsClock, BsInfo } from 'react-icons/bs'
 import { useBranches } from '../branches/context/use-branches'
 import { useProfile } from '../profile/hook/use-profile'
 import { ModalConfirmBooking } from './components/modal-confirm'
+import { useSessionCache } from '../common/hook/useSessionCache'
 import Image from 'next/image'
+
+// Cada 30 minutos
+const cacheTime = 1000 * 60 * 30
 
 export const BookingPage = () => {
     const [selectedDate, setSelectedDate] = useState<Date>();
@@ -31,12 +36,23 @@ export const BookingPage = () => {
     const params = useParams()
     const { openToast } = useToast()
     const router = useRouter()
+    const { get, set } = useSessionCache<any>(`product-${params.productId}`, cacheTime);
 
+    // implemetar esto en las demas rutas
     useEffect(() => {
         if (params.productId) {
+            const localProduct = get();
+
+            if (localProduct?.id) {
+                setProductSelected(localProduct)
+                return
+            }
+
             getProductById(params.productId as string)
                 .then((product) => {
+                    console.log('Product ', product)
                     setProductSelected(product)
+                    set(product)
                 })
                 .catch(() => {
                     openToast("No se encontro el producto, redirigiendo...", "info")
@@ -44,7 +60,7 @@ export const BookingPage = () => {
                 })
         }
 
-    }, [setProductSelected])
+    }, [params.productId])
 
 
     const handleNextCheckout = () => {
@@ -126,10 +142,14 @@ export const BookingPage = () => {
                         </div>
                         {/* Header Details */}
                         <div className='mb-10'>
-                            <h1 className='text-4xl md:text-5xl font-bold text-slate-900 mb-2 tracking-tight'>Book Your Glow</h1>
-                            <p className='text-lg text-primary font-medium'>Pick a date and time for your sweet transformation</p>
+                            <h1 className='text-4xl md:text-5xl font-bold text-slate-900 mb-2 tracking-tight'>Agenda tu {productSelected.name}</h1>
+                            <p className='text-lg text-primary font-medium'>Escoge una fecha y hora para tu cita</p>
                         </div>
 
+                        <div role="alert" className='w-full alert alert-info alert-soft my-5'>
+                            <BsInfo className="w-5 h-5" />
+                            <span>Recuerda que debes hacer tu pago para confirmar tu cita, si no realizas el pago en los proximos 15 minutos, tu cita sera cancelada</span>
+                        </div>
                         <div className='space-y-12'>
                             {/* Select Stylist */}
                             <section>
@@ -140,7 +160,7 @@ export const BookingPage = () => {
                             <div className='flex flex-col lg:flex-row gap-8 lg:gap-12'>
                                 <section className='flex-[0.45] w-full'>
                                     <h2 className='text-xl md:text-2xl font-bold flex items-center gap-2 mb-6 text-slate-900'>
-                                        <span className='text-primary text-2xl'><BiCalendar /></span> Choose Date
+                                        <span className='text-primary text-2xl'><BiCalendar /></span> Escoge una fecha
                                     </h2>
                                     <div className='w-full flex justify-center bg-white  p-6 shadow-sm border border-slate-100'>
                                         <BookingCalendar disabled={!selectedEmployee} selected={selectedDate} onSelectDate={setSelectedDate} />
@@ -163,10 +183,7 @@ export const BookingPage = () => {
                                 </section>
                             </div>
                         </div>
-                        <div role="alert" className='w-full alert alert-info alert-soft mt-5'>
-                            <BsInfo className="w-5 h-5" />
-                            <span>Recuerda que debes hacer tu pago para confirmar tu cita, si no realizas el pago en los proximos 15 minutos, tu cita sera cancelada</span>
-                        </div>
+
                     </main>
                 )
             }
@@ -193,7 +210,7 @@ export const BookingPage = () => {
 
                             <div className='flex flex-col sm:flex-row items-center justify-between w-full md:w-auto gap-8'>
                                 <p className='text-2xl md:text-3xl font-extrabold text-slate-900'>
-                                    ${Intl.NumberFormat('en-US').format(calculatePrice(productSelected))}
+                                    ${Intl.NumberFormat('en-US').format(calculatePrice(productSelected).total)}
                                 </p>
                                 <button
                                     disabled={disable}

@@ -3,15 +3,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { getProducts, Products } from '@/module/product/actions/get-products';
-import { ProductType } from '@/module/search/actions/get-product-types';
 import { useToast } from '@/module/common/hook/useToast';
 import { FilterSidebar, FilterState } from '../filter-sidebar';
 import { ProductList } from '../product-list';
 import { Pagination } from '../pagination';
 import { useProductTypes } from '@/module/categories/components/product-types/hook';
 import { useBranches } from '@/module/branches/context/use-branches';
-
-
+import { useSessionCache } from '@/module/common/hook/useSessionCache';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -44,8 +42,20 @@ export const SearchContainer = () => {
     // We keep page decoupled slightly so we can immediately update it
     const [page, setPage] = useState(pageParam);
 
+    const cacheKey = `search-${selectedBranch?.id}-${query}-${page}-${filters.type || 'all'}-${filters.minPrice || 0}-${filters.maxPrice || 'unlimited'}`;
+    const { get, set } = useSessionCache<SearchCache>(cacheKey);
+
     const fetchProducts = useCallback(async () => {
         if (!selectedBranch) return openToast('Selecione una sucursal', 'warning')
+
+        const cached = get();
+        if (cached) {
+            setProducts(cached.products);
+            setTotalItems(cached.totalItems);
+            setLoading(false);
+            return;
+        }
+
         setLoading(true);
         const response = await getProducts({
             query,
@@ -62,11 +72,14 @@ export const SearchContainer = () => {
             setProducts([]);
             setTotalItems(0);
         } else {
-            setProducts(response.data || []);
-            setTotalItems(response.count || 0);
+            const data = response.data || [];
+            const count = response.count || 0;
+            setProducts(data);
+            setTotalItems(count);
+            set({ products: data, totalItems: count });
         }
         setLoading(false);
-    }, [query, page, filters, openToast]);
+    }, [query, page, filters, openToast, selectedBranch]);
 
     useEffect(() => {
         fetchProducts();
@@ -140,3 +153,9 @@ export const SearchContainer = () => {
         </div>
     );
 };
+
+type SearchCache = {
+    products: Products;
+    totalItems: number;
+};
+

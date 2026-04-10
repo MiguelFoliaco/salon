@@ -9,10 +9,12 @@ import {
     BsPeople,
     BsCashCoin,
     BsGear,
-    BsBoxArrowLeft
+    BsBoxArrowLeft,
+    BsTruck
 } from 'react-icons/bs';
 import { useUser } from '@/module/auth/context/useUser';
 import { logout } from '@/module/auth/actions/session';
+import { BiShapePolygon } from 'react-icons/bi';
 
 export const SidebarAdmin = () => {
     const pathname = usePathname();
@@ -23,6 +25,8 @@ export const SidebarAdmin = () => {
         { name: 'Productos', path: '/admin/products', icon: <BsBoxSeam size={20} /> },
         { name: 'Empleados', path: '/admin/employees', icon: <BsPersonBadge size={20} /> },
         { name: 'Clientes', path: '/admin/clients', icon: <BsPeople size={20} /> },
+        { name: 'Domicilios', path: '/admin/orders', icon: <BsTruck size={20} /> },
+        { name: 'Poligonos', path: '/admin/polygons', icon: <BiShapePolygon size={20} /> },
         { name: 'Impuestos', path: '/admin/taxes', icon: <BsCashCoin size={20} /> },
         { name: 'Configuración', path: '/admin/settings', icon: <BsGear size={20} /> },
         { name: 'Notificaciones', path: '/admin/notifications', icon: <BsGear size={20} /> },
@@ -37,9 +41,9 @@ export const SidebarAdmin = () => {
     return (
         <>
             {/* Desktop Sidebar */}
-            <aside className="hidden md:flex flex-col w-64 bg-white border-r border-slate-200 h-full p-4 relative z-20 shadow-sm">
+            <aside className="hidden md:flex flex-col w-64 bg-base-100 border-r border-base-200 h-full p-4 relative z-20 shadow-sm">
                 <div className="mb-8 px-4 py-2">
-                    <h1 className="text-2xl font-black text-slate-800 tracking-tight">Admin<span className="text-primary">Panel</span></h1>
+                    <h1 className="text-2xl font-black tracking-tight">Admin<span className="text-primary">Panel</span></h1>
                 </div>
 
                 <nav className="flex-1 space-y-2">
@@ -49,9 +53,9 @@ export const SidebarAdmin = () => {
                             <Link
                                 key={item.path}
                                 href={item.path}
-                                className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${isActive
-                                    ? 'bg-primary text-white shadow-md shadow-pink-200'
-                                    : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
+                                className={`flex items-center gap-3 px-4 py-3 font-medium transition-all ${isActive
+                                    ? 'bg-primary text-primary-content shadow-md shadow-primary/20'
+                                    : 'text-base-content hover:bg-base-50 hover:text-base-900'
                                     }`}
                             >
                                 {item.icon}
@@ -64,7 +68,7 @@ export const SidebarAdmin = () => {
                 <div className="mt-auto pt-4 border-t border-slate-100">
                     <button
                         onClick={handleLogout}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-slate-500 hover:bg-red-50 hover:text-red-500 w-full transition-all"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-slate-500 hover:text-red-500 w-full transition-all"
                     >
                         <BsBoxArrowLeft size={20} />
                         Cerrar Sesión

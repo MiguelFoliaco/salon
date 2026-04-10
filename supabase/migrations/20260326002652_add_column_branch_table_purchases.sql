@@ -1,0 +1,1 @@
+alter table public.purchases add column branch_id uuid references public.branches(id) on delete cascade;

@@ -9,7 +9,8 @@ import { useProfile } from './hook/use-profile';
 
 export const ProfilePage = ({ clientData }: { clientData: Client | null }) => {
 
-    const { client, setClient } = useProfile();
+    const { client, setClient, loading } = useProfile();
+    const [editProfile, setEditProfile] = useState(false)
 
     useEffect(() => {
         if (client || clientData) {
@@ -23,11 +24,22 @@ export const ProfilePage = ({ clientData }: { clientData: Client | null }) => {
         <div className="w-full min-h-screen bg-slate-50 pb-20 font-sans">
             <Header />
 
-            <main className="max-w-5xl mx-auto px-4 py-8 md:py-12">
+            <main className="max-w-7xl mx-auto px-4 py-8 md:py-12">
+
                 {
-                    client ? <ProfileDetails clientData={client} />
+                    loading && <div className='w-screen h-screen bg-linear-to-br to-black from-30% from-primary fixed z-30 top-0 left-0 flex items-center justify-center gap-2'>
+                        <span className="loading loading-spinner text-secondary loading-md"></span>
+                        <p className='text-sm font-semibold text-primary-content'>Cargando...</p>
+                    </div>
+                }
+                {
+                    client ? editProfile ? <FormCreateClient client={client} editProfile={editProfile} setEditProfile={setEditProfile} /> : <ProfileDetails clientData={client} editProfile={editProfile} setEditProfile={setEditProfile} />
                         :
-                        <FormCreateClient />
+                        <FormCreateClient
+                            client={client}
+                            editProfile={editProfile}
+                            setEditProfile={setEditProfile}
+                        />
                 }
 
             </main>

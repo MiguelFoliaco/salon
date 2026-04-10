@@ -7,9 +7,11 @@ type Props = {
     label?: string
     onImageUpload?: (url: string) => void
     initialImage?: string
+    containerClassName?: string
+    containerImageClassName?: string
 }
 
-export const InputImage = ({ label = "Imagen", onImageUpload, initialImage }: Props) => {
+export const InputImage = ({ label = "Imagen", onImageUpload, initialImage, containerClassName, containerImageClassName }: Props) => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [preview, setPreview] = useState<string | null>(initialImage || null)
 
@@ -26,7 +28,7 @@ export const InputImage = ({ label = "Imagen", onImageUpload, initialImage }: Pr
     }, [initialImage])
 
     return (
-        <div className="form-control w-full max-w-xs">
+        <div className={"form-control w-full  " + containerClassName}>
             {label && (
                 <label className="label">
                     <span className="label-text font-medium text-slate-700">{label}</span>
@@ -38,6 +40,7 @@ export const InputImage = ({ label = "Imagen", onImageUpload, initialImage }: Pr
                     relative w-40 h-40 rounded-2xl border-2 border-dashed 
                     flex flex-col items-center justify-center gap-2 overflow-hidden
                     transition-all duration-200 group
+                    ${containerImageClassName}
                     ${preview ? 'border-primary/50 bg-base-100' : 'border-slate-300 bg-slate-50 hover:border-primary/50 hover:bg-white'}
                 `}
             >

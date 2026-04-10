@@ -2,24 +2,18 @@ import { useState } from 'react'
 import { BsCalendarCheck, BsClockHistory, BsXCircle, BsPencil, BsTrash, BsCalendar, BsGeoAlt, BsTag, BsStar } from 'react-icons/bs';
 import { Client } from '../../actions/get-client'
 import { useUser } from '@/module/auth/context/useUser'
-import { useProfilePage } from '../../hook/use-profile';
 import { Uppcoming } from '../upcomming';
 import { Past } from '../past';
 import { Canceled } from '../canceled';
+import { TbTruckDelivery } from 'react-icons/tb';
+import { Orders } from '../orders';
 
-export const ProfileDetails = ({ clientData }: { clientData: Client }) => {
+export const ProfileDetails = ({ clientData, editProfile, setEditProfile }: { clientData: Client, editProfile: boolean, setEditProfile: (value: boolean) => void }) => {
     const { user } = useUser()
     const [activeTab, setActiveTab] = useState('upcoming');
-    const { client, clientLoading } = useProfilePage()
     return (
         <div>
 
-            {
-                clientLoading && <div className='w-screen h-screen bg-linear-to-br to-base-100 from-30% from-primary fixed z-30 top-0 left-0 flex items-center justify-center gap-2'>
-                    <span className="loading loading-spinner text-secondary loading-md"></span>
-                    <p className='text-sm font-semibold text-primary-content'>Cargando...</p>
-                </div>
-            }
 
             <>
                 {/* Header section */}
@@ -27,33 +21,46 @@ export const ProfileDetails = ({ clientData }: { clientData: Client }) => {
                     <div>
                         <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2 tracking-tight">
                             Hola, {clientData?.name || user?.user_metadata?.full_name || 'Gorgeous'}!
+
+                            <div className='tooltip tooltip-right font-light' data-tip="Editar información">
+                                <button className='btn btn-circle ml-3 btn-ghost btn-sm' onClick={() => setEditProfile(!editProfile)}>
+                                    <BsPencil size={18} />
+                                </button>
+                            </div>
                         </h1>
                         <p className="text-lg text-slate-500 font-medium">Gestiona tus próximas visitas al salón y las anteriores.</p>
                     </div>
                 </div>
 
                 {/* Tabs */}
-                <div className="flex gap-8 border-b border-slate-200 mb-8 overflow-x-auto scrollbar-hide">
+                <div className="tabs tabs-boxed">
                     <button
                         onClick={() => setActiveTab('upcoming')}
-                        className={`pb-4 text-base font-bold flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap ${activeTab === 'upcoming' ? 'text-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+                        className={`tab flex gap-2 ${activeTab === 'upcoming' ? 'tab-active' : ''}`}
                     >
                         <BsCalendarCheck size={18} />
                         Próximamente
                     </button>
                     <button
                         onClick={() => setActiveTab('past')}
-                        className={`pb-4 text-base font-bold flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap ${activeTab === 'past' ? 'text-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+                        className={`tab flex gap-2 ${activeTab === 'past' ? 'tab-active' : ''}`}
                     >
                         <BsClockHistory size={18} />
                         Historia pasada
                     </button>
                     <button
                         onClick={() => setActiveTab('canceled')}
-                        className={`pb-4 text-base font-bold flex items-center gap-2 border-b-2 transition-colors whitespace-nowrap ${activeTab === 'canceled' ? 'text-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+                        className={`tab flex gap-2 ${activeTab === 'canceled' ? 'tab-active' : ''}`}
                     >
                         <BsXCircle size={18} />
                         Cancelado
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('orders')}
+                        className={`tab flex gap-2 ${activeTab === 'orders' ? 'tab-active' : ''}`}
+                    >
+                        <TbTruckDelivery size={18} />
+                        Mis pedidos
                     </button>
                 </div>
 
@@ -68,10 +75,14 @@ export const ProfileDetails = ({ clientData }: { clientData: Client }) => {
                 {activeTab === 'canceled' && (
                     <Canceled />
                 )}
-
+                {
+                    activeTab === 'orders' && (
+                        <Orders />
+                    )
+                }
                 {/* Loyalty Program Banner */}
-                <div className="mt-12 bg-success/20 rounded-3xl p-8 md:p-10 border border-success flex flex-col items-center text-center">
-                    <div className="w-12 h-12 bg-primary text-white rounded-xl shadow-md flex items-center justify-center mb-6 -rotate-12">
+                {/* <div className="mt-12 bg-success/20  p-8 md:p-10 border border-success flex flex-col items-center text-center">
+                    <div className="w-12 h-12 bg-primary text-white shadow-md flex items-center justify-center mb-6 -rotate-12">
                         <BsTag size={24} />
                     </div>
                     <h2 className="text-2xl font-bold text-slate-900 mb-2 mt-2">Join our Loyalty Program</h2>
@@ -79,7 +90,7 @@ export const ProfileDetails = ({ clientData }: { clientData: Client }) => {
                     <button className="btn btn-primary">
                         View My Rewards
                     </button>
-                </div>
+                </div> */}
             </>
         </div>
     )

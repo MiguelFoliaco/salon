@@ -100,8 +100,20 @@ export type Products = NonNullable<
 export type Product = Products[number];
 
 
-export const getProductById = async (id: string) => {
+export const getProductById = cache(async (id: string) => {
     const client = await createClient();
-    const { data } = await client.from('products').select(select).eq('id', id).single();
+
+    const isUUID = /^[0-9a-f-]{36}$/i.test(id);
+
+    const query = client.from('products').select(select);
+    const { data, error } = isUUID
+        ? await query.eq('id', id).single()
+        : await query.eq('code', id).single();
+
+    if (error) {
+        console.error(error);
+        return null;
+    }
+
     return data;
-}
+})

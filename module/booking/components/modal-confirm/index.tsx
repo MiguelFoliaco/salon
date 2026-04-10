@@ -7,7 +7,7 @@ import { TablesInsert } from "@/supabase/database.types"
 import { FiCalendar, FiClock, FiUser, FiScissors, FiX, FiCheck, FiDollarSign } from "react-icons/fi"
 import { saveSchedule } from "../../actions/schedule-by-employe"
 import { useToast } from "@/module/common/hook/useToast"
-import { generateHash, savePurchase } from "@/module/checkout/actions"
+import { generateHash, saveTransaction } from "@/module/checkout/actions"
 import { useRef, useState } from "react"
 import { CONSTANT } from "@/constant"
 
@@ -36,20 +36,20 @@ export function ModalConfirmBooking({
                 return;
             }
 
-            const amount = calculatePrice(service) * 100
-            const responseSavePurchase = await savePurchase({
+            const amount = calculatePrice(service).total * 100
+            const responseSavePurchase = await saveTransaction({
                 amount,
                 transaction_type: 'income',
                 client_id: schedule.client_id,
                 products: [],
                 services: [service.id],
-                total_amount: calculatePrice(service),
-                reference_code: schedule.id,
+                total_amount: calculatePrice(service).total,
+                // reference_code: schedule.id, // esta se genera en la accion
                 payment_method: 'cash',
                 status: 'pending',
                 branch_id: schedule.branch_id,
                 tax_amount: 0,
-                schedule_id: schedule.id,
+                schedule_id: response.data.id,
             })
 
             if (!responseSavePurchase.success || !responseSavePurchase.data?.id) {
@@ -61,7 +61,7 @@ export function ModalConfirmBooking({
             const hash256 = await generateHash({
                 amount,
                 currency: 'COP',
-                reference: responseSavePurchase.data.id,
+                reference: responseSavePurchase.data.reference_code!,
                 integrity: process.env.NEXT_PUBLIC_INTEGRITY_HASH || ''
             })
             if (!hash256.response.data.hash) {
@@ -79,9 +79,8 @@ export function ModalConfirmBooking({
             script.setAttribute("data-public-key", CONSTANT.WOMPI_PUBLIC_KEY)
             script.setAttribute("data-currency", "COP")
             script.setAttribute("data-amount-in-cents", amount.toString())
-            script.setAttribute("data-reference", responseSavePurchase.data.id)
+            script.setAttribute("data-reference", responseSavePurchase.data.reference_code!)
             script.setAttribute("data-signature:integrity", hash256.response.data.hash)
-            script.setAttribute("data-redirect-url", CONSTANT.URL_APP)
             form.appendChild(script)
             containerCheckout.current?.appendChild(form)
             setTimeout(() => {
@@ -179,7 +178,7 @@ export function ModalConfirmBooking({
                             <span className="font-medium">Total a pagar</span>
                         </div>
                         <span className="text-2xl font-bold text-gray-800">
-                            ${calculatePrice(service).toFixed(2)}
+                            ${calculatePrice(service).total.toFixed(2)}
                         </span>
                     </div>
 

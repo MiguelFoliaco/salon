@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import { BsCalendar, BsXCircle, BsPencil } from 'react-icons/bs';
 import { format } from 'date-fns'
+import { calculatePrice } from '@/module/utils/calculate-priece';
 
 export const Canceled = () => {
     const [schedules, setSchedules] = useState<SchedulesByUser>([])
@@ -68,7 +69,7 @@ export const Canceled = () => {
                             </div>
                         </div>
                         <div className="flex flex-col items-end gap-2 text-right">
-                            <span className="text-sm font-bold text-slate-400 line-through">${exp.product.value.toFixed(2)}</span>
+                            <span className="text-sm font-bold text-slate-400 line-through">${calculatePrice(exp.product).total.toFixed(2)}</span>
                             <span className="text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider bg-red-50 text-red-500">
                                 {exp.status}
                             </span>

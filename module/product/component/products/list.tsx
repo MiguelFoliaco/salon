@@ -7,14 +7,20 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/module/cart/context/useCart';
 import { useToast } from '@/module/common/hook/useToast';
 import { useBranches } from '@/module/branches/context/use-branches';
+import { useSessionCache } from '@/module/common/hook/useSessionCache';
+import { useProductTypes } from '@/module/categories/components/product-types/hook';
 
 export const ListProduct = () => {
 
-    const { load, products, loading, setProductSelected } = useProduct();
+    const { load, products, loading, setProductSelected, setProducts } = useProduct();
     const { hydrate, addItem } = useCart()
     const router = useRouter();
     const { openToast } = useToast()
     const { selectedBranch } = useBranches();
+    const { typeSelected } = useProductTypes();
+
+    const cacheKey = `products-list-${selectedBranch?.id}-${typeSelected?.id || 'all'}`;
+    const { get, set } = useSessionCache<ProductsCache>(cacheKey);
 
     useEffect(() => {
         hydrate();
@@ -22,18 +28,32 @@ export const ListProduct = () => {
 
     useEffect(() => {
         if (!selectedBranch) return
-        load(selectedBranch.id)
-    }, [load, selectedBranch])
+
+        const cached = get();
+        if (cached && cached.length > 0) {
+            setProducts(cached);
+            return;
+        }
+
+        load(selectedBranch.id, typeSelected?.id)
+    }, [load, selectedBranch, typeSelected])
+
+    // Update cache when products change
+    useEffect(() => {
+        if (products.length > 0 && !loading) {
+            set(products);
+        }
+    }, [products, loading, set]);
 
     const handleRedirect = (product: Product) => {
         if (product.is_service) {
             setProductSelected(product)
-            return router.push(`/booking/${product.id}`)
+            return router.push(`/booking/${product.code || product.id}`)
         }
-        router.push(`/product/${product.id}`)
+        router.push(`/product/${product.code || product.id}`)
 
     }
-
+    // ... remaining component code is unchanged
     return (
         <div>
             {/* Loading State */}
@@ -48,7 +68,7 @@ export const ListProduct = () => {
                 <div className="flex flex-col items-center justify-center py-16 text-center">
                     <div className="w-16 h-16 rounded-full bg-base-200 flex items-center justify-center mb-4">
                         <svg className="w-8 h-8 text-base-content/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707.293l-2.414-2.414A1 1 0 006.586 13H4" />
                         </svg>
                     </div>
                     <h3 className="text-lg font-semibold text-base-content mb-1">No hay servicios disponibles</h3>
@@ -82,3 +102,6 @@ export const ListProduct = () => {
         </div>
     )
 }
+
+type ProductsCache = Product[];
+

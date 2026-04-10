@@ -5,9 +5,14 @@ import { generateId } from "@/utils/generate-id";
 import { api } from "@/utils/sdk.api";
 import { truncate } from "@/utils/truncate";
 
-type Purchase = TablesInsert<'transactions'>
+type Transaction = TablesInsert<'transactions'>
 
-export const savePurchase = async (data: Purchase) => {
+/**
+ * 
+ * @param data IMPORTANTE: Para servicios no envie la transaccion
+ * @returns 
+ */
+export const saveTransaction = async (data: Transaction) => {
 
     if (!data.client_id) {
         return {
@@ -23,7 +28,7 @@ export const savePurchase = async (data: Purchase) => {
         }
     }
 
-    const reference = generateId() + '_' + data.transaction_type + '_' + truncate(data.client_id!, 5)
+    const reference = data.schedule_id ? `${data.schedule_id}_${generateId()}` : data.reference_code
 
     //Esto inicialmente se registra aqui con el estatus 'pedding' en el webhook se actualiza a 'completed' o 'cancelled'
     const supabase = await createClient()
@@ -56,6 +61,32 @@ export const savePurchase = async (data: Purchase) => {
     }
 }
 
+
+type BodySavePurchase = TablesInsert<'purchases'>
+
+// ESTO ES UNICAMENTE PARA PRODUCTOS
+export const savePurchase = async (data: BodySavePurchase) => {
+    const supabase = await createClient()
+    const { data: purchase, error } = await supabase.from('purchases').insert({
+        ...data,
+
+    }).select().single()
+
+    console.log("error: ", error)
+
+    if (error) {
+        return {
+            success: false,
+            message: "Error al guardar la compra"
+        }
+    }
+
+    return {
+        success: true,
+        message: "Compra guardada exitosamente",
+        data: purchase,
+    }
+}
 
 interface BodyGenerateHash {
     reference: string;

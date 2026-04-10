@@ -1,6 +1,7 @@
 import { Product } from "@/module/product/actions/get-products";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { calculatePrice } from "@/module/utils/calculate-priece";
 
 interface ProductCardProps {
     product: Product;
@@ -45,7 +46,7 @@ export const ProductCard = ({ product }: ProductCardProps) => {
                 </p>
                 <div className="card-actions justify-between items-end mt-auto">
                     <div className="text-xl font-bold text-primary">
-                        ${product.value?.toLocaleString()}
+                        ${calculatePrice(product).total.toLocaleString()}
                     </div>
                     {(product.inventory[0]?.stock && !product.is_service) && (
                         <div className={`text-xs font-semibold ${(product.inventory[0]?.stock || 0) > 0 ? "text-info" : "text-error"}`}>

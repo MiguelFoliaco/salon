@@ -22,6 +22,8 @@ export async function getAdminTaxes() {
     return data;
 }
 
+export type AdminTax = NonNullable<Awaited<ReturnType<typeof getAdminTaxes>>>[0];
+
 export async function createAdminTax(taxData: { name: string; percentage: number; code: string }) {
     const supabase = await createClient();
 

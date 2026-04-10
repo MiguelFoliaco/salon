@@ -13,6 +13,14 @@ export const metadata: Metadata = {
   description: "Servicios de estilismo y cuidado personal de clase mundial. Agenda tu cita hoy y revela tu mejor version.",
 };
 
+// zoom disable  
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{

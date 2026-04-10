@@ -5,7 +5,7 @@ import { getBranches } from "../actions/get-branch";
 type BranchesState = {
     branches: Tables<'branches'>[];
     selectedBranch: Tables<'branches'> | null;
-    updateSelectedBranch: (branch: Tables<'branches'>) => void;
+    updateSelectedBranch: (branch: Tables<'branches'> | null) => void;
     updateBranches: (branches: Tables<'branches'>[]) => void;
     load: (configurationId: string) => Promise<void>;
     isLoading: boolean;
@@ -14,7 +14,7 @@ type BranchesState = {
 export const useBranches = create<BranchesState>(set => ({
     branches: [],
     selectedBranch: null,
-    updateSelectedBranch: (branch: Tables<'branches'>) => set({ selectedBranch: branch }),
+    updateSelectedBranch: (branch: Tables<'branches'> | null) => set({ selectedBranch: branch }),
     updateBranches: (branches: Tables<'branches'>[]) => set({ branches }),
     load: async (configurationId: string) => {
         set({ isLoading: true })

@@ -6,8 +6,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BsCalendar, BsCalendarCheck, BsClockHistory, BsGeoAlt, BsPencil, BsTrash, BsXCircle } from 'react-icons/bs';
 
 import { format } from 'date-fns'
-import { BiLeftArrow, BiRightArrow } from 'react-icons/bi';
-
+import { BiRightArrow } from 'react-icons/bi';
+import { cn } from '@/utils/cn';
+import { IoReload } from 'react-icons/io5';
+import { calculatePrice } from '@/module/utils/calculate-priece';
 
 export const Uppcoming = () => {
 
@@ -49,7 +51,7 @@ export const Uppcoming = () => {
         return null;
     }, [schedules])
 
-    if (!nextAppointment && !loading) return <div className='w-full rounded-sm bg-base-100 flex flex-col items-center justify-center p-10 border border-gray-200 gap-5'>
+    if (!nextAppointment && !loading) return <div className='w-full bg-base-100 flex flex-col items-center justify-center p-10 border border-gray-200 gap-5'>
         <p>No tienes citas próximamente</p>
         <button className='btn btn-primary px-10' onClick={() => load(false, true)} disabled={loading}>
             Recargar
@@ -65,9 +67,14 @@ export const Uppcoming = () => {
                 <section>
                     <h2 className="text-lg font-bold flex items-center gap-2 mb-4 text-slate-900">
                         <span className="text-primary text-xl">!</span> Próxima cita
+
+                        <button className='btn btn-sm ml-auto btn-primary px-10' onClick={() => load(false, true)} disabled={loading}>
+                            Recargar
+                            <IoReload />
+                        </button>
                     </h2>
 
-                    <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 flex flex-col md:flex-row">
+                    <div className="bg-white overflow-hidden shadow-sm border border-slate-100 flex flex-col md:flex-row">
                         <div className="w-full md:w-[40%] h-[250px] md:h-auto relative">
                             <Image src={nextAppointment.product.image!} alt="Next appointment" fill className="object-cover" />
                         </div>
@@ -78,7 +85,7 @@ export const Uppcoming = () => {
                                         {nextAppointment.status}
                                     </span>
                                     <span className="text-2xl font-extrabold text-primary">
-                                        ${nextAppointment.product.value.toFixed(2)}
+                                        ${calculatePrice(nextAppointment.product).total.toFixed(2)}
                                     </span>
                                 </div>
 
@@ -106,7 +113,7 @@ export const Uppcoming = () => {
                             </div>
 
                             <div className="flex gap-4 mt-auto">
-                                <button className="flex-1 bg-white hover:bg-slate-50 text-primary border-2 border-slate-100 hover:text-primary/30 font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                                <button className="flex-1 bg-white hover:bg-slate-50 text-primary border-2 border-slate-100 hover:text-primary/30 font-bold py-3 px-4  transition-all flex items-center justify-center gap-2">
                                     <BsXCircle /> Cancelar
                                 </button>
                             </div>
@@ -123,7 +130,7 @@ export const Uppcoming = () => {
                         {otherBookings.map((booking) => (
                             <div key={booking.id} className="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-100 flex flex-col md:flex-row items-start justify-between gap-6">
                                 <div className="flex gap-4 items-center">
-                                    <div className="w-20 h-20 rounded-xl overflow-hidden relative shrink-0 shadow-sm border border-slate-100">
+                                    <div className="w-20 h-20  overflow-hidden relative shrink-0 shadow-sm border border-slate-100">
                                         <Image src={booking.product.image!} alt={booking.product.name} fill className="object-cover" />
                                     </div>
                                     <div>
@@ -132,13 +139,20 @@ export const Uppcoming = () => {
                                             <span className="flex items-center gap-1"><BsPencil className="text-primary" /> {booking.employee.name}</span>
                                             <span className="flex items-center gap-1"><BsCalendar className="text-primary" /> {format(booking.start_time, 'yyyy/MM/dd hh:mm a')}</span>
                                         </div>
-                                        <span className="bg-blue-50 text-blue-600 text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider inline-block">
+                                        <span className={
+                                            cn(
+                                                "bg-blue-50  text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider inline-block",
+                                                booking.status === "confirmed" && "bg-green-50 text-green-600",
+                                                booking.status === "pending" && "bg-blue-50 text-info",
+                                                booking.status === "cancelled" && "bg-red-50 text-red-600",
+                                            )
+                                        }>
                                             {booking.status}
                                         </span>
                                     </div>
                                 </div>
                                 <div className="flex md:flex-col items-center md:items-end justify-between w-full md:w-auto mt-4 md:mt-0 pt-4 md:pt-0 border-t md:border-t-0 border-slate-100">
-                                    <div className="text-xl font-extrabold text-primary md:mb-4">${booking.product.value.toFixed(2)}</div>
+                                    <div className="text-xl font-extrabold text-primary md:mb-4">${calculatePrice(booking.product).total.toFixed(2)}</div>
                                     <div className="flex items-center gap-3 text-slate-400">
                                         <button className="hover:text-red-500 transition-colors p-2 bg-slate-50 rounded-lg hover:bg-red-50" title="Cancelar"><BsXCircle size={18} /></button>
                                     </div>

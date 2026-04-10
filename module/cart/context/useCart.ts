@@ -89,6 +89,9 @@ export const useCart = create<CartStore>((set, get) => ({
 
     totalItems: () => get().items.reduce((acc, i) => acc + i.quantity, 0),
 
-    subtotal: () =>
-        get().items.reduce((acc, i) => acc + i.product.value * i.quantity, 0),
+    subtotal: () => {
+        // Here we just return the raw totals - better to do the calculation in OrderSummary using calculatePrice
+        // But for backwards compatibility, we'll return the sum of base values (which are totals)
+        return get().items.reduce((acc, i) => acc + (i.product.value * i.quantity), 0);
+    },
 }));

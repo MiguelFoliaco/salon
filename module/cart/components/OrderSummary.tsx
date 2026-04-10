@@ -4,76 +4,212 @@ import { BiShield } from 'react-icons/bi';
 import { useCart } from '../context/useCart';
 import { useUser } from '@/module/auth/context/useUser';
 import { useRouter } from 'next/navigation';
+import { MdOpenInNew } from 'react-icons/md';
+import { useRef, useState } from 'react';
+import { useProfile } from '@/module/profile/hook/use-profile';
+import { calculatePrice } from '@/module/utils/calculate-priece';
+import { generateHash, savePurchase, saveTransaction } from '@/module/checkout/actions';
+import { CONSTANT } from '@/constant';
+import { generateId } from '@/utils/generate-id';
+import { useBranches } from '@/module/branches/context/use-branches';
+import { useToast } from '@/module/common/hook/useToast';
 
 export const OrderSummary = () => {
-    const { items, subtotal, clearCart } = useCart();
+    const { items, clearCart } = useCart();
+    const { selectedBranch } = useBranches()
+    const { client } = useProfile()
     const { user } = useUser((s) => s);
     const router = useRouter();
+    const { openToast } = useToast()
+    const [reciveMode, setReciveMode] = useState<'local' | 'domicilio'>('local');
 
-    const sub = subtotal();
+    // getRawTotal() returns sum of product.value * quantity
+    let total = 0;
+    let sub = 0;
+    let taxAmount = 0;
 
-    // Calculate weighted average tax from cart items
-    const taxAmount = items.reduce((acc, { product, quantity }) => {
-        const pct = product.taxe?.percentage ?? 0;
-        return acc + (product.value * quantity * pct) / 100;
-    }, 0);
+    items.forEach(item => {
+        const itemPrice = calculatePrice(item.product, item.quantity);
+        total += itemPrice.total;
+        sub += itemPrice.subtotal;
+        taxAmount += itemPrice.tax;
+    });
 
-    const total = sub + taxAmount;
-
-    const handleCheckout = () => {
+    const handleCheckout = async () => {
+        if (!selectedBranch) {
+            router.push('/branches');
+            return;
+        }
         if (!user) {
             router.push('/auth/login?redirect=/cart');
             return;
         }
+        if (!client?.address || !client?.city_or_municipality || !client?.departament) {
+            openToast("Por favor complete su dirección de entrega", "error")
+            return
+        }
+
+        const products = items.map(e => {
+            const product = e.product
+            return {
+                ...product,
+                quantity: e.quantity,
+            }
+        })
+        const reference = `order_${generateId()}`
+        const purchase = await savePurchase({
+            address_delivery: client?.address,
+            city_delivery: client?.city_or_municipality,
+            department_delivery: client?.departament,
+            country_delivery: 'Colombia',
+            products,
+            total_amount: total,
+            reference_code: reference,
+            status: 'pending',
+            branch_id: selectedBranch.id,
+            client_id: client?.id,
+            latitude_delivery: Number(client?.latitude),
+            longitude_delivery: Number(client?.longitude),
+            service_id: null,
+            shedule_id: null,
+        })
+        if (!purchase.success) {
+            openToast(purchase?.message || 'Error al guardar el pedido', 'error');
+            return;
+        }
+        const responseSaveTransaction = await saveTransaction({
+            amount: total,
+            transaction_type: 'income',
+            client_id: client?.id,
+            branch_id: selectedBranch.id,
+            tax_amount: taxAmount,
+            products,
+            services: [],
+            total_amount: total,
+            reference_code: reference,
+            payment_method: 'other',
+            status: 'pending',
+        });
+
+        if (!responseSaveTransaction.success) {
+            openToast(responseSaveTransaction?.message || 'Error al guardar el pedido', 'error');
+            return;
+        }
+        const hash = await generateHash({
+            amount: total * 100,
+            currency: 'COP',
+            integrity: CONSTANT.WOMPI_INTEGRITY_HASH,
+            reference: responseSaveTransaction.data?.reference_code!,
+        })
+
+
+        if (!hash.response.data.hash) {
+            openToast("Ocurrio un error al generar el hash, por favor intentelo mas tarde, revise en sus citas e intente pagar desde ahí", "error")
+            return
+        }
+
+        openToast("Cita agendada exitosamente, para confirmar sera redireccionado ha realizar el pago mediante WOMPI", "success")
+
+        const form = document.createElement('form')
+        const script = document.createElement('script')
+        script.src = "https://checkout.wompi.co/widget.js"
+        script.setAttribute("data-render", "button")
+        script.setAttribute("data-expiration-time", hash.expirationTime)
+        script.setAttribute("data-public-key", CONSTANT.WOMPI_PUBLIC_KEY)
+        script.setAttribute("data-currency", "COP")
+        script.setAttribute("data-amount-in-cents", (total * 100).toString())
+        script.setAttribute("data-reference", responseSaveTransaction.data?.reference_code!)
+        script.setAttribute("data-signature:integrity", hash.response.data.hash)
+        form.style.display = 'none';
+        form.appendChild(script)
+        document.body.appendChild(form)
         // TODO: connect to payment/order flow
-        alert('¡Pedido procesado! (flujo de pago pendiente)');
-        clearCart();
+        setTimeout(() => {
+            const button = form.querySelector("button");
+            if (!button) {
+                openToast("Ocurrio un error al generar el pago, por favor intentelo mas tarde, revise en sus citas e intente pagar desde ahí", "error")
+                return
+            }
+            button.click()
+            clearCart();
+        }, 1000)
     };
 
+
+    const isValidPass = (client?.address && reciveMode === 'domicilio' || reciveMode === 'local') && (client?.phone && client?.identity_value && client?.identity_type)
+
+
     return (
-        <div className="bg-base-100 rounded-2xl border-2 border-base-200 shadow-lg p-6 flex flex-col gap-4 sticky top-20">
+        <div className="bg-base-100 border-2 border-base-200 shadow-lg p-6 flex flex-col gap-4 sticky top-20">
             <h2 className="text-lg font-bold text-base-content">Resumen del pedido</h2>
 
             <div className="flex flex-col gap-3 text-sm">
                 <div className="flex justify-between text-base-content/70">
                     <span>Subtotal</span>
-                    <span>${sub.toLocaleString('es-CO')} COP</span>
+                    <span>${sub.toLocaleString('es-CO', { maximumFractionDigits: 2 })} COP</span>
                 </div>
 
                 {taxAmount > 0 && (
                     <div className="flex justify-between text-base-content/70">
                         <span>Impuestos</span>
-                        <span>${taxAmount.toLocaleString('es-CO')} COP</span>
+                        <span>${taxAmount.toLocaleString('es-CO', { maximumFractionDigits: 2 })} COP</span>
                     </div>
                 )}
 
+                <div className="flex flex-col text-base-content/70">
+                    <div className='join'>
+                        <button className={`btn btn-sm shadow-none  join-item ${reciveMode === 'local' ? 'btn-primary' : ''}`} onClick={() => setReciveMode('local')}>Recoger en el local</button>
+                        <button className={`btn btn-sm shadow-none  join-item ${reciveMode === 'domicilio' ? 'btn-primary' : ''}`} onClick={() => setReciveMode('domicilio')}>Domicilio</button>
+                    </div>
+                </div>
+
+                {
+                    reciveMode == 'domicilio' &&
+                    <div className='flex flex-col text-base-content/70'>
+                        <p className='text-primary font-semibold'>Dirección de entrega</p>
+                        <p className='text-sm'>Departamento: {client?.departament}</p>
+                        <p className='text-sm'>Ciudad: {client?.city_or_municipality}</p>
+                        <p className='text-sm'>Dirección: {client?.address}</p>
+                    </div>
+                }
                 <div className="divider my-0" />
 
                 <div className="flex justify-between font-bold text-base-content text-base">
                     <span>Total</span>
-                    <span className="text-primary text-xl">${total.toLocaleString('es-CO')} COP</span>
+                    <span className="text-primary text-xl">${total.toLocaleString('es-CO', { maximumFractionDigits: 2 })} COP</span>
                 </div>
             </div>
 
+            {
+                !isValidPass &&
+                <div className='alert alert-error alert-soft flex flex-col items-start'>
+                    <p>No tienes una dirección registrada, por favor regístrate para continuar</p>
+                    <button className='btn btn-error btn-outline btn-sm shadow-none' onClick={() => router.push('/profile')}>Registrar dirección</button>
+                </div>
+
+            }
             <button
                 onClick={handleCheckout}
-                disabled={items.length === 0}
+                disabled={items.length === 0 || !isValidPass}
                 className="btn btn-primary w-full mt-2"
             >
                 Ir a pagar
             </button>
 
             <button
+                disabled={items.length === 0 || !isValidPass}
                 onClick={() => router.push('/')}
                 className="btn btn-outline w-full"
             >
                 Seguir comprando
             </button>
 
+
             {/* Security badge */}
             <div className="flex items-center gap-2 bg-base-200 rounded-xl p-3 text-xs text-base-content/60">
                 <BiShield className="shrink-0 text-success" size={20} />
-                <span>Tu pago está protegido con encriptación de nivel bancario</span>
+                <a href="https://wompi.com/es/co/que-es-wompi" target="_blank" rel="noopener noreferrer" className='text-xs underline hover:text-primary'>Los pagos sera procesados por Wompi</a>
+                <MdOpenInNew className='text-xs text-info' />
             </div>
         </div>
     );

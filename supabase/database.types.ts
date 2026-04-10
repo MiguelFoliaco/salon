@@ -116,55 +116,73 @@ export type Database = {
         Row: {
           address: string | null
           auth_id: string
+          city_or_municipality: string | null
           client_type: Database["public"]["Enums"]["client_type_enum"]
           code_phone: string | null
           code_verification: string | null
+          country: string | null
           created_at: string | null
+          departament: string | null
           email: string | null
           id: string
           identity_type: Database["public"]["Enums"]["identity_type_enum"]
           identity_value: string
           lastname: string
           lastname_2: string | null
+          latitude: string | null
+          longitude: string | null
           name: string
           phone: string
           photo: string | null
+          postal_code: string | null
           updated_at: string | null
         }
         Insert: {
           address?: string | null
           auth_id: string
+          city_or_municipality?: string | null
           client_type?: Database["public"]["Enums"]["client_type_enum"]
           code_phone?: string | null
           code_verification?: string | null
+          country?: string | null
           created_at?: string | null
+          departament?: string | null
           email?: string | null
           id?: string
           identity_type: Database["public"]["Enums"]["identity_type_enum"]
           identity_value: string
           lastname: string
           lastname_2?: string | null
+          latitude?: string | null
+          longitude?: string | null
           name: string
           phone: string
           photo?: string | null
+          postal_code?: string | null
           updated_at?: string | null
         }
         Update: {
           address?: string | null
           auth_id?: string
+          city_or_municipality?: string | null
           client_type?: Database["public"]["Enums"]["client_type_enum"]
           code_phone?: string | null
           code_verification?: string | null
+          country?: string | null
           created_at?: string | null
+          departament?: string | null
           email?: string | null
           id?: string
           identity_type?: Database["public"]["Enums"]["identity_type_enum"]
           identity_value?: string
           lastname?: string
           lastname_2?: string | null
+          latitude?: string | null
+          longitude?: string | null
           name?: string
           phone?: string
           photo?: string | null
+          postal_code?: string | null
           updated_at?: string | null
         }
         Relationships: []
@@ -255,6 +273,57 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      delivery: {
+        Row: {
+          actual_end_time: string | null
+          actual_start_time: string | null
+          created_at: string | null
+          deliver_id: string | null
+          estimate_end_time: string
+          estimate_start_time: string
+          id: string
+          purchase_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          actual_end_time?: string | null
+          actual_start_time?: string | null
+          created_at?: string | null
+          deliver_id?: string | null
+          estimate_end_time: string
+          estimate_start_time: string
+          id?: string
+          purchase_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          actual_end_time?: string | null
+          actual_start_time?: string | null
+          created_at?: string | null
+          deliver_id?: string | null
+          estimate_end_time?: string
+          estimate_start_time?: string
+          id?: string
+          purchase_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "delivery_deliver_id_fkey"
+            columns: ["deliver_id"]
+            isOneToOne: false
+            referencedRelation: "employes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "delivery_purchase_id_fkey"
+            columns: ["purchase_id"]
+            isOneToOne: false
+            referencedRelation: "purchases"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       employes: {
         Row: {
@@ -439,6 +508,53 @@ export type Database = {
         }
         Relationships: []
       }
+      polygons_coverage: {
+        Row: {
+          branch_id: string
+          color: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          points: Json
+          price: number
+          updated_at: string
+        }
+        Insert: {
+          branch_id: string
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          points: Json
+          price: number
+          updated_at?: string
+        }
+        Update: {
+          branch_id?: string
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          points?: Json
+          price?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "polygons_coverage_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_gallery: {
         Row: {
           alt: string | null
@@ -568,6 +684,95 @@ export type Database = {
           },
         ]
       }
+      purchases: {
+        Row: {
+          address_delivery: string
+          branch_id: string | null
+          city_delivery: string
+          client_id: string | null
+          country_delivery: string
+          created_at: string | null
+          department_delivery: string
+          id: string
+          latitude_delivery: number | null
+          longitude_delivery: number | null
+          products: Json
+          reference_code: string | null
+          service_id: string | null
+          shedule_id: string | null
+          status: Database["public"]["Enums"]["purchase_status_enum"] | null
+          total_amount: number
+          updated_at: string | null
+        }
+        Insert: {
+          address_delivery: string
+          branch_id?: string | null
+          city_delivery: string
+          client_id?: string | null
+          country_delivery?: string
+          created_at?: string | null
+          department_delivery: string
+          id?: string
+          latitude_delivery?: number | null
+          longitude_delivery?: number | null
+          products: Json
+          reference_code?: string | null
+          service_id?: string | null
+          shedule_id?: string | null
+          status?: Database["public"]["Enums"]["purchase_status_enum"] | null
+          total_amount: number
+          updated_at?: string | null
+        }
+        Update: {
+          address_delivery?: string
+          branch_id?: string | null
+          city_delivery?: string
+          client_id?: string | null
+          country_delivery?: string
+          created_at?: string | null
+          department_delivery?: string
+          id?: string
+          latitude_delivery?: number | null
+          longitude_delivery?: number | null
+          products?: Json
+          reference_code?: string | null
+          service_id?: string | null
+          shedule_id?: string | null
+          status?: Database["public"]["Enums"]["purchase_status_enum"] | null
+          total_amount?: number
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchases_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchases_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchases_shedule_id_fkey"
+            columns: ["shedule_id"]
+            isOneToOne: false
+            referencedRelation: "schedules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       push_token_device_x_user: {
         Row: {
           auth_id: string | null
@@ -602,6 +807,7 @@ export type Database = {
           created_at: string | null
           employee_id: string | null
           end_time: string
+          expires_at: string
           id: string
           notes: string | null
           product_id: string
@@ -615,6 +821,7 @@ export type Database = {
           created_at?: string | null
           employee_id?: string | null
           end_time: string
+          expires_at?: string
           id?: string
           notes?: string | null
           product_id: string
@@ -628,6 +835,7 @@ export type Database = {
           created_at?: string | null
           employee_id?: string | null
           end_time?: string
+          expires_at?: string
           id?: string
           notes?: string | null
           product_id?: string
@@ -891,7 +1099,7 @@ export type Database = {
     Enums: {
       client_type_enum: "natural" | "juridico"
       employe_gender_enum: "male" | "female" | "other"
-      employe_rol_enum: "admin" | "cashier" | "stylist"
+      employe_rol_enum: "admin" | "cashier" | "stylist" | "delivery"
       identity_type_enum: "DNI" | "PASSPORT" | "ID"
       inventory_movement_type_enum: "in" | "out" | "adjustment"
       notification_type:
@@ -908,6 +1116,12 @@ export type Database = {
         | "daviplata"
         | "other"
       product_type_enum: "service" | "product"
+      purchase_status_enum:
+        | "pending"
+        | "completed"
+        | "in_progress"
+        | "on_the_way"
+        | "cancelled"
       schedule_status_enum: "pending" | "confirmed" | "cancelled" | "completed"
       transaction_status_enum: "pending" | "completed" | "cancelled"
       transaction_type_enum: "income" | "expense"
@@ -1040,7 +1254,7 @@ export const Constants = {
     Enums: {
       client_type_enum: ["natural", "juridico"],
       employe_gender_enum: ["male", "female", "other"],
-      employe_rol_enum: ["admin", "cashier", "stylist"],
+      employe_rol_enum: ["admin", "cashier", "stylist", "delivery"],
       identity_type_enum: ["DNI", "PASSPORT", "ID"],
       inventory_movement_type_enum: ["in", "out", "adjustment"],
       notification_type: [
@@ -1059,6 +1273,13 @@ export const Constants = {
         "other",
       ],
       product_type_enum: ["service", "product"],
+      purchase_status_enum: [
+        "pending",
+        "completed",
+        "in_progress",
+        "on_the_way",
+        "cancelled",
+      ],
       schedule_status_enum: ["pending", "confirmed", "cancelled", "completed"],
       transaction_status_enum: ["pending", "completed", "cancelled"],
       transaction_type_enum: ["income", "expense"],
