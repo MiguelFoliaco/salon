@@ -135,7 +135,7 @@ export const AdminEmployees = () => {
                 </button>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div className="bg-white  shadow-sm border border-slate-200 overflow-hidden">
                 <div className="p-4 border-b border-slate-200 bg-slate-50">
                     <form onSubmit={handleSearch} className="relative w-full max-w-md">
                         <input
@@ -193,7 +193,7 @@ export const AdminEmployees = () => {
                                                         {getRoleIcon(emp.rol)}
                                                     </div>
                                                     <select
-                                                        className="select select-ghost select-sm px-2 focus:bg-transparent font-medium capitalize"
+                                                        className="select select-ghost select-sm focus:bg-transparent font-medium capitalize"
                                                         value={emp.rol || ''}
                                                         onChange={(e) => handleRoleChange(emp.id, e.target.value as any)}
                                                     >

@@ -1,13 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { BsCartX, BsCart3 } from 'react-icons/bs';
 import { useCart } from './context/useCart';
 import { CartItem } from './components/CartItem';
 import { OrderSummary } from './components/OrderSummary';
 import { Header } from '@/module/common/components/header';
-
 export const CartPage = () => {
     const { items, hydrated, hydrate } = useCart();
 

@@ -12,6 +12,7 @@ export async function updateScheduleStatus(id: string, status: 'pending' | 'conf
     const { data: employe } = await supabase
         .from('employes')
         .select('rol')
+        .eq('rol', 'admin')
         .eq('auth_id', authData.user.id)
         .maybeSingle();
 

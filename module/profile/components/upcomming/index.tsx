@@ -27,7 +27,6 @@ export const Uppcoming = () => {
         setLoading(true);
 
         const response = await getSchedulesByUser({ page: currentPage, limit, filterType: 'upcoming' });
-
         if (isLoadMore) {
             setSchedules(prev => [...prev, ...response.data]);
         } else {

@@ -22,6 +22,16 @@ export const getPolygons = async () => {
     return data
 }
 
+
+export const getPolygonsByBranch = async (branchId: string) => {
+    const supabase = await createClient()
+    const { data, error } = await supabase.from('polygons_coverage').select(select).eq('branch_id', branchId).eq('is_active', true)
+    if (error) throw error
+    return data
+}
+
+export type Polygons = NonNullable<Awaited<ReturnType<typeof getPolygons>>[0]>
+
 type PolygonsBody = {
     name: string;
     description: string;

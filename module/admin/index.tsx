@@ -5,11 +5,13 @@ import { getAdminSchedules } from './actions/get-schedules';
 import { updateScheduleStatus } from './actions/update-schedule-status';
 import { format } from 'date-fns';
 import { BsCheckCircle, BsXCircle, BsPlayCircle } from 'react-icons/bs';
+import { useToast } from '../common/hook/useToast';
 
 export const AdminPage = () => {
     const [schedules, setSchedules] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
+    const { openToast } = useToast()
     const [totalPages, setTotalPages] = useState(1);
 
     const loadSchedules = async (p = 1) => {
@@ -35,9 +37,10 @@ export const AdminPage = () => {
             await updateScheduleStatus(id, status);
             // update locally
             setSchedules(prev => prev.map(s => s.id === id ? { ...s, status } : s));
+            openToast('Estado actualizado correctamente', 'success');
         } catch (error) {
             console.error("Failed to change status", error);
-            alert("Error al actualizar el estado");
+            openToast('Error al actualizar el estado', 'error');
         }
     };
 
@@ -60,7 +63,7 @@ export const AdminPage = () => {
                 </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div className="bg-white  border border-slate-200 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
