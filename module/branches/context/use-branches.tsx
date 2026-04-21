@@ -7,7 +7,7 @@ type BranchesState = {
     selectedBranch: Tables<'branches'> | null;
     updateSelectedBranch: (branch: Tables<'branches'> | null) => void;
     updateBranches: (branches: Tables<'branches'>[]) => void;
-    load: (configurationId: string) => Promise<void>;
+    load: (configurationId: string, force?: boolean) => Promise<void>;
     isLoading: boolean;
 }
 
@@ -16,9 +16,15 @@ export const useBranches = create<BranchesState>(set => ({
     selectedBranch: null,
     updateSelectedBranch: (branch: Tables<'branches'> | null) => set({ selectedBranch: branch }),
     updateBranches: (branches: Tables<'branches'>[]) => set({ branches }),
-    load: async (configurationId: string) => {
+    load: async (configurationId: string, force?: boolean) => {
         set({ isLoading: true })
+        const branchesLocal = localStorage.getItem('branches')
+        if (branchesLocal && !force) {
+            set({ branches: JSON.parse(branchesLocal), isLoading: false });
+            return;
+        }
         const branches = await getBranches(configurationId)
+        localStorage.setItem('branches', JSON.stringify(branches.data))
         if (!branches.data) {
             set({ isLoading: false })
             return

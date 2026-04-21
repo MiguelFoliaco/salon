@@ -21,7 +21,7 @@ export const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false)
 
     return (
-        <header className="sticky top-0 z-100 bg-base-100 border-b shadow-sm border-base-200">
+        <header className="sticky top-0 z-25 bg-base-100 border-b shadow-sm border-base-200">
             <div className="max-w-7xl mx-auto px-4 lg:px-6">
                 <div className="flex items-center justify-between h-16 gap-4">
                     {/* Logo */}
@@ -65,11 +65,11 @@ export const Header = () => {
                         <Link href="/search" className="hover:text-primary transition-colors">
                             Servicios
                         </Link>
-                        <Link href="/search" className="hover:text-primary transition-colors">
+                        {/* <Link href="/search" className="hover:text-primary transition-colors">
                             Estilistas
-                        </Link>
-                        <Link href="/search" className="hover:text-primary transition-colors">
-                            Precios
+                        </Link> */}
+                        <Link href="/search?type=5db69d48-bd7a-4f58-8bc2-c7ede559df73" className="hover:text-primary transition-colors">
+                            Productos
                         </Link>
                     </nav>
 

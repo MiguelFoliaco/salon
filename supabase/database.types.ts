@@ -274,6 +274,27 @@ export type Database = {
         }
         Relationships: []
       }
+      conversation: {
+        Row: {
+          created_at: string | null
+          id: string
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          title?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          title?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       delivery: {
         Row: {
           actual_end_time: string | null
@@ -468,6 +489,41 @@ export type Database = {
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          content: string
+          content_tsv: unknown
+          conversation_id: string
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["role_enum"]
+        }
+        Insert: {
+          content: string
+          content_tsv?: unknown
+          conversation_id: string
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["role_enum"]
+        }
+        Update: {
+          content?: string
+          content_tsv?: unknown
+          conversation_id?: string
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["role_enum"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversation"
             referencedColumns: ["id"]
           },
         ]
@@ -1122,6 +1178,7 @@ export type Database = {
         | "in_progress"
         | "on_the_way"
         | "cancelled"
+      role_enum: "system" | "user" | "assistant"
       schedule_status_enum: "pending" | "confirmed" | "cancelled" | "completed"
       transaction_status_enum: "pending" | "completed" | "cancelled"
       transaction_type_enum: "income" | "expense"
@@ -1280,6 +1337,7 @@ export const Constants = {
         "on_the_way",
         "cancelled",
       ],
+      role_enum: ["system", "user", "assistant"],
       schedule_status_enum: ["pending", "confirmed", "cancelled", "completed"],
       transaction_status_enum: ["pending", "completed", "cancelled"],
       transaction_type_enum: ["income", "expense"],
