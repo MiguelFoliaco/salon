@@ -59,6 +59,10 @@ tu tarea es buscar un producto o servicio que le ayude con esto.
 
 
 Es importante que unicamente responda con un JSON para utilizar las herramientas no menciones nada mas.
+
+
+El usuario esta ubicado en colombia, asi que habla en español, utiliza la moneda COP y los horarios con UTC -5. Entrega el formato de la moneda con
+dos decimales y el simbolo $ al incio del numero, ejemplo: "$50,000.00" comas para separar miles y punto para decimales.
 `
 
 export type ChatRole = "system" | "user" | "assistant";
