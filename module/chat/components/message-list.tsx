@@ -11,8 +11,9 @@ import {
     BiUser,
 } from "react-icons/bi";
 import { GiSparkles } from "react-icons/gi";
-import { sendMessage } from "../actions/message";
 import { MessageIA } from "./message-ia";
+import { sendMessage } from "../actions/service";
+import { useUser } from "@/module/auth/context/useUser";
 
 type Props = {
     conversationId: string;
@@ -39,8 +40,8 @@ export const MessageList = ({
     const [loading, setLoading] = useState(false);
     const { openToast } = useToast()
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const { user } = useUser();
 
-    const { selectedBranch } = useBranches()
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -52,28 +53,28 @@ export const MessageList = ({
 
 
     const handleSendMessage = async () => {
-        try {
 
+        try {
+            if (!user) return openToast('Debes iniciar sesion para enviar un mensaje', 'info')
             if (!message) return openToast('El mensaje no puede estar vacio', 'error')
             const userMsg = message
             setMessage('')
             updateMessages({ role: 'user', content: userMsg })
 
             setLoading(true)
-            const res = await sendMessage(userMsg, conversationId, selectedBranch?.id || '')
+            const res = await sendMessage(conversationId, message, user.id);
             if (!res) {
                 openToast('Error al enviar el mensaje', 'error')
                 setLoading(false)
                 return
             }
-            if (res.error) {
+            if (res.error || !res.data) {
                 console.log(res)
-                openToast(res.message || 'Error al enviar el mensaje', 'error')
+                openToast(res.msg || 'Error al enviar el mensaje', 'error')
                 setLoading(false)
                 return
             }
-            console.log("CHAT: ", res)
-            updateMessages({ role: 'assistant', content: res.data! })
+            updateMessages({ role: 'assistant', content: res.data.reply })
             setLoading(false)
         } catch (error) {
             console.log(error)
@@ -136,11 +137,11 @@ export const MessageList = ({
                 ) : (
                     <>
                         {messages.map((msg, index) => (
-                            <Fragment>
+                            <Fragment key={index}>
                                 {
                                     msg.role === 'user' ? <>
                                         <div
-                                            key={index}
+
                                             className={`chat chat-end`}
                                         >
                                             <div className="chat-image avatar placeholder">

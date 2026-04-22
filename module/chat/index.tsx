@@ -3,29 +3,31 @@ import { BiBot } from "react-icons/bi"
 import { useEffect, useState } from "react"
 import { MessageList } from "./components/message-list";
 import { useUser } from "../auth/context/useUser";
-import { Conversation, getConversation } from "./actions/message";
+import { getConversation } from "./actions/service";
 
 export const ChatMain = () => {
 
     const { user } = useUser();
     const [open, setOpen] = useState(false);
-    const [conversation, setConversation] = useState<Conversation | null>(null);
+    const [conversation, setConversation] = useState<{ id: string; messages: { role: "system" | "user" | "assistant"; content: string; created_at: string; }[] } | null>(null);
     const [messages, setMessages] = useState<{ role: "system" | "user" | "assistant", content: string }[]>([]);
 
     useEffect(() => {
         if (user) {
-            getConversation()
+            getConversation(user?.id) // Implementar useQuery para consultas al backend
                 .then(res => {
-                    if (res) {
-                        setConversation(res)
-                        setMessages(res.messages as any || [])
+                    if (res?.data) {
+                        setConversation(res.data);
+                        setMessages(res.data?.messages);
                     }
                 })
         }
     }, [user])
 
+
     const handleUpdateMessages = (newMessage: { role: "system" | "user" | "assistant", content: string }) => {
         setMessages(prev => [...prev, newMessage])
+
     }
 
     return (

@@ -2,6 +2,7 @@ import React from 'react'
 import { BiBot } from 'react-icons/bi';
 import remarkGfm from 'remark-gfm';
 import ReactMarkdown from 'react-markdown';
+import Link from 'next/link';
 
 type Props = {
     msg: {
@@ -106,6 +107,23 @@ const MarkdownComponents = {
             {children}
         </p>
     ),
+    a: ({ children, href }: any) => {
+        if (href.includes('/booking/')) {
+            return <Link href={href} className="text-primary hover:text-primary-focus underline font-medium transition-colors">
+                {children}
+            </Link>
+        }
+
+        if (href.includes('/products/')) {
+            return <Link href={href} className="text-primary hover:text-primary-focus underline font-medium transition-colors">
+                {children}
+            </Link>
+        }
+
+        return <a href={href} target="_blank" rel="noopener noreferrer">
+            {children}
+        </a>
+    },
 
     img: ({ src, alt }: any) => (
         <img src={src} alt={alt} className="h-20 w-20 object-cover rounded-lg my-2" />

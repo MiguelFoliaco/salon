@@ -148,4 +148,21 @@ export const getAdminEmployee = cache(async () => {
     return data;
 })
 
+export const getStylistEmployee = cache(async (id: string) => {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+        .from('employes')
+        .select('id, name, last_name, hours_available, title')
+        .eq('rol', 'stylist')
+        .eq('id', id)
+        .maybeSingle();
+
+    if (error) {
+        console.error("Error fetching stylist employees:", error);
+        throw new Error("Could not fetch employees");
+    }
+
+    return data;
+})
+
 export type AdminEmployee = Awaited<ReturnType<typeof getAdminEmployee>>
