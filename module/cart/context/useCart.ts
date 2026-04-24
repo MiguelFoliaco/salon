@@ -25,6 +25,7 @@ interface CartStore {
     type: 'local' | 'delivery';
     setPriceDelivery: (priceDelivery: number) => void;
     setType: (type: 'local' | 'delivery') => void;
+    updateAllCart: (cart: CartItem[], priceDelivery?: number, type?: 'local' | 'delivery') => void;
 }
 
 const saveToStorage = (items: CartItem[]) => {
@@ -93,7 +94,10 @@ export const useCart = create<CartStore>((set, get) => ({
         saveToStorage([]);
         set({ items: [] });
     },
-
+    updateAllCart: (cart: CartItem[], priceDelivery?: number, type?: 'local' | 'delivery') => {
+        saveToStorage(cart);
+        set({ items: cart, priceDelivery, type });
+    },
     totalItems: () => get().items.reduce((acc, i) => acc + i.quantity, 0),
 
     subtotal: () => {

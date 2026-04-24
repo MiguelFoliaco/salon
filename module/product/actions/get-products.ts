@@ -47,7 +47,7 @@ type args = {
     max?: number;
     page?: number;
     limit?: number;
-    branchId: string;
+    branchId?: string;
 };
 
 export const getProducts = cache(async (q: args) => {
@@ -70,9 +70,12 @@ export const getProducts = cache(async (q: args) => {
     let request = client
         .from('products')
         .select(select, { count: 'exact' })
-        .eq('inventory.branch_id', q.branchId)
         .range(from, to)
         .order('created_at', { ascending: false });
+
+    if (q.branchId) {
+        request = request.eq('inventory.branch_id', q.branchId);
+    }
 
     if (query) {
         request = request.ilike('name', `%${query}%`);

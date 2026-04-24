@@ -137,7 +137,7 @@ export const ModalProductNotification = ({ onClose, onSubmit }: ModalProductNoti
                         <span className="label-text-alt text-base-content/50">Obligatorio</span>
                     </label>
                     <div>
-                        <SearchInput onClick={(item) => setFormData(prev => ({ ...prev, productId: item.id, productName: item.name, image: item.image }))} />
+                        <SearchInput requiredBranch={false} onClick={(item) => setFormData(prev => ({ ...prev, productId: item.id, productName: item.name, image: item.image }))} />
                         <p className="text-xs mt-2 ">Producto: {formData.productName}</p>
                     </div>
                     {errors.productId && (

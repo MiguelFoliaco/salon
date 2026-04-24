@@ -25,4 +25,15 @@ export const signUp = async (email: string, password: string) => {
         }
     })
     return response
-} 
+}
+
+
+export const getInfoUserByToken = async (token: string) => {
+    const client = await createClient();
+    const user = await client.auth.getUser(token)
+    if (!user.data.user) {
+        return { user: null, profile: null }
+    }
+    const profile = await client.from('clients').select('*').eq('auth_id', user.data.user.id).single()
+    return { user: user.data.user, profile: profile.data }
+}

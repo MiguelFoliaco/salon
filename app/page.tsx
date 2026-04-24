@@ -31,7 +31,7 @@ export default function Home() {
         </div>
       </section>
 
-      <ChatMain />
+      {/* <ChatMain /> */}
 
       <Footer />
     </div>

@@ -3,17 +3,54 @@
 import { useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { BsCartX, BsCart3 } from 'react-icons/bs';
-import { useCart } from './context/useCart';
-import { CartItem } from './components/CartItem';
+import { type CartItem as CartItemType, useCart } from './context/useCart';
 import { OrderSummary } from './components/OrderSummary';
 import { Header } from '@/module/common/components/header';
-export const CartPage = () => {
-    const { items, hydrated, hydrate } = useCart();
+import { CartItem } from './components/CartItem';
+import { getInfoUserByToken } from '../auth/actions/session';
+import { useProfile } from '../profile/hook/use-profile';
+import { useUser } from '../auth/context/useUser';
+import { useSearchParams } from 'next/navigation';
+import { useToast } from '../common/hook/useToast';
+
+
+type Props = {
+    cartFromUrl?: CartItemType[]
+    priceDelivery?: number
+    type?: 'local' | 'delivery'
+}
+
+export const CartPage = ({ cartFromUrl, priceDelivery, type }: Props) => {
+    const { items, hydrated, hydrate, updateAllCart } = useCart();
+    const { setClient } = useProfile()
+    const { updateUser } = useUser()
+    const { openToast } = useToast()
+    const searchParams = useSearchParams()
 
     // Hydrate from localStorage on mount (client-side only)
     useEffect(() => {
-        hydrate();
-    }, [hydrate]);
+        if (cartFromUrl && cartFromUrl.length > 0) {
+            const token = searchParams.get('user_auth');
+            if (!token) {
+                openToast('No se ha podido verificar tu sesión', 'error')
+                return;
+            }
+            loadUser(token).then(() => {
+                updateAllCart(cartFromUrl, priceDelivery ?? 0, type ?? 'local');
+            })
+        } else {
+            hydrate();
+        }
+    }, [hydrate, cartFromUrl, priceDelivery, type]);
+
+
+    const loadUser = async (token: string) => {
+        const { user, profile } = await getInfoUserByToken(token)
+        if (user && profile) {
+            setClient(profile)
+            updateUser(user)
+        }
+    }
 
     if (!hydrated) {
         return (
@@ -50,7 +87,6 @@ export const CartPage = () => {
                         </Link>
                     </div>
                 )}
-
                 {/* Cart layout */}
                 {items.length > 0 && (
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

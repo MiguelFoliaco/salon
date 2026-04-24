@@ -10,7 +10,8 @@ import {
     BsCashCoin,
     BsGear,
     BsBoxArrowLeft,
-    BsTruck
+    BsTruck,
+    BsBell
 } from 'react-icons/bs';
 import { useUser } from '@/module/auth/context/useUser';
 import { logout } from '@/module/auth/actions/session';
@@ -30,7 +31,7 @@ export const SidebarAdmin = () => {
         { name: 'Poligonos', path: '/admin/polygons', icon: <BiShapePolygon size={20} /> },
         { name: 'Impuestos', path: '/admin/taxes', icon: <BsCashCoin size={20} /> },
         { name: 'Configuración', path: '/admin/settings', icon: <BsGear size={20} /> },
-        { name: 'Notificaciones', path: '/admin/notifications', icon: <BsGear size={20} /> },
+        { name: 'Notificaciones', path: '/admin/notifications', icon: <BsBell size={20} /> },
     ];
 
     const handleLogout = async () => {
@@ -78,7 +79,7 @@ export const SidebarAdmin = () => {
             </aside>
 
             {/* Mobile Bottom Navigation */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 px-2 py-3 flex justify-between pb-safe">
+            <div className="md:hidden overflow-x-scroll fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 px-2 py-3 flex justify-between pb-safe">
                 {menuItems.map((item) => {
                     const isActive = pathname === item.path;
                     return (

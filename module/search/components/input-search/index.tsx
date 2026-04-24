@@ -11,9 +11,10 @@ import { BiSearch } from 'react-icons/bi'
 type Props = {
     onClick?: (item: Products[number]) => void;
     showMore?: boolean;
+    requiredBranch?: boolean;
 };
 
-export const SearchInput = ({ onClick, showMore = true }: Props) => {
+export const SearchInput = ({ onClick, showMore = true, requiredBranch = true }: Props) => {
     const [query, setQuery] = useState('');
     const [loading, setLoading] = useState(false)
     const [open, setOpen] = useState(false);
@@ -23,7 +24,7 @@ export const SearchInput = ({ onClick, showMore = true }: Props) => {
     const { selectedBranch } = useBranches();
 
     const search = useCallback(async (open?: boolean) => {
-        if (!selectedBranch) return openToast('Selecione una sucursal', 'warning')
+        if (requiredBranch && !selectedBranch) return openToast('Selecione una sucursal', 'warning')
         if (!query) return openToast('Digite algo para buscar', 'warning')
         if (loading) return
         setLoading(true)
@@ -31,7 +32,7 @@ export const SearchInput = ({ onClick, showMore = true }: Props) => {
             query: query,
             page: 1,
             limit: 10,
-            branchId: selectedBranch.id
+            branchId: requiredBranch ? selectedBranch?.id : undefined
         });
         setLoading(false)
         setOpen(open ?? true)
