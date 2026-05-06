@@ -5,7 +5,7 @@ import { getProducts, Products } from '@/module/product/actions/get-products';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { BiSearch } from 'react-icons/bi'
 
 type Props = {

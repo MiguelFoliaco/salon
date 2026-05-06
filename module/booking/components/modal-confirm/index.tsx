@@ -103,7 +103,7 @@ export function ModalConfirmBooking({
 
 
     }
-    console.log('WOMPI KEY ', CONSTANT.WOMPI_PUBLIC_KEY)
+
     return (
         <dialog className="modal modal-open ">
             <div className="modal-box bg-base-100 max-w-md p-0 rounded-2xl ">

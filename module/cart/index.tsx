@@ -10,7 +10,6 @@ import { CartItem } from './components/CartItem';
 import { getInfoUserByToken } from '../auth/actions/session';
 import { useProfile } from '../profile/hook/use-profile';
 import { useUser } from '../auth/context/useUser';
-import { useSearchParams } from 'next/navigation';
 import { useToast } from '../common/hook/useToast';
 
 
@@ -18,32 +17,34 @@ type Props = {
     cartFromUrl?: CartItemType[]
     priceDelivery?: number
     type?: 'local' | 'delivery'
+    token?: string
 }
 
-export const CartPage = ({ cartFromUrl, priceDelivery, type }: Props) => {
+export const CartPage = ({ cartFromUrl, priceDelivery, type, token }: Props) => {
     const { items, hydrated, hydrate, updateAllCart } = useCart();
     const { setClient } = useProfile()
     const { updateUser } = useUser()
-    const { openToast } = useToast()
-    const searchParams = useSearchParams()
 
     // Hydrate from localStorage on mount (client-side only)
     useEffect(() => {
-        if (cartFromUrl && cartFromUrl.length > 0) {
-            const token = searchParams.get('user_auth');
-            if (!token) {
-                openToast('No se ha podido verificar tu sesión', 'error')
-                return;
-            }
-            loadUser(token).then(() => {
-                updateAllCart(cartFromUrl, priceDelivery ?? 0, type ?? 'local');
-            })
-        } else {
-            hydrate();
+
+        hydrate();
+    }, [hydrate]);
+
+
+    useEffect(() => {
+
+        // @ts-ignore
+        if (window.itemCart && token) {
+            // @ts-ignore
+            updateAllCart(window.itemCart, priceDelivery ?? 0, type ?? 'local');
+            // @ts-ignore
+            window.itemCart = null;
+            loadUser(token)
         }
-    }, [hydrate, cartFromUrl, priceDelivery, type]);
+    }, [])
 
-
+    // Agregar las politicas para realizar la compra
     const loadUser = async (token: string) => {
         const { user, profile } = await getInfoUserByToken(token)
         if (user && profile) {
@@ -62,7 +63,9 @@ export const CartPage = ({ cartFromUrl, priceDelivery, type }: Props) => {
 
     return (
         <div className="min-h-screen bg-base-200">
-            <Header />
+            {
+                !token && <Header />
+            }
 
             <div className="max-w-7xl mx-auto px-4 lg:px-6 py-10">
                 {/* Page heading */}
@@ -81,12 +84,19 @@ export const CartPage = ({ cartFromUrl, priceDelivery, type }: Props) => {
                         <div className="text-center">
                             <h2 className="text-xl font-bold text-base-content mb-1">Tu carrito está vacío</h2>
                             <p className="text-base-content/50 text-sm">Agrega productos desde el catálogo</p>
+                            {
+                                token &&
+                                <Link href="salon://home" className="btn btn-sm btn-primary mt-4">
+                                    Regresar a la aplicacion
+                                </Link>
+                            }
                         </div>
-                        <Link href="/" className="btn btn-primary btn-wide">
-                            Ver productos
-                        </Link>
+
                     </div>
                 )}
+
+
+
                 {/* Cart layout */}
                 {items.length > 0 && (
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
